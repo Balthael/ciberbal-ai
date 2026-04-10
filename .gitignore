@@ -1,0 +1,36 @@
+# Binaries
+/gentle-ai
+/ciberbal-ai
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binary
+*.test
+
+# Output of go coverage
+*.out
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+*.tar
+cmd/gentle-ai/main
+dist/
+
+# Agent tooling metadata (generated per-user, not product code)
+.atl/
+
+# Local persistent memory / editor state (machine-specific, never commit)
+.engram/
+.windsurf/
