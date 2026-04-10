@@ -17,7 +17,22 @@
       "skill-creator",
       "branch-pr",
       "issue-creation",
-      "skill-registry"
+      "skill-registry",
+      "domain-web",
+      "domain-api",
+      "domain-mobile",
+      "domain-ad-internal",
+      "domain-wifi-wireless",
+      "domain-cloud",
+      "domain-recon",
+      "domain-reporting",
+      "workflow-scoping",
+      "workflow-recon",
+      "workflow-enumeration",
+      "workflow-exploitation",
+      "workflow-post-exploitation",
+      "workflow-evidence",
+      "workflow-reporting"
     ]
   },
   {

@@ -29,6 +29,23 @@ var mvpSkills = []Skill{
 	{ID: model.SkillBranchPR, Name: "branch-pr", Category: "workflow", Priority: "p0"},
 	{ID: model.SkillIssueCreation, Name: "issue-creation", Category: "workflow", Priority: "p0"},
 	{ID: model.SkillSkillRegistry, Name: "skill-registry", Category: "workflow", Priority: "p0"},
+	// Domain packs expose post-install pentesting capability layers.
+	{ID: model.SkillDomainWeb, Name: "domain-web", Category: "domain", Priority: "p1"},
+	{ID: model.SkillDomainAPI, Name: "domain-api", Category: "domain", Priority: "p1"},
+	{ID: model.SkillDomainMobile, Name: "domain-mobile", Category: "domain", Priority: "p1"},
+	{ID: model.SkillDomainADInternal, Name: "domain-ad-internal", Category: "domain", Priority: "p1"},
+	{ID: model.SkillDomainWiFi, Name: "domain-wifi-wireless", Category: "domain", Priority: "p1"},
+	{ID: model.SkillDomainCloud, Name: "domain-cloud", Category: "domain", Priority: "p1"},
+	{ID: model.SkillDomainRecon, Name: "domain-recon", Category: "domain", Priority: "p1"},
+	{ID: model.SkillDomainReporting, Name: "domain-reporting", Category: "domain", Priority: "p1"},
+	// Workflow packs expose post-install engagement-phase guidance.
+	{ID: model.SkillWorkflowScoping, Name: "workflow-scoping", Category: "workflow-pack", Priority: "p1"},
+	{ID: model.SkillWorkflowRecon, Name: "workflow-recon", Category: "workflow-pack", Priority: "p1"},
+	{ID: model.SkillWorkflowEnumeration, Name: "workflow-enumeration", Category: "workflow-pack", Priority: "p1"},
+	{ID: model.SkillWorkflowExploitation, Name: "workflow-exploitation", Category: "workflow-pack", Priority: "p1"},
+	{ID: model.SkillWorkflowPostExploitation, Name: "workflow-post-exploitation", Category: "workflow-pack", Priority: "p1"},
+	{ID: model.SkillWorkflowEvidence, Name: "workflow-evidence", Category: "workflow-pack", Priority: "p1"},
+	{ID: model.SkillWorkflowReporting, Name: "workflow-reporting", Category: "workflow-pack", Priority: "p1"},
 }
 
 func MVPSkills() []Skill {

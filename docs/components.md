@@ -93,3 +93,12 @@ For framework-specific skills (React 19, Angular, TypeScript, Tailwind 4, Zod 4,
 - Reporting
 
 These are not mutually exclusive install branches. They are part of the same pentesting ecosystem and will increasingly shape skills, docs, prompts, and workflows.
+
+## Bundled domain and workflow packs
+
+Under `full-pentest`, ciberbal-ai now bundles lightweight post-install packs for:
+
+- Domains: Web, API, Mobile, AD/Internal, WiFi/Wireless, Cloud, Recon, Reporting
+- Workflows: Scoping, Recon, Enumeration, Exploitation, Post-exploitation, Evidence, Reporting
+
+These packs are installed together as guidance layers. They are meant to orient the operator after setup, not to force specialty selection during installation.

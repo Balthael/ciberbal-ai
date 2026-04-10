@@ -223,6 +223,33 @@ func TestInjectUsesRealEmbeddedContent(t *testing.T) {
 	}
 }
 
+func TestInjectWritesDomainAndWorkflowPacksForClaude(t *testing.T) {
+	home := t.TempDir()
+
+	result, err := Inject(home, claudeAdapter(), []model.SkillID{model.SkillDomainWeb, model.SkillWorkflowRecon})
+	if err != nil {
+		t.Fatalf("Inject() error = %v", err)
+	}
+	if len(result.Files) != 2 {
+		t.Fatalf("Inject() files len = %d, want 2", len(result.Files))
+	}
+
+	for _, id := range []model.SkillID{model.SkillDomainWeb, model.SkillWorkflowRecon} {
+		path := filepath.Join(home, ".claude", "skills", string(id), "SKILL.md")
+		if _, err := os.Stat(path); err != nil {
+			t.Fatalf("expected skill file %q: %v", path, err)
+		}
+	}
+
+	second, err := Inject(home, claudeAdapter(), []model.SkillID{model.SkillDomainWeb, model.SkillWorkflowRecon})
+	if err != nil {
+		t.Fatalf("Inject() second error = %v", err)
+	}
+	if second.Changed {
+		t.Fatalf("Inject() second changed = true")
+	}
+}
+
 func TestSkillPathForAgent(t *testing.T) {
 	path := SkillPathForAgent("/home/test", claudeAdapter(), model.SkillCreator)
 	want := "/home/test/.claude/skills/skill-creator/SKILL.md"

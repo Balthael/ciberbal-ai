@@ -26,6 +26,27 @@ var foundationSkills = []model.SkillID{
 	model.SkillSkillRegistry,
 }
 
+var domainSkills = []model.SkillID{
+	model.SkillDomainWeb,
+	model.SkillDomainAPI,
+	model.SkillDomainMobile,
+	model.SkillDomainADInternal,
+	model.SkillDomainWiFi,
+	model.SkillDomainCloud,
+	model.SkillDomainRecon,
+	model.SkillDomainReporting,
+}
+
+var workflowSkills = []model.SkillID{
+	model.SkillWorkflowScoping,
+	model.SkillWorkflowRecon,
+	model.SkillWorkflowEnumeration,
+	model.SkillWorkflowExploitation,
+	model.SkillWorkflowPostExploitation,
+	model.SkillWorkflowEvidence,
+	model.SkillWorkflowReporting,
+}
+
 // SkillsForPreset returns which skills should be installed for a given preset.
 //
 //   - "minimal" / PresetMinimal:            SDD skills only
@@ -39,26 +60,32 @@ func SkillsForPreset(preset model.PresetID) []model.SkillID {
 	case model.PresetEcosystemCore:
 		return copySkills(append(sddSkills, foundationSkills...))
 	case model.PresetFullPentest:
-		all := make([]model.SkillID, 0, len(sddSkills)+len(foundationSkills))
+		all := make([]model.SkillID, 0, len(sddSkills)+len(foundationSkills)+len(domainSkills)+len(workflowSkills))
 		all = append(all, sddSkills...)
 		all = append(all, foundationSkills...)
+		all = append(all, domainSkills...)
+		all = append(all, workflowSkills...)
 		return all
 	case model.PresetCustom:
 		return nil
 	default:
 		// Unknown preset — default to full.
-		all := make([]model.SkillID, 0, len(sddSkills)+len(foundationSkills))
+		all := make([]model.SkillID, 0, len(sddSkills)+len(foundationSkills)+len(domainSkills)+len(workflowSkills))
 		all = append(all, sddSkills...)
 		all = append(all, foundationSkills...)
+		all = append(all, domainSkills...)
+		all = append(all, workflowSkills...)
 		return all
 	}
 }
 
 // AllSkillIDs returns every known skill ID.
 func AllSkillIDs() []model.SkillID {
-	all := make([]model.SkillID, 0, len(sddSkills)+len(foundationSkills))
+	all := make([]model.SkillID, 0, len(sddSkills)+len(foundationSkills)+len(domainSkills)+len(workflowSkills))
 	all = append(all, sddSkills...)
 	all = append(all, foundationSkills...)
+	all = append(all, domainSkills...)
+	all = append(all, workflowSkills...)
 	return all
 }
 

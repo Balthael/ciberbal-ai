@@ -67,6 +67,21 @@ func TestAllEmbeddedAssetsAreReadable(t *testing.T) {
 		// Foundation skills
 		"skills/go-testing/SKILL.md",
 		"skills/skill-creator/SKILL.md",
+		"skills/domain-web/SKILL.md",
+		"skills/domain-api/SKILL.md",
+		"skills/domain-mobile/SKILL.md",
+		"skills/domain-ad-internal/SKILL.md",
+		"skills/domain-wifi-wireless/SKILL.md",
+		"skills/domain-cloud/SKILL.md",
+		"skills/domain-recon/SKILL.md",
+		"skills/domain-reporting/SKILL.md",
+		"skills/workflow-scoping/SKILL.md",
+		"skills/workflow-recon/SKILL.md",
+		"skills/workflow-enumeration/SKILL.md",
+		"skills/workflow-exploitation/SKILL.md",
+		"skills/workflow-post-exploitation/SKILL.md",
+		"skills/workflow-evidence/SKILL.md",
+		"skills/workflow-reporting/SKILL.md",
 	}
 
 	for _, path := range expectedFiles {
@@ -154,9 +169,9 @@ func TestEmbeddedAssetCount(t *testing.T) {
 		}
 	}
 
-	// We expect 17 skill directories (10 SDD + judgment-day + 5 foundation + _shared).
-	if skillDirs != 17 {
-		t.Fatalf("expected 17 skill directories, got %d", skillDirs)
+	// We expect 32 skill directories (existing 17 + 8 domain packs + 7 workflow packs).
+	if skillDirs != 32 {
+		t.Fatalf("expected 32 skill directories, got %d", skillDirs)
 	}
 
 	// Verify each skill directory has a SKILL.md.

@@ -100,6 +100,8 @@ The install flow does **not** split users into specialties. Instead, `ciberbal-a
 
 See [Pentesting Domains](docs/pentesting-domains.md) for the canonical domain and engagement-phase mapping.
 
+The `full-pentest` preset now bundles post-install capability packs for each canonical domain plus workflow packs for scoping, recon, enumeration, exploitation, post-exploitation, evidence, and reporting.
+
 ---
 
 ## Install

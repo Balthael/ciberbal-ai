@@ -63,6 +63,36 @@ func TestSkillsForPresetFullIncludesAll(t *testing.T) {
 	}
 }
 
+func TestSkillsForPresetFullIncludesDomainAndWorkflowPacks(t *testing.T) {
+	skills := SkillsForPreset(model.PresetFullPentest)
+	set := map[model.SkillID]bool{}
+	for _, id := range skills {
+		set[id] = true
+	}
+
+	for _, want := range []model.SkillID{
+		model.SkillDomainWeb,
+		model.SkillDomainAPI,
+		model.SkillDomainMobile,
+		model.SkillDomainADInternal,
+		model.SkillDomainWiFi,
+		model.SkillDomainCloud,
+		model.SkillDomainRecon,
+		model.SkillDomainReporting,
+		model.SkillWorkflowScoping,
+		model.SkillWorkflowRecon,
+		model.SkillWorkflowEnumeration,
+		model.SkillWorkflowExploitation,
+		model.SkillWorkflowPostExploitation,
+		model.SkillWorkflowEvidence,
+		model.SkillWorkflowReporting,
+	} {
+		if !set[want] {
+			t.Fatalf("full-pentest missing %q", want)
+		}
+	}
+}
+
 func TestSkillsForPresetCustomReturnsNil(t *testing.T) {
 	skills := SkillsForPreset(model.PresetCustom)
 	if skills != nil {

@@ -35,3 +35,32 @@ func TestMVPSkillsNoDuplicates(t *testing.T) {
 		seen[s.ID] = true
 	}
 }
+
+func TestMVPSkillsIncludesDomainAndWorkflowPacks(t *testing.T) {
+	seen := make(map[model.SkillID]bool)
+	for _, s := range MVPSkills() {
+		seen[s.ID] = true
+	}
+
+	for _, id := range []model.SkillID{
+		model.SkillDomainWeb,
+		model.SkillDomainAPI,
+		model.SkillDomainMobile,
+		model.SkillDomainADInternal,
+		model.SkillDomainWiFi,
+		model.SkillDomainCloud,
+		model.SkillDomainRecon,
+		model.SkillDomainReporting,
+		model.SkillWorkflowScoping,
+		model.SkillWorkflowRecon,
+		model.SkillWorkflowEnumeration,
+		model.SkillWorkflowExploitation,
+		model.SkillWorkflowPostExploitation,
+		model.SkillWorkflowEvidence,
+		model.SkillWorkflowReporting,
+	} {
+		if !seen[id] {
+			t.Fatalf("catalog missing %q", id)
+		}
+	}
+}
