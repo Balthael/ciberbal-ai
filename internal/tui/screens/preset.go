@@ -9,16 +9,16 @@ import (
 
 func PresetOptions() []model.PresetID {
 	return []model.PresetID{
-		model.PresetFullGentleman,
-		model.PresetEcosystemOnly,
+		model.PresetFullPentest,
+		model.PresetEcosystemCore,
 		model.PresetMinimal,
 		model.PresetCustom,
 	}
 }
 
 var presetDescriptions = map[model.PresetID]string{
-	model.PresetFullGentleman: "Everything: memory, SDD, skills, docs, persona & cybersecurity toolkit",
-	model.PresetEcosystemOnly: "Core tools only: memory, SDD, skills & docs (no persona/security)",
+	model.PresetFullPentest:   "Complete pentesting ecosystem: memory, SDD, skills, docs, persona, guardrails and tooling layers",
+	model.PresetEcosystemCore: "Core pentesting workflow layers: memory, SDD, skills, docs, context and provider tooling",
 	model.PresetMinimal:       "Just Engram persistent memory",
 	model.PresetCustom:        "Pick individual components yourself",
 }

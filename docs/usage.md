@@ -16,10 +16,10 @@
 
 ## Interactive TUI
 
-Just run it — the Bubbletea TUI guides you through agent selection, components, skills, and presets:
+Just run it — the Bubbletea TUI guides you through agent selection, components, skills, and presets. The top-level menu stays the same, and `Start installation` remains a single path that provisions the full pentesting ecosystem by default:
 
 ```bash
-gentle-ai
+ciberbal-ai
 ```
 
 ---
@@ -32,67 +32,67 @@ First-time setup — detects your tools, configures agents, injects all componen
 
 ```bash
 # Full ecosystem for multiple agents
-gentle-ai install \
+ciberbal-ai install \
   --agent claude-code,opencode,gemini-cli \
-  --preset full-gentleman
+  --preset full-pentest
 
 # Minimal setup for Cursor
-gentle-ai install \
+ciberbal-ai install \
   --agent cursor \
   --preset minimal
 
 # Pick specific components and skills
-gentle-ai install \
+ciberbal-ai install \
   --agent claude-code \
   --component engram,sdd,skills,context7,persona,permissions \
   --skill go-testing,skill-creator,branch-pr,issue-creation \
   --persona gentleman
 
 # Dry-run first (preview plan without applying changes)
-gentle-ai install --dry-run \
+ciberbal-ai install --dry-run \
   --agent claude-code,opencode \
-  --preset full-gentleman
+  --preset full-pentest
 ```
 
 ### sync
 
-Refresh managed assets to the current version. Use after `brew upgrade gentle-ai` or when you want your local configs aligned with the latest release. Does NOT reinstall binaries (engram, GGA) — only updates prompt content, skills, MCP configs, and SDD orchestrators.
+Refresh managed assets to the current version after upgrading `ciberbal-ai` or when you want your local configs aligned with the latest release. Does NOT reinstall binaries (engram, GGA) — only updates prompt content, skills, MCP configs, and SDD orchestrators.
 
 ```bash
 # Sync all installed agents
-gentle-ai sync
+ciberbal-ai sync
 
 # Sync specific agents only
-gentle-ai sync --agent cursor --agent windsurf
+ciberbal-ai sync --agent cursor --agent windsurf
 
 # Sync a specific component
-gentle-ai sync --component sdd
-gentle-ai sync --component skills
-gentle-ai sync --component engram
+ciberbal-ai sync --component sdd
+ciberbal-ai sync --component skills
+ciberbal-ai sync --component engram
 ```
 
 Sync is safe and idempotent — running it twice produces no changes the second time.
 
 ### update / upgrade
 
-Check for and install new versions of `gentle-ai` itself:
+Check for and install new versions of `ciberbal-ai` itself:
 
 ```bash
 # Check if a newer version is available
-gentle-ai update
+ciberbal-ai update
 
 # Upgrade to the latest release (downloads new binary, replaces current)
-gentle-ai upgrade
+ciberbal-ai upgrade
 ```
 
-After upgrading, run `gentle-ai sync` to refresh all managed assets to the new version's content.
+After upgrading, run `ciberbal-ai sync` to refresh all managed assets to the new version's content.
 
 ### version
 
 ```bash
-gentle-ai version
-gentle-ai --version
-gentle-ai -v
+ciberbal-ai version
+ciberbal-ai --version
+ciberbal-ai -v
 ```
 
 ---
@@ -105,7 +105,7 @@ gentle-ai -v
 | `--component`, `--components` | Components to install (comma-separated) |
 | `--skill`, `--skills` | Skills to install (comma-separated) |
 | `--persona` | Persona mode: `gentleman`, `neutral`, `custom` |
-| `--preset` | Preset: `full-gentleman`, `ecosystem-only`, `minimal`, `custom` |
+| `--preset` | Preset: `full-pentest`, `ecosystem-core`, `minimal`, `custom` |
 | `--dry-run` | Preview the install plan without applying changes |
 
 ## CLI Flags (sync)
@@ -123,22 +123,21 @@ gentle-ai -v
 
 ```bash
 # First time: install everything
-brew install gentleman-programming/tap/gentle-ai
-gentle-ai install --agent claude-code,cursor --preset full-gentleman
+ciberbal-ai install --agent claude-code,cursor --preset full-pentest
 
 # After a new release: upgrade + sync
-brew upgrade gentle-ai
-gentle-ai sync
+ciberbal-ai upgrade
+ciberbal-ai sync
 
 # Adding a new agent later
-gentle-ai install --agent windsurf --preset full-gentleman
+ciberbal-ai install --agent windsurf --preset full-pentest
 ```
 
 ---
 
 ## Dependency Management
 
-`gentle-ai` auto-detects prerequisites before installation and provides platform-specific guidance:
+`ciberbal-ai` auto-detects prerequisites before installation and provides platform-specific guidance. It does **not** ask you to choose AD, web, API, mobile, or wireless specialties during install — those domain layers are provisioned together and used after setup.
 
 - **Detected tools**: git, curl, node, npm, brew, go
 - **Version checks**: validates minimum versions where applicable

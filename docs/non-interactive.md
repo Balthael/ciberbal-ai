@@ -5,7 +5,7 @@ Use non-interactive mode for CI, scripts, or reproducible local setup.
 ## Command
 
 ```bash
-go run ./cmd/gentle-ai install [flags]
+go run ./cmd/ciberbal-ai install [flags]
 ```
 
 ## Supported flags
@@ -35,14 +35,16 @@ The `--dry-run` output includes a `Platform decision` line showing `os`, `distro
 macOS (or any supported platform — same flags, platform is auto-detected):
 
 ```bash
-go run ./cmd/gentle-ai install \
+go run ./cmd/ciberbal-ai install \
   --agent claude-code,opencode \
   --component engram,sdd,skills \
   --skill sdd-apply \
   --persona gentleman \
-  --preset full-gentleman \
+  --preset full-pentest \
   --dry-run
 ```
+
+Non-interactive mode follows the same product rule as the TUI: there is no pentesting-domain selector. The chosen preset provisions capability layers together instead of branching into AD/web/API/mobile specialties.
 
 The flags are identical across platforms. Only the resolved install commands change based on detection.
 

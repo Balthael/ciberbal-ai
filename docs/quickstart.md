@@ -34,7 +34,7 @@
 ## Run
 
 ```bash
-go run ./cmd/gentle-ai install --dry-run
+go run ./cmd/ciberbal-ai install --dry-run
 ```
 
 Use `--dry-run` first to validate selections and execution plan without applying changes. The dry-run output includes a `Platform decision` line showing the detected OS, distro, package manager, and support status.
@@ -42,8 +42,10 @@ Use `--dry-run` first to validate selections and execution plan without applying
 ## First real install
 
 ```bash
-go run ./cmd/gentle-ai install
+go run ./cmd/ciberbal-ai install
 ```
+
+The install remains a single path: `ciberbal-ai` does not ask you to choose AD, web, API, mobile, or wireless specialties during setup. The pentesting capability layers are provisioned together.
 
 The installer detects your platform automatically — no flags needed to select macOS vs Linux. Install commands are resolved through the appropriate package manager (brew, apt, pacman, or dnf) based on detection.
 

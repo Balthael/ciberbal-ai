@@ -48,8 +48,8 @@ func TestGoldenConfigs(t *testing.T) {
 	}
 
 	presets := []presetMapping{
-		{Preset: "full-gentleman", Skills: toStringSlice(skills.SkillsForPreset("full-gentleman"))},
-		{Preset: "ecosystem-only", Skills: toStringSlice(skills.SkillsForPreset("ecosystem-only"))},
+		{Preset: "full-pentest", Skills: toStringSlice(skills.SkillsForPreset("full-pentest"))},
+		{Preset: "ecosystem-core", Skills: toStringSlice(skills.SkillsForPreset("ecosystem-core"))},
 		{Preset: "minimal", Skills: toStringSlice(skills.SkillsForPreset("minimal"))},
 	}
 	presetsJSON, err := json.MarshalIndent(presets, "", "  ")

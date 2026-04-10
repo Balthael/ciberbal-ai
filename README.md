@@ -7,7 +7,7 @@
 <p><strong>One command. Any agent. Any OS. A cybersecurity and pentesting AI ecosystem -- configured and ready.</strong></p>
 
 <p>
-<a href="https://github.com/Gentleman-Programming/gentle-ai/releases"><img src="https://img.shields.io/github/v/release/Gentleman-Programming/gentle-ai" alt="Release"></a>
+<a href="https://github.com/Balthael/ciberbal-ai/releases"><img src="https://img.shields.io/github/v/release/Balthael/ciberbal-ai" alt="Release"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
 <img src="https://img.shields.io/badge/Go-1.24+-00ADD8?logo=go&logoColor=white" alt="Go 1.24+">
 <img src="https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey" alt="Platform">
@@ -38,28 +38,32 @@ This is NOT just an AI agent installer. Most agents are easy to install already.
 | **Windsurf** | Solo-agent | Plan Mode, Code Mode, native workflows |
 | **Antigravity** | Solo-agent + Mission Control | Built-in Browser/Terminal sub-agents |
 
-> **Note**: This working copy is a derivative adaptation of `gentle-ai` focused on cybersecurity and pentesting. Some package, release, and install paths still reference the original project until the full public rename is completed.
+> **Note**: This project is a derivative adaptation of `gentle-ai` focused on cybersecurity and pentesting, but its public install flow now targets `ciberbal-ai` directly.
 
 ---
 
 ## Quick Start
 
-> **Current state**: this local copy is ready to test, but some install commands below still reference original `gentle-ai` distribution paths because the Go module and release infrastructure have not been fully renamed yet.
+> **Recommended path**: clone the repository and run the install script for your platform.
 
 ### macOS / Linux
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Gentleman-Programming/gentle-ai/main/scripts/install.sh | bash
+git clone https://github.com/Balthael/ciberbal-ai.git
+cd ciberbal-ai
+chmod +x scripts/install.sh
+./scripts/install.sh
 ```
 
 ### Windows
 
 ```powershell
-scoop bucket add gentleman https://github.com/Gentleman-Programming/scoop-bucket
-scoop install gentle-ai
+git clone https://github.com/Balthael/ciberbal-ai.git
+cd ciberbal-ai
+.\scripts\install.ps1
 ```
 
-Or via PowerShell script: `irm https://raw.githubusercontent.com/Gentleman-Programming/gentle-ai/main/scripts/install.ps1 | iex`
+Or run it remotely: `irm https://raw.githubusercontent.com/Balthael/ciberbal-ai/main/scripts/install.ps1 | iex`
 
 ### After install: project-level setup
 
@@ -81,11 +85,26 @@ These are **not required** for basic usage. The SDD orchestrator runs `/sdd-init
 - Advanced install preserves granular configuration when you need it
 - the long-term target is one setup usable across web, API, mobile, cloud, AD/internal, reporting, and general security workflows
 
+### Pentesting capability model
+
+The install flow does **not** split users into specialties. Instead, `ciberbal-ai` is moving toward a unified capability model where the default install provisions all major pentesting layers together:
+
+- Web
+- API
+- Mobile
+- AD/Internal
+- WiFi/Wireless
+- Cloud
+- Recon
+- Reporting
+
+See [Pentesting Domains](docs/pentesting-domains.md) for the canonical domain and engagement-phase mapping.
+
 ---
 
 ## Install
 
-> **Important**: until the public rename is completed, command examples may still use `gentle-ai` names, package paths, or release locations. For local testing of this working copy, prefer building or running from source.
+> **Important**: the primary supported install flow is repository clone + platform install script. Release archives are optional, but package-manager distribution is not part of the current model.
 
 ### Local development / testing
 
@@ -94,46 +113,43 @@ go test ./...
 go run ./cmd/ciberbal-ai
 ```
 
-### Homebrew (macOS / Linux)
+### Recommended install (macOS / Linux)
 
 ```bash
-brew tap Gentleman-Programming/homebrew-tap
-brew install gentle-ai
+git clone https://github.com/Balthael/ciberbal-ai.git
+cd ciberbal-ai
+chmod +x scripts/install.sh
+./scripts/install.sh
 ```
 
-### Go install (any platform with Go 1.24+)
+### Recommended install (Windows)
+
+```powershell
+git clone https://github.com/Balthael/ciberbal-ai.git
+cd ciberbal-ai
+.\scripts\install.ps1
+```
+
+### Alternative: run install script without cloning
 
 ```bash
-go install github.com/gentleman-programming/gentle-ai/cmd/gentle-ai@latest
+curl -fsSL https://raw.githubusercontent.com/Balthael/ciberbal-ai/main/scripts/install.sh | bash
 ```
 
-### Scoop (Windows)
-
 ```powershell
-scoop bucket add gentleman https://github.com/Gentleman-Programming/scoop-bucket
-scoop install gentle-ai
-```
-
-**Migrating from PowerShell installer to Scoop?** Remove the old binary first:
-
-```powershell
-Remove-Item "$env:LOCALAPPDATA\gentle-ai" -Recurse -Force
-# Then install via Scoop as shown above
+irm https://raw.githubusercontent.com/Balthael/ciberbal-ai/main/scripts/install.ps1 | iex
 ```
 
 ### Windows (PowerShell — alternative)
 
 ```powershell
 # Option 1: PowerShell installer (downloads binary from GitHub Releases)
-irm https://raw.githubusercontent.com/Gentleman-Programming/gentle-ai/main/scripts/install.ps1 | iex
-
-# Option 2: Go install (requires Go 1.24+)
-go install github.com/gentleman-programming/gentle-ai/cmd/gentle-ai@latest
+irm https://raw.githubusercontent.com/Balthael/ciberbal-ai/main/scripts/install.ps1 | iex
 ```
 
 ### From releases
 
-Download the binary for your platform from [GitHub Releases](https://github.com/Gentleman-Programming/gentle-ai/releases).
+Download the binary for your platform from [GitHub Releases](https://github.com/Balthael/ciberbal-ai/releases).
 
 ---
 
@@ -154,6 +170,7 @@ See [Backup & Rollback Guide](docs/rollback.md) for details.
 | [Intended Usage](docs/intended-usage.md) | How ciberbal-ai is meant to be used — the mental model |
 | [Agents](docs/agents.md) | Supported agents, feature matrix, config paths, and per-agent notes |
 | [Components, Skills & Presets](docs/components.md) | All components, GGA behavior, skill catalog, and preset definitions |
+| [Pentesting Domains](docs/pentesting-domains.md) | Canonical domains and engagement phases for the full-stack pentesting model |
 | [Usage](docs/usage.md) | Persona modes, interactive TUI, CLI flags, and dependency management |
 | [Backup & Rollback](docs/rollback.md) | Backup retention, compression, dedup, pinning, and restore |
 | [Platforms](docs/platforms.md) | Supported platforms, Windows notes, security verification, config paths |

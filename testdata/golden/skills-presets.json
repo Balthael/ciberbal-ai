@@ -1,6 +1,6 @@
 [
   {
-    "preset": "full-gentleman",
+    "preset": "full-pentest",
     "skills": [
       "sdd-init",
       "sdd-explore",
@@ -21,7 +21,7 @@
     ]
   },
   {
-    "preset": "ecosystem-only",
+    "preset": "ecosystem-core",
     "skills": [
       "sdd-init",
       "sdd-explore",

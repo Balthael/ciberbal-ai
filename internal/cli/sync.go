@@ -277,9 +277,9 @@ func BuildSyncSelection(flags SyncFlags, agentIDs []model.AgentID) model.Selecti
 		StrictTDD:  flags.StrictTDD,
 		Skills:     skillIDs,
 		Profiles:   flags.Profiles,
-		// Preset is set to full-gentleman so selectedSkillIDs() returns the
+		// Preset is set to full-pentest so selectedSkillIDs() returns the
 		// correct default skill set when no explicit skills are provided.
-		Preset: model.PresetFullGentleman,
+		Preset: model.PresetFullPentest,
 	}
 }
 

@@ -121,7 +121,7 @@ func TestAdvancedInstallGoesToAgents(t *testing.T) {
 }
 
 // TestQuickInstallSetsFullPreset verifies that Quick install sets the preset to
-// PresetFullGentleman (the full cybersecurity defaults).
+// PresetFullPentest (the full cybersecurity defaults).
 func TestQuickInstallSetsFullPreset(t *testing.T) {
 	m := NewModel(system.DetectionResult{}, "dev")
 	m.Screen = ScreenInstallMode
@@ -130,9 +130,9 @@ func TestQuickInstallSetsFullPreset(t *testing.T) {
 	updated, _ := m.Update(tea.KeyMsg{Type: tea.KeyEnter})
 	state := updated.(Model)
 
-	// The preset must be set to the full preset (full-gentleman = full cyber defaults).
-	if state.Selection.Preset != model.PresetFullGentleman {
-		t.Fatalf("Selection.Preset = %q after Quick install, want %q", state.Selection.Preset, model.PresetFullGentleman)
+	// The preset must be set to the full preset (full-pentest = full cyber defaults).
+	if state.Selection.Preset != model.PresetFullPentest {
+		t.Fatalf("Selection.Preset = %q after Quick install, want %q", state.Selection.Preset, model.PresetFullPentest)
 	}
 }
 

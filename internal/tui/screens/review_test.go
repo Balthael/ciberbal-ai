@@ -18,7 +18,7 @@ func TestRenderReviewShowsSkillNames(t *testing.T) {
 	payload := planner.ReviewPayload{
 		Agents:  []model.AgentID{model.AgentClaudeCode},
 		Persona: model.PersonaGentleman,
-		Preset:  model.PresetFullGentleman,
+		Preset:  model.PresetFullPentest,
 		Components: []planner.ComponentAction{
 			{ID: model.ComponentSkills, Action: "selected"},
 		},
@@ -42,7 +42,7 @@ func TestRenderReviewHidesSkillsSectionWhenEmpty(t *testing.T) {
 	payload := planner.ReviewPayload{
 		Agents:  []model.AgentID{model.AgentClaudeCode},
 		Persona: model.PersonaGentleman,
-		Preset:  model.PresetFullGentleman,
+		Preset:  model.PresetFullPentest,
 		// No Skills field.
 	}
 
@@ -64,7 +64,7 @@ func TestRenderReviewShowsStrictTDDEnabled(t *testing.T) {
 	payload := planner.ReviewPayload{
 		Agents:  []model.AgentID{model.AgentClaudeCode},
 		Persona: model.PersonaGentleman,
-		Preset:  model.PresetFullGentleman,
+		Preset:  model.PresetFullPentest,
 		Components: []planner.ComponentAction{
 			{ID: model.ComponentSDD, Action: "selected"},
 		},
@@ -90,7 +90,7 @@ func TestRenderReviewShowsStrictTDDDisabled(t *testing.T) {
 	payload := planner.ReviewPayload{
 		Agents:  []model.AgentID{model.AgentClaudeCode},
 		Persona: model.PersonaGentleman,
-		Preset:  model.PresetFullGentleman,
+		Preset:  model.PresetFullPentest,
 		Components: []planner.ComponentAction{
 			{ID: model.ComponentSDD, Action: "selected"},
 		},
@@ -116,7 +116,7 @@ func TestRenderReviewHidesStrictTDDWhenNoSDD(t *testing.T) {
 	payload := planner.ReviewPayload{
 		Agents:    []model.AgentID{model.AgentClaudeCode},
 		Persona:   model.PersonaGentleman,
-		Preset:    model.PresetFullGentleman,
+		Preset:    model.PresetFullPentest,
 		HasSDD:    false,
 		StrictTDD: true,
 	}
@@ -125,5 +125,17 @@ func TestRenderReviewHidesStrictTDDWhenNoSDD(t *testing.T) {
 
 	if strings.Contains(out, "Strict TDD") {
 		t.Errorf("RenderReview should NOT show 'Strict TDD' when HasSDD=false; output:\n%s", out)
+	}
+}
+
+func TestRenderReviewShowsFullPentestSummary(t *testing.T) {
+	payload := planner.ReviewPayload{Preset: model.PresetFullPentest}
+	out := RenderReview(payload, 0)
+
+	if !strings.Contains(out, "full-pentest") {
+		t.Fatalf("RenderReview missing full-pentest summary; output:\n%s", out)
+	}
+	if !strings.Contains(out, "full pentesting ecosystem") {
+		t.Fatalf("RenderReview missing pentesting ecosystem framing; output:\n%s", out)
 	}
 }

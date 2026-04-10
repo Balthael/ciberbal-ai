@@ -27,7 +27,7 @@ User types: gga init   (in PowerShell)
 
 The shim is installed to the same directory as the `gga` binary
 (`~/.local/share/gga/bin/gga.ps1`) and uses an atomic write with content-equality
-check — re-running `gentle-ai install` is idempotent.
+check — re-running `ciberbal-ai install` is idempotent.
 
 ## Requirements
 
@@ -60,7 +60,7 @@ instead of string interpolation.
 ### Iteration 2 — Git Bash not-found error surface (W-02)
 
 The original spec described surfacing a "Git Bash not found" error **during
-`gentle-ai install`**. In the final design this was moved to **runtime** — the `.ps1`
+`ciberbal-ai install`**. In the final design this was moved to **runtime** — the `.ps1`
 shim detects Git Bash when the user first runs `gga`. The spec scenario is now
 inaccurate and should be updated to reflect the runtime detection model.
 

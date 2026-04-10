@@ -10,7 +10,7 @@
 |-----------|-----|-------------|
 | Engram | `engram` | Persistent cross-session memory via MCP — auto-detection of project name, full-text search, git sync, project consolidation. See [engram repo](https://github.com/Gentleman-Programming/engram) |
 | SDD | `sdd` | Spec-Driven Development workflow (9 phases) — the agent handles SDD organically when the task warrants it, or when you ask; you don't need to learn the commands |
-| Skills | `skills` | Curated coding skill library |
+| Skills | `skills` | Curated capability-layer skill library spanning pentesting domains and delivery workflows |
 | Context7 | `context7` | MCP server for live framework/library documentation |
 | Persona | `persona` | Gentleman, neutral, or custom behavior mode |
 | Permissions | `permissions` | Security-first defaults and guardrails |
@@ -34,7 +34,7 @@ gga install
 
 ## Skills
 
-### Included Skills (installed by gentle-ai)
+### Included Skills (installed by ciberbal-ai)
 
 14 skill files organized by category, embedded in the binary and injected into your agent's configuration:
 
@@ -62,7 +62,7 @@ gga install
 | Branch & PR | `branch-pr` | PR creation workflow with conventional commits, branch naming, and issue-first enforcement |
 | Issue Creation | `issue-creation` | Issue filing workflow with bug report and feature request templates |
 
-These foundation skills are installed by default with both `full-gentleman` and `ecosystem-only` presets.
+These foundation skills are installed by default with both `full-pentest` and `ecosystem-core` presets.
 
 ### Coding Skills (separate repository)
 
@@ -74,7 +74,22 @@ For framework-specific skills (React 19, Angular, TypeScript, Tailwind 4, Zod 4,
 
 | Preset | ID | What's Included |
 |--------|-----|-----------------|
-| Full Gentleman | `full-gentleman` | All components (Engram + SDD + Skills + Context7 + GGA + Persona + Permissions + Theme) + all skills + gentleman persona |
-| Ecosystem Only | `ecosystem-only` | Core components (Engram + SDD + Skills + Context7 + GGA) + all skills + gentleman persona |
+| Full Pentest | `full-pentest` | Default full-stack install: all core components, all bundled skills, and all pentesting capability layers provisioned together |
+| Ecosystem Core | `ecosystem-core` | Shared workflow/core capability layers without the full persona/tooling set |
 | Minimal | `minimal` | Engram + SDD skills only |
 | Custom | `custom` | You pick components, skills, and persona individually |
+
+## Domain-aware capability layers
+
+`ciberbal-ai` is moving toward a model where install-time setup stays simple, but the installed ecosystem includes capability layers for:
+
+- Web
+- API
+- Mobile
+- AD/Internal
+- WiFi/Wireless
+- Cloud
+- Recon
+- Reporting
+
+These are not mutually exclusive install branches. They are part of the same pentesting ecosystem and will increasingly shape skills, docs, prompts, and workflows.

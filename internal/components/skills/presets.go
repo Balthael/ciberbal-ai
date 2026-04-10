@@ -28,17 +28,17 @@ var foundationSkills = []model.SkillID{
 
 // SkillsForPreset returns which skills should be installed for a given preset.
 //
-//   - "minimal" / PresetMinimal:       SDD skills only
-//   - "ecosystem-only" / PresetEcosystemOnly: SDD + common framework skills
-//   - "full-gentleman" / PresetFullGentleman: all available skills
-//   - "custom" / PresetCustom:         empty (caller should provide explicit list)
+//   - "minimal" / PresetMinimal:            SDD skills only
+//   - "ecosystem-core" / PresetEcosystemCore: SDD + common workflow skills
+//   - "full-pentest" / PresetFullPentest: all available skills
+//   - "custom" / PresetCustom:            empty (caller should provide explicit list)
 func SkillsForPreset(preset model.PresetID) []model.SkillID {
 	switch preset {
 	case model.PresetMinimal:
 		return copySkills(sddSkills)
-	case model.PresetEcosystemOnly:
+	case model.PresetEcosystemCore:
 		return copySkills(append(sddSkills, foundationSkills...))
-	case model.PresetFullGentleman:
+	case model.PresetFullPentest:
 		all := make([]model.SkillID, 0, len(sddSkills)+len(foundationSkills))
 		all = append(all, sddSkills...)
 		all = append(all, foundationSkills...)

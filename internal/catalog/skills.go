@@ -10,7 +10,7 @@ type Skill struct {
 }
 
 var mvpSkills = []Skill{
-	// SDD skills
+	// SDD skills anchor the engagement workflow across all pentesting domains.
 	{ID: model.SkillSDDInit, Name: "sdd-init", Category: "sdd", Priority: "p0"},
 
 	{ID: model.SkillSDDApply, Name: "sdd-apply", Category: "sdd", Priority: "p0"},
@@ -22,7 +22,7 @@ var mvpSkills = []Skill{
 	{ID: model.SkillSDDTasks, Name: "sdd-tasks", Category: "sdd", Priority: "p0"},
 	{ID: model.SkillSDDArchive, Name: "sdd-archive", Category: "sdd", Priority: "p0"},
 	{ID: model.SkillSDDOnboard, Name: "sdd-onboard", Category: "sdd", Priority: "p0"},
-	// Foundation skills
+	// Foundation skills support testing, workflow, registry, and review across capability layers.
 	{ID: model.SkillGoTesting, Name: "go-testing", Category: "testing", Priority: "p0"},
 	{ID: model.SkillCreator, Name: "skill-creator", Category: "workflow", Priority: "p0"},
 	{ID: model.SkillJudgmentDay, Name: "judgment-day", Category: "workflow", Priority: "p0"},

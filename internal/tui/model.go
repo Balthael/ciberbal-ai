@@ -339,8 +339,8 @@ func NewModel(detection system.DetectionResult, version string) Model {
 	selection := model.Selection{
 		Agents:     preselectedAgents(detection),
 		Persona:    model.PersonaGentleman,
-		Preset:     model.PresetFullGentleman,
-		Components: componentsForPreset(model.PresetFullGentleman),
+		Preset:     model.PresetFullPentest,
+		Components: componentsForPreset(model.PresetFullPentest),
 	}
 
 	return Model{
@@ -1122,8 +1122,8 @@ func (m Model) confirmSelection() (tea.Model, tea.Cmd) {
 			m.QuickInstall = true
 			m.Selection.Agents = preselectedAgents(m.Detection)
 			m.Selection.Persona = model.PersonaGentleman
-			m.Selection.Preset = model.PresetFullGentleman
-			m.Selection.Components = componentsForPreset(model.PresetFullGentleman)
+			m.Selection.Preset = model.PresetFullPentest
+			m.Selection.Components = componentsForPreset(model.PresetFullPentest)
 			m.buildDependencyPlan()
 			m.setScreen(ScreenDependencyTree)
 		case 1: // Advanced install
@@ -2353,7 +2353,7 @@ func componentsForPreset(preset model.PresetID) []model.ComponentID {
 	switch preset {
 	case model.PresetMinimal:
 		return []model.ComponentID{model.ComponentEngram}
-	case model.PresetEcosystemOnly:
+	case model.PresetEcosystemCore:
 		return []model.ComponentID{model.ComponentEngram, model.ComponentSDD, model.ComponentSkills, model.ComponentContext7, model.ComponentGGA}
 	case model.PresetCustom:
 		return nil

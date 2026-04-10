@@ -1,7 +1,7 @@
 {
-  "name": "gentleman-ai-installer",
+  "name": "ciberbal-ai",
   "version": "1.0.0",
-  "description": "<div align=\"center\">",
+  "description": "Cybersecurity AI stack configurator for pentesting workflows.",
   "main": "index.js",
   "directories": {
     "doc": "docs"
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Gentleman-Programming/gentle-ai.git"
+    "url": "git+https://github.com/Balthael/ciberbal-ai.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/Gentleman-Programming/gentle-ai/issues"
+    "url": "https://github.com/Balthael/ciberbal-ai/issues"
   },
-  "homepage": "https://github.com/Gentleman-Programming/gentle-ai#readme"
+  "homepage": "https://github.com/Balthael/ciberbal-ai#readme"
 }

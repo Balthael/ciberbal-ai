@@ -6,12 +6,14 @@
 
 ## Architecture
 
+`ciberbal-ai` keeps the inherited engine architecture from `gentle-ai` where it is still useful, but the public product identity and preset/domain model are evolving toward pentesting-native terminology.
+
 ```
-cmd/gentle-ai/             CLI entrypoint
+cmd/ciberbal-ai/           Public CLI entrypoint
 internal/
   app/                     Command dispatch + runtime wiring
   model/                   Domain types (agents, components, skills, presets, personas)
-  catalog/                 Registry definitions (agents, skills, components)
+  catalog/                 Registry definitions (agents, skills, components, pentesting domains/phases)
   system/                  OS/distro detection, dependency checks, platform guards
   cli/                     Install flags, validation, orchestration, dry-run
   planner/                 Dependency graph, resolution, ordering, review payloads
@@ -47,11 +49,20 @@ go test ./...
 RUN_FULL_E2E=1 RUN_BACKUP_TESTS=1 ./e2e/docker-test.sh
 
 # Dry-run smoke test (macOS/Linux)
-gentle-ai install --dry-run --agent claude-code --preset minimal
+ciberbal-ai install --dry-run --agent claude-code --preset minimal
 
 # Dry-run smoke test (Windows PowerShell)
-gentle-ai.exe install --dry-run --agent claude-code --preset minimal
+ciberbal-ai.exe install --dry-run --agent claude-code --preset minimal
 ```
+
+## Domain model layering
+
+The current product direction separates:
+
+- **Capability domains**: Web, API, Mobile, AD/Internal, WiFi/Wireless, Cloud, Recon, Reporting
+- **Engagement phases**: Scoping, Recon, Enumeration, Exploitation, Post-exploitation, Evidence, Reporting
+
+These are modeled as product metadata and documentation layers, not as install-time specialty branches.
 
 Test coverage:
 

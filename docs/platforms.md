@@ -25,7 +25,7 @@ Release binaries are built for `linux`, `darwin`, and `windows` on both `amd64` 
 - **curl** is pre-installed on Windows 10+ and does not require separate installation.
 - **PowerShell** is the default shell when `$SHELL` is not set.
 - Release archives use `.zip` format on Windows (`.tar.gz` on macOS/Linux).
-- **GGA on Windows** works from both Git Bash and PowerShell. gentle-ai installs a `gga.ps1` shim that automatically delegates to Git Bash, so no manual shell switching is required.
+- **GGA on Windows** works from both Git Bash and PowerShell. ciberbal-ai installs a `gga.ps1` shim that automatically delegates to Git Bash, so no manual shell switching is required.
 
 ---
 
@@ -38,7 +38,7 @@ Use the release checksum to verify integrity:
 ```powershell
 # 1) Download checksums.txt from the same release tag
 # 2) Compute local hash
-Get-FileHash .\gentle-ai_<VERSION>_windows_amd64.zip -Algorithm SHA256
+Get-FileHash .\ciberbal-ai_<VERSION>_windows_amd64.zip -Algorithm SHA256
 
 # 3) Compare the hash with checksums.txt entry for that file
 ```

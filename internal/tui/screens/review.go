@@ -20,7 +20,7 @@ func RenderReview(payload planner.ReviewPayload, cursor int) string {
 
 	b.WriteString("  " + styles.HeadingStyle.Render("Agents") + "  " + styles.UnselectedStyle.Render(joinIDs(payload.Agents)) + "\n")
 	b.WriteString("  " + styles.HeadingStyle.Render("Persona") + "  " + styles.UnselectedStyle.Render(string(payload.Persona)) + "\n")
-	b.WriteString("  " + styles.HeadingStyle.Render("Preset") + "  " + styles.UnselectedStyle.Render(string(payload.Preset)) + "\n")
+	b.WriteString("  " + styles.HeadingStyle.Render("Preset") + "  " + styles.UnselectedStyle.Render(presetSummary(payload.Preset)) + "\n")
 	b.WriteString("\n")
 
 	if len(payload.Components) > 0 {
@@ -70,6 +70,17 @@ func RenderReview(payload planner.ReviewPayload, cursor int) string {
 	b.WriteString(styles.HelpStyle.Render("enter: install • esc: back"))
 
 	return b.String()
+}
+
+func presetSummary(preset model.PresetID) string {
+	switch preset {
+	case model.PresetFullPentest:
+		return "full-pentest — installs the full pentesting ecosystem with all capability layers"
+	case model.PresetEcosystemCore:
+		return "ecosystem-core — installs shared pentesting workflow layers without the full persona/tooling set"
+	default:
+		return string(preset)
+	}
 }
 
 func joinIDs[T ~string](values []T) string {

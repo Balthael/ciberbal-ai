@@ -4,7 +4,7 @@ The backup system automatically snapshots your configuration files before every 
 
 ## How it works
 
-Every time you run `gentle-ai install`, `sync`, or `upgrade`, the system:
+Every time you run `ciberbal-ai install`, `sync`, or `upgrade`, the system:
 
 1. **Computes a checksum** of all files that will be backed up
 2. **Skips the backup** if it would be identical to the most recent one (dedup)
@@ -32,7 +32,7 @@ Legacy (pre-v1.16) backups use a `files/` directory with plain copies instead of
 
 You can mark any backup as "pinned" in the TUI to protect it from automatic pruning:
 
-1. Run `gentle-ai` and navigate to the **Backups** screen
+1. Run `ciberbal-ai` and navigate to the **Backups** screen
 2. Use `j`/`k` to select a backup
 3. Press **`p`** to toggle pin/unpin
 4. Pinned backups show a `[pinned]` indicator
@@ -60,7 +60,7 @@ Pinned backups are never automatically deleted, even when the retention limit is
 ## If verification fails
 
 1. Review failed checks in verification report
-2. Restore from latest snapshot via the TUI or `gentle-ai restore latest`
+2. Restore from latest snapshot via the TUI or `ciberbal-ai restore latest`
 3. Re-run install with `--dry-run` to validate plan
 4. Re-run install after fixing external dependencies
 
