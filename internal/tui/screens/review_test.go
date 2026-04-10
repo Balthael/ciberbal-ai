@@ -48,9 +48,11 @@ func TestRenderReviewHidesSkillsSectionWhenEmpty(t *testing.T) {
 
 	out := RenderReview(payload, 0)
 
-	// Should not panic and should render something.
-	if len(out) == 0 {
-		t.Fatal("RenderReview returned empty string")
+	if strings.Contains(out, "  Skills") {
+		t.Fatalf("RenderReview should hide Skills section when no skills are selected; output:\n%s", out)
+	}
+	if !strings.Contains(out, "Preset") {
+		t.Fatalf("RenderReview should still render the review summary; output:\n%s", out)
 	}
 }
 

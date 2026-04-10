@@ -70,6 +70,29 @@ func TestSkillsForPresetCustomReturnsNil(t *testing.T) {
 	}
 }
 
+func TestSkillsForPresetUnknownDefaultsToFullSet(t *testing.T) {
+	skills := SkillsForPreset(model.PresetID("unknown"))
+	all := AllSkillIDs()
+
+	if len(skills) != len(all) {
+		t.Fatalf("unknown preset skills len = %d, want %d", len(skills), len(all))
+	}
+}
+
+func TestAllSkillIDsReturnsCopy(t *testing.T) {
+	first := AllSkillIDs()
+	second := AllSkillIDs()
+
+	if len(first) == 0 || len(second) == 0 {
+		t.Fatal("AllSkillIDs() returned empty slices")
+	}
+
+	first[0] = model.SkillID("mutated")
+	if second[0] == model.SkillID("mutated") {
+		t.Fatal("AllSkillIDs() should return a copy, but mutation leaked")
+	}
+}
+
 func TestAllSkillIDsIncludesEveryKnownSkill(t *testing.T) {
 	all := AllSkillIDs()
 
