@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"os"
@@ -29,10 +30,12 @@ func TestRunInstallAppliesFilesystemChanges(t *testing.T) {
 	restoreHome := osUserHomeDir
 	restoreCommand := runCommand
 	restoreLookPath := cmdLookPath
+	restoreDetectDeps := detectDependenciesFn
 	t.Cleanup(func() {
 		osUserHomeDir = restoreHome
 		runCommand = restoreCommand
 		cmdLookPath = restoreLookPath
+		detectDependenciesFn = restoreDetectDeps
 	})
 
 	osUserHomeDir = func() (string, error) { return home, nil }
@@ -164,6 +167,16 @@ func TestRunInstallLinuxUbuntuResolvesAptCommands(t *testing.T) {
 
 	osUserHomeDir = func() (string, error) { return home, nil }
 	cmdLookPath = missingBinaryLookPath
+	detectDependenciesFn = func(_ context.Context, _ system.PlatformProfile) system.DependencyReport {
+		return system.DependencyReport{
+			Dependencies: []system.Dependency{
+				{Name: "node", Required: true, InstallHint: "apt install nodejs", Installed: false},
+				{Name: "npm", Required: true, InstallHint: "npm is included with node", Installed: false},
+			},
+			AllPresent:      false,
+			MissingRequired: []string{"node", "npm"},
+		}
+	}
 	recorder := &commandRecorder{}
 	runCommand = recorder.record
 
@@ -187,6 +200,14 @@ func TestRunInstallLinuxUbuntuResolvesAptCommands(t *testing.T) {
 	if result.Resolved.PlatformDecision.PackageManager != "apt" {
 		t.Fatalf("platform decision package manager = %q, want apt", result.Resolved.PlatformDecision.PackageManager)
 	}
+
+	commands := recorder.get()
+	if !strings.Contains(strings.Join(commands, "\n"), "bash -c curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -") {
+		t.Fatalf("expected NodeSource setup command before agent installs, got commands: %v", commands)
+	}
+	if !strings.Contains(strings.Join(commands, "\n"), "sudo apt-get install -y nodejs") {
+		t.Fatalf("expected apt nodejs install command before agent installs, got commands: %v", commands)
+	}
 }
 
 func TestRunInstallLinuxArchResolvesPacmanCommands(t *testing.T) {
@@ -194,14 +215,26 @@ func TestRunInstallLinuxArchResolvesPacmanCommands(t *testing.T) {
 	restoreHome := osUserHomeDir
 	restoreCommand := runCommand
 	restoreLookPath := cmdLookPath
+	restoreDetectDeps := detectDependenciesFn
 	t.Cleanup(func() {
 		osUserHomeDir = restoreHome
 		runCommand = restoreCommand
 		cmdLookPath = restoreLookPath
+		detectDependenciesFn = restoreDetectDeps
 	})
 
 	osUserHomeDir = func() (string, error) { return home, nil }
 	cmdLookPath = missingBinaryLookPath
+	detectDependenciesFn = func(_ context.Context, _ system.PlatformProfile) system.DependencyReport {
+		return system.DependencyReport{
+			Dependencies: []system.Dependency{
+				{Name: "node", Required: true, InstallHint: "pacman -S nodejs npm", Installed: false},
+				{Name: "npm", Required: true, InstallHint: "npm is included with node", Installed: false},
+			},
+			AllPresent:      false,
+			MissingRequired: []string{"node", "npm"},
+		}
+	}
 	recorder := &commandRecorder{}
 	runCommand = recorder.record
 
@@ -221,6 +254,11 @@ func TestRunInstallLinuxArchResolvesPacmanCommands(t *testing.T) {
 	if result.Resolved.PlatformDecision.PackageManager != "pacman" {
 		t.Fatalf("platform decision package manager = %q, want pacman", result.Resolved.PlatformDecision.PackageManager)
 	}
+
+	commands := recorder.get()
+	if !strings.Contains(strings.Join(commands, "\n"), "sudo pacman -S --noconfirm nodejs npm") {
+		t.Fatalf("expected pacman nodejs/npm install command before agent installs, got commands: %v", commands)
+	}
 }
 
 func TestRunInstallLinuxUbuntuWithEngramUsesDirectDownload(t *testing.T) {
@@ -228,14 +266,31 @@ func TestRunInstallLinuxUbuntuWithEngramUsesDirectDownload(t *testing.T) {
 	restoreHome := osUserHomeDir
 	restoreCommand := runCommand
 	restoreLookPath := cmdLookPath
+	restoreDetectDeps := detectDependenciesFn
 	t.Cleanup(func() {
 		osUserHomeDir = restoreHome
 		runCommand = restoreCommand
 		cmdLookPath = restoreLookPath
+		detectDependenciesFn = restoreDetectDeps
 	})
 
 	osUserHomeDir = func() (string, error) { return home, nil }
 	cmdLookPath = missingBinaryLookPath
+	callCount := 0
+	detectDependenciesFn = func(_ context.Context, _ system.PlatformProfile) system.DependencyReport {
+		callCount++
+		if callCount == 1 {
+			return system.DependencyReport{
+				Dependencies: []system.Dependency{
+					{Name: "node", Required: true, InstallHint: "apt install nodejs", Installed: false},
+					{Name: "npm", Required: true, InstallHint: "npm is included with node", Installed: false},
+				},
+				AllPresent:      false,
+				MissingRequired: []string{"node", "npm"},
+			}
+		}
+		return system.DependencyReport{AllPresent: true}
+	}
 	recorder := &commandRecorder{}
 	runCommand = recorder.record
 
@@ -401,6 +456,9 @@ func TestRunInstallLinuxAgentInstallResolvesGoInstallCommand(t *testing.T) {
 
 	// OpenCode on Ubuntu should resolve via npm install (official method from opencode.ai).
 	commands := recorder.get()
+	if !strings.Contains(strings.Join(commands, "\n"), "sudo apt-get install -y nodejs") {
+		t.Fatalf("expected dependency install before agent install, got commands: %v", commands)
+	}
 	foundNpmInstall := false
 	for _, cmd := range commands {
 		if strings.Contains(cmd, "sudo npm install -g opencode-ai") {

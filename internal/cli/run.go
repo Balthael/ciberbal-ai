@@ -56,6 +56,9 @@ var (
 	// Package-level var for testability — tests can replace this to avoid real HTTP calls.
 	engramDownloadFn = engram.DownloadLatestBinary
 
+	// detectDependenciesFn is package-level for testability.
+	detectDependenciesFn = system.DetectDependencies
+
 	// AppVersion is the gentle-ai version that will be written into backup manifests.
 	// It is set by app.go before any CLI operation so that every backup created during
 	// an install or sync records which version of gentle-ai made it.
@@ -1036,12 +1039,34 @@ func (s checkDependenciesStep) ID() string {
 }
 
 func (s checkDependenciesStep) Run() error {
-	// Run detection but do NOT write to stdout/stderr — this step runs
-	// inside the Bubble Tea alternate screen in TUI mode, so any raw
-	// output corrupts the display (see issue #2). Missing deps are
-	// surfaced on the TUI complete screen and by the actual install steps
-	// failing with real error messages.
-	_ = system.DetectDependencies(context.Background(), s.profile)
+	report := detectDependenciesFn(context.Background(), s.profile)
+	if report.AllPresent {
+		return nil
+	}
+
+	installedNode := false
+	for _, dep := range report.MissingRequired {
+		if dep == "npm" && installedNode {
+			continue
+		}
+
+		commands := system.InstallCommandsForDep(dep, s.profile)
+		if len(commands) == 0 {
+			return fmt.Errorf("missing required dependency %q and no automatic install command is available", dep)
+		}
+		if err := runCommandSequence(commands); err != nil {
+			return fmt.Errorf("install required dependency %q: %w", dep, err)
+		}
+		if dep == "node" {
+			installedNode = true
+		}
+	}
+
+	recheck := detectDependenciesFn(context.Background(), s.profile)
+	if !recheck.AllPresent {
+		log.Printf("WARNING: required dependencies still report as missing after auto-install: %s", strings.Join(recheck.MissingRequired, ", "))
+	}
+
 	return nil
 }
 
