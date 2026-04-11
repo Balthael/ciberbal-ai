@@ -3,6 +3,7 @@ package cli
 import (
 	"context"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"os/exec"
@@ -41,12 +42,13 @@ type InstallResult struct {
 }
 
 var (
-	osUserHomeDir       = os.UserHomeDir
-	osSetenv            = os.Setenv
-	osStat              = os.Stat
-	runCommand          = executeCommand
-	cmdLookPath         = exec.LookPath
-	streamCommandOutput = true
+	osUserHomeDir                 = os.UserHomeDir
+	osSetenv                      = os.Setenv
+	osStat                        = os.Stat
+	runCommand                    = executeCommand
+	commandStdin        io.Reader = os.Stdin
+	cmdLookPath                   = exec.LookPath
+	streamCommandOutput           = true
 
 	// ggaAvailableCheck is an optional override for ggaAvailable behavior.
 	// When set, it is called instead of the default filesystem check.
@@ -743,6 +745,7 @@ func executeCommand(name string, args ...string) error {
 	cmd := exec.Command(name, args...)
 
 	if streamCommandOutput {
+		cmd.Stdin = commandStdin
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		return cmd.Run()

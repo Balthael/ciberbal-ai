@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"bytes"
 	"strings"
 	"testing"
 )
@@ -30,5 +31,18 @@ func TestSetCommandOutputStreamingRestore(t *testing.T) {
 	restore()
 	if !streamCommandOutput {
 		t.Fatal("restore should reset streamCommandOutput to previous value")
+	}
+}
+
+func TestExecuteCommandStreamingUsesConfiguredStdin(t *testing.T) {
+	restoreStreaming := SetCommandOutputStreaming(true)
+	defer restoreStreaming()
+
+	previousStdin := commandStdin
+	commandStdin = bytes.NewBufferString("ok\n")
+	defer func() { commandStdin = previousStdin }()
+
+	if err := executeCommand("bash", "-c", `read value; test "$value" = "ok"`); err != nil {
+		t.Fatalf("executeCommand() error = %v, want nil", err)
 	}
 }
