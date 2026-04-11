@@ -50,6 +50,31 @@ fatal()   { error "$@"; exit 1; }
 step()    { echo -e "\n${CYAN}${BOLD}==>${NC} ${BOLD}$*${NC}"; }
 
 # ============================================================================
+# GitHub auth helpers
+# ============================================================================
+
+github_token() {
+    if [ -n "${GH_TOKEN:-}" ]; then
+        echo "$GH_TOKEN"
+        return 0
+    fi
+    if [ -n "${GITHUB_TOKEN:-}" ]; then
+        echo "$GITHUB_TOKEN"
+        return 0
+    fi
+    return 1
+}
+
+github_curl() {
+    local token
+    if token="$(github_token 2>/dev/null)"; then
+        curl -H "Authorization: Bearer ${token}" -H "Accept: application/vnd.github+json" "$@"
+        return
+    fi
+    curl "$@"
+}
+
+# ============================================================================
 # Help
 # ============================================================================
 
@@ -322,7 +347,7 @@ get_latest_version() {
     info "Fetching latest release from GitHub..."
 
     local response
-    response="$(curl -sL -w "\n%{http_code}" "$url")" || fatal "Failed to fetch latest release"
+    response="$(github_curl -sL -w "\n%{http_code}" "$url")" || fatal "Failed to fetch latest release"
 
     local http_code body
     http_code="$(echo "$response" | tail -n1)"
@@ -335,7 +360,10 @@ get_latest_version() {
                 INSTALL_METHOD="source"
                 return 1
             fi
-            fatal "GitHub Releases returned HTTP 404. No published release exists yet for ${GITHUB_OWNER}/${GITHUB_REPO}. Clone the repository and run this script there, or use --method source if Go is installed."
+            if github_token >/dev/null 2>&1; then
+                fatal "GitHub Releases returned HTTP 404 even with a token. Verify the repository, release visibility, and token permissions."
+            fi
+            fatal "GitHub Releases returned HTTP 404. If this repository is private, export GH_TOKEN or GITHUB_TOKEN before running the installer. Otherwise, no published release exists yet for ${GITHUB_OWNER}/${GITHUB_REPO}."
         fi
         fatal "GitHub API returned HTTP $http_code. Rate limited? Try again later or use --method source/go"
     fi
@@ -376,7 +404,7 @@ install_binary() {
 
     # Download archive
     info "Downloading ${archive_name}..."
-    if ! curl -sfL -o "${tmpdir}/${archive_name}" "$download_url"; then
+    if ! github_curl -sfL -o "${tmpdir}/${archive_name}" "$download_url"; then
         fatal "Failed to download ${download_url}"
     fi
 
@@ -391,7 +419,7 @@ install_binary() {
 
     # Download and verify checksum
     info "Verifying checksum..."
-    if curl -sL -o "${tmpdir}/checksums.txt" "$checksums_url"; then
+    if github_curl -sL -o "${tmpdir}/checksums.txt" "$checksums_url"; then
         local expected_checksum
         expected_checksum="$(grep "${archive_name}" "${tmpdir}/checksums.txt" 2>/dev/null | awk '{print $1}' || true)"
 

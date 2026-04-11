@@ -45,6 +45,16 @@ function Write-Warn    { param([string]$Message) Write-Host "[warn]    $Message"
 function Write-Err     { param([string]$Message) Write-Host "[error]   $Message" -ForegroundColor Red }
 function Write-Step    { param([string]$Message) Write-Host "`n==> $Message" -ForegroundColor Cyan }
 
+function Get-GitHubHeaders {
+    $headers = @{ "User-Agent" = "ciberbal-ai-installer" }
+    $token = if ($env:GH_TOKEN) { $env:GH_TOKEN } elseif ($env:GITHUB_TOKEN) { $env:GITHUB_TOKEN } else { $null }
+    if ($token) {
+        $headers["Authorization"] = "Bearer $token"
+        $headers["Accept"] = "application/vnd.github+json"
+    }
+    return $headers
+}
+
 function Stop-WithError {
     param([string]$Message)
     Write-Err $Message
@@ -160,10 +170,17 @@ function Get-LatestVersion {
     Write-Info "Fetching latest release from GitHub..."
 
     $url = "https://api.github.com/repos/$GITHUB_OWNER/$GITHUB_REPO/releases/latest"
+    $headers = Get-GitHubHeaders
 
     try {
-        $response = Invoke-RestMethod -Uri $url -Headers @{ "User-Agent" = "ciberbal-ai-installer" }
+        $response = Invoke-RestMethod -Uri $url -Headers $headers
     } catch {
+        if ($_.Exception.Response -and $_.Exception.Response.StatusCode.value__ -eq 404) {
+            if ($env:GH_TOKEN -or $env:GITHUB_TOKEN) {
+                Stop-WithError "GitHub Releases returned HTTP 404 even with a token. Verify repository visibility, release existence, and token permissions."
+            }
+            Stop-WithError "GitHub Releases returned HTTP 404. If the repository is private, export GH_TOKEN or GITHUB_TOKEN before running the installer."
+        }
         Stop-WithError "Failed to fetch latest release. Rate limited? Try again later or use -Method go"
     }
 
@@ -187,6 +204,7 @@ function Install-ViaBinary {
     $archiveName = "${BINARY_NAME}_${versionNumber}_windows_${Arch}.zip"
     $downloadUrl = "https://github.com/$GITHUB_OWNER/$GITHUB_REPO/releases/download/$version/$archiveName"
     $checksumsUrl = "https://github.com/$GITHUB_OWNER/$GITHUB_REPO/releases/download/$version/checksums.txt"
+    $headers = Get-GitHubHeaders
 
     $tmpDir = Join-Path $env:TEMP "ciberbal-ai-install-$(Get-Random)"
     New-Item -ItemType Directory -Path $tmpDir -Force | Out-Null
@@ -195,7 +213,7 @@ function Install-ViaBinary {
         # Download archive
         Write-Info "Downloading $archiveName..."
         $archivePath = Join-Path $tmpDir $archiveName
-        Invoke-WebRequest -Uri $downloadUrl -OutFile $archivePath -UseBasicParsing
+        Invoke-WebRequest -Uri $downloadUrl -OutFile $archivePath -UseBasicParsing -Headers $headers
 
         $fileSize = (Get-Item $archivePath).Length
         if ($fileSize -lt 1000) {
@@ -207,7 +225,7 @@ function Install-ViaBinary {
         Write-Info "Verifying checksum..."
         try {
             $checksumsPath = Join-Path $tmpDir "checksums.txt"
-            Invoke-WebRequest -Uri $checksumsUrl -OutFile $checksumsPath -UseBasicParsing
+            Invoke-WebRequest -Uri $checksumsUrl -OutFile $checksumsPath -UseBasicParsing -Headers $headers
 
             $checksums = Get-Content $checksumsPath
             $expectedLine = $checksums | Where-Object { $_ -match $archiveName }
