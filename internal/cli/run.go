@@ -743,9 +743,9 @@ func runCommandSequence(commands [][]string) error {
 
 func executeCommand(name string, args ...string) error {
 	cmd := exec.Command(name, args...)
+	cmd.Stdin = commandStdin
 
 	if streamCommandOutput {
-		cmd.Stdin = commandStdin
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		return cmd.Run()

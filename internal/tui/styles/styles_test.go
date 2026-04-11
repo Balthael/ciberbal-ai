@@ -21,3 +21,10 @@ func TestTaglineContainsVersion(t *testing.T) {
 		t.Fatalf("Tagline(%q) = %q, does not contain version", "2.3.4", tag)
 	}
 }
+
+func TestRenderLogoContainsCiberbalAI(t *testing.T) {
+	logo := RenderLogo()
+	if !strings.Contains(logo, "CIBERBAL-AI") {
+		t.Fatalf("RenderLogo() should contain 'CIBERBAL-AI'; got %q", logo)
+	}
+}

@@ -46,3 +46,16 @@ func TestExecuteCommandStreamingUsesConfiguredStdin(t *testing.T) {
 		t.Fatalf("executeCommand() error = %v, want nil", err)
 	}
 }
+
+func TestExecuteCommandQuietModeUsesConfiguredStdin(t *testing.T) {
+	restoreStreaming := SetCommandOutputStreaming(false)
+	defer restoreStreaming()
+
+	previousStdin := commandStdin
+	commandStdin = bytes.NewBufferString("ok\n")
+	defer func() { commandStdin = previousStdin }()
+
+	if err := executeCommand("bash", "-c", `read value; test "$value" = "ok"`); err != nil {
+		t.Fatalf("executeCommand() error = %v, want nil", err)
+	}
+}
