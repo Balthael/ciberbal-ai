@@ -3,7 +3,7 @@ set -euo pipefail
 
 # ============================================================================
 # ciberbal-ai — Install Script
-# One command to configure your cybersecurity AI stack on any OS.
+# One command to provision your pentesting AI stack on any OS.
 #
 # Usage:
 #   curl -sL https://raw.githubusercontent.com/Balthael/ciberbal-ai/main/scripts/install.sh | bash
@@ -60,14 +60,15 @@ ${BOLD}ciberbal-ai installer${NC}
 Usage: install.sh [OPTIONS]
 
 Options:
-  --method METHOD   Force install method: brew, go, binary (default: auto-detect)
+  --method METHOD   Force install method: brew, go, binary, source (default: auto-detect)
   --dir DIR         Custom install directory for binary method
   -h, --help        Show this help
 
 Install methods (auto-detected in priority order):
-  1. brew    — Homebrew tap (recommended)
-  2. go      — go install from source
-  3. binary  — Pre-built binary from GitHub Releases
+  1. brew    — Homebrew tap (recommended when available)
+  2. source  — build from the local cloned repository
+  3. binary  — pre-built binary from GitHub Releases
+  4. go      — go install from module source
 
 Examples:
   curl -sL https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/main/scripts/install.sh | bash
@@ -151,8 +152,8 @@ check_prerequisites() {
 detect_install_method() {
     if [ -n "${FORCE_METHOD:-}" ]; then
         case "$FORCE_METHOD" in
-            brew|go|binary) INSTALL_METHOD="$FORCE_METHOD" ;;
-            *) fatal "Unknown install method: $FORCE_METHOD. Use: brew, go, or binary" ;;
+            brew|go|binary|source) INSTALL_METHOD="$FORCE_METHOD" ;;
+            *) fatal "Unknown install method: $FORCE_METHOD. Use: brew, go, binary, or source" ;;
         esac
         info "Using forced method: $INSTALL_METHOD"
         return
@@ -160,8 +161,10 @@ detect_install_method() {
 
     step "Detecting best install method"
 
-    # Priority: brew > binary > go
+    # Priority: brew > source > binary > go
     # Brew handles upgrades natively and is instant.
+    # Source build is ideal when running from a cloned repository because it
+    # avoids waiting for GitHub Releases or module-path migration.
     # Binary download from GitHub Releases is always up-to-date.
     # go install is last resort because the Go module proxy can lag
     # behind new tags for up to 30 minutes, causing @latest to install
@@ -169,6 +172,9 @@ detect_install_method() {
     if command -v brew &>/dev/null; then
         INSTALL_METHOD="brew"
         success "Homebrew found — will install via brew tap"
+    elif find_repo_root >/dev/null 2>&1 && command -v go &>/dev/null; then
+        INSTALL_METHOD="source"
+        success "Local repository checkout detected — will build from source"
     else
         INSTALL_METHOD="binary"
         info "Will download pre-built binary from GitHub Releases"
@@ -237,6 +243,76 @@ install_go() {
 }
 
 # ============================================================================
+# Install via local source build
+# ============================================================================
+
+find_repo_root() {
+    local script_dir candidate
+    script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+    candidate="$(cd -- "${script_dir}/.." && pwd)"
+
+    if [ -f "${candidate}/go.mod" ] && [ -f "${candidate}/cmd/${BINARY_NAME}/main.go" ]; then
+        echo "$candidate"
+        return 0
+    fi
+
+    return 1
+}
+
+install_source() {
+    step "Installing from local source"
+
+    if ! command -v go &>/dev/null; then
+        fatal "Go is required for --method source, but 'go' was not found in PATH. Install Go or use a published release."
+    fi
+
+    local repo_root
+    if ! repo_root="$(find_repo_root)"; then
+        fatal "Could not detect a local ciberbal-ai repository checkout. Run this from a cloned repo or use --method binary once releases exist."
+    fi
+
+    info "Building from local repository: ${repo_root}"
+
+    local tmpdir
+    tmpdir="$(mktemp -d)"
+    trap '[ -n "${tmpdir:-}" ] && rm -rf "$tmpdir"' EXIT
+
+    if ! go build -o "${tmpdir}/${BINARY_NAME}" "${repo_root}/cmd/${BINARY_NAME}"; then
+        fatal "Failed to build ${BINARY_NAME} from local source"
+    fi
+
+    local install_dir="${INSTALL_DIR:-}"
+    if [ -z "$install_dir" ]; then
+        if [ -d "/usr/local/bin" ] && [ -w "/usr/local/bin" ]; then
+            install_dir="/usr/local/bin"
+        elif [ "$(id -u)" = "0" ]; then
+            install_dir="/usr/local/bin"
+        else
+            install_dir="${HOME}/.local/bin"
+        fi
+    fi
+
+    mkdir -p "$install_dir"
+    info "Installing to ${install_dir}/${BINARY_NAME}..."
+    if cp "${tmpdir}/${BINARY_NAME}" "${install_dir}/${BINARY_NAME}" 2>/dev/null; then
+        chmod +x "${install_dir}/${BINARY_NAME}"
+    elif command -v sudo &>/dev/null; then
+        warn "Permission denied. Trying with sudo..."
+        sudo cp "${tmpdir}/${BINARY_NAME}" "${install_dir}/${BINARY_NAME}"
+        sudo chmod +x "${install_dir}/${BINARY_NAME}"
+    else
+        fatal "Cannot write to ${install_dir}. Run with sudo or use --dir to specify a writable directory."
+    fi
+
+    success "Installed ${BINARY_NAME} from local source to ${install_dir}/${BINARY_NAME}"
+
+    if [[ ":$PATH:" != *":${install_dir}:"* ]]; then
+        warn "${install_dir} is not in your PATH"
+        warn "Add this to your shell profile: export PATH=\"\$PATH:${install_dir}\""
+    fi
+}
+
+# ============================================================================
 # Install via binary download
 # ============================================================================
 
@@ -253,7 +329,15 @@ get_latest_version() {
     body="$(echo "$response" | sed '$d')"
 
     if [ "$http_code" != "200" ]; then
-        fatal "GitHub API returned HTTP $http_code. Rate limited? Try again later or use --method brew/go"
+        if [ "$http_code" = "404" ]; then
+            if find_repo_root >/dev/null 2>&1 && command -v go &>/dev/null; then
+                warn "No GitHub release exists yet for ${GITHUB_OWNER}/${GITHUB_REPO}. Falling back to local source build from this cloned repository."
+                INSTALL_METHOD="source"
+                return 1
+            fi
+            fatal "GitHub Releases returned HTTP 404. No published release exists yet for ${GITHUB_OWNER}/${GITHUB_REPO}. Clone the repository and run this script there, or use --method source if Go is installed."
+        fi
+        fatal "GitHub API returned HTTP $http_code. Rate limited? Try again later or use --method source/go"
     fi
 
     # Extract tag_name — works without jq
@@ -272,7 +356,13 @@ get_latest_version() {
 install_binary() {
     step "Installing pre-built binary"
 
-    get_latest_version
+    if ! get_latest_version; then
+        if [ "${INSTALL_METHOD:-}" = "source" ]; then
+            install_source
+            return
+        fi
+        fatal "Could not determine latest release"
+    fi
 
     local archive_name
     archive_name="$(get_archive_name "$VERSION_NUMBER")"
@@ -428,7 +518,7 @@ print_banner() {
     echo " | |_| |  __/ | | | |_| |  __/_____/ ___ \ | | "
     echo "  \____|\___|_| |_|\__|_|\___|    /_/   \_\___|"
     echo -e "${NC}"
-    echo -e "  ${DIM}One command to configure any AI coding agent on any OS${NC}"
+    echo -e "  ${DIM}One command to provision your pentesting AI stack on any OS${NC}"
     echo ""
 }
 
@@ -490,6 +580,7 @@ main() {
         brew)   install_brew ;;
         go)     install_go ;;
         binary) install_binary ;;
+        source) install_source ;;
     esac
 
     verify_installation
