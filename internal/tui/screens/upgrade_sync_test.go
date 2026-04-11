@@ -24,6 +24,12 @@ func TestRenderUpgradeSync_ConfirmState(t *testing.T) {
 	if !strings.Contains(lower, "sync") {
 		t.Errorf("RenderUpgradeSync(confirm) should mention 'sync'; got:\n%s", out)
 	}
+	if !strings.Contains(out, "ciberbal-ai") {
+		t.Errorf("RenderUpgradeSync(confirm) should mention 'ciberbal-ai'; got:\n%s", out)
+	}
+	if strings.Contains(out, "Updates gentle-ai") {
+		t.Errorf("RenderUpgradeSync(confirm) should not mention old branding; got:\n%s", out)
+	}
 	// Must show a prompt.
 	if !strings.Contains(lower, "enter") && !strings.Contains(lower, "begin") {
 		t.Errorf("RenderUpgradeSync(confirm) should show enter/begin prompt; got:\n%s", out)

@@ -354,6 +354,20 @@ get_latest_version() {
     body="$(echo "$response" | sed '$d')"
 
     if [ "$http_code" != "200" ]; then
+        if [ "$http_code" = "403" ]; then
+            warn "GitHub API returned HTTP 403. Trying non-API latest-release redirect..."
+            if LATEST_VERSION="$(get_latest_version_from_redirect)"; then
+                VERSION_NUMBER="${LATEST_VERSION#v}"
+                success "Latest version: ${LATEST_VERSION}"
+                return 0
+            fi
+            if find_repo_root >/dev/null 2>&1 && command -v go &>/dev/null; then
+                warn "GitHub API is rate limited, but a local repository checkout is available. Falling back to local source build."
+                INSTALL_METHOD="source"
+                return 1
+            fi
+            fatal "GitHub API returned HTTP 403 and the latest release could not be resolved without the API. Try again later, export GH_TOKEN/GITHUB_TOKEN, or use --method source/go"
+        fi
         if [ "$http_code" = "404" ]; then
             if find_repo_root >/dev/null 2>&1 && command -v go &>/dev/null; then
                 warn "No GitHub release exists yet for ${GITHUB_OWNER}/${GITHUB_REPO}. Falling back to local source build from this cloned repository."
@@ -379,6 +393,20 @@ get_latest_version() {
     VERSION_NUMBER="${LATEST_VERSION#v}"
 
     success "Latest version: ${LATEST_VERSION}"
+}
+
+get_latest_version_from_redirect() {
+    local url="https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/releases/latest"
+    local headers location
+
+    headers="$(github_curl -sI "$url")" || return 1
+    location="$(printf '%s\n' "$headers" | tr -d '\r' | sed -n 's/^[Ll]ocation:[[:space:]]*.*\/tag\/\(v[^[:space:]]*\).*/\1/p' | tail -n1)"
+
+    if [ -z "$location" ]; then
+        return 1
+    fi
+
+    printf '%s\n' "$location"
 }
 
 install_binary() {

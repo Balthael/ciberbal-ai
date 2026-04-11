@@ -75,7 +75,7 @@ func renderUpgradeSyncConfirm(results []update.UpdateResult, updateCheckDone boo
 
 	b.WriteString("  " + styles.WarningStyle.Render("1.") + " " + styles.HeadingStyle.Render("Upgrade tools"))
 	b.WriteString("\n")
-	b.WriteString("     " + styles.SubtextStyle.Render("Updates gentle-ai, engram, and gga to latest versions"))
+	b.WriteString("     " + styles.SubtextStyle.Render("Updates ciberbal-ai, engram, and gga to latest versions"))
 	b.WriteString("\n\n")
 
 	b.WriteString("  " + styles.WarningStyle.Render("2.") + " " + styles.HeadingStyle.Render("Sync configurations"))

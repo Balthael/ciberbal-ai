@@ -1,6 +1,7 @@
 package screens
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/gentleman-programming/gentle-ai/internal/model"
@@ -98,6 +99,17 @@ func TestHandleModelNav_OrchestratorRow_ModelValues(t *testing.T) {
 	}
 	if orch.ModelID != "model-alpha" {
 		t.Errorf("ModelID = %q, want %q", orch.ModelID, "model-alpha")
+	}
+}
+
+func TestRenderModelPicker_NoCacheUsesCiberbalBranding(t *testing.T) {
+	out := RenderModelPicker(nil, ModelPickerState{}, 0)
+
+	if !strings.Contains(out, "ciberbal-ai sync") {
+		t.Fatalf("RenderModelPicker() should mention 'ciberbal-ai sync'; got:\n%s", out)
+	}
+	if strings.Contains(out, "gentle-ai sync") {
+		t.Fatalf("RenderModelPicker() should not mention old branding; got:\n%s", out)
 	}
 }
 
