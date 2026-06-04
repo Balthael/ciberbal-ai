@@ -270,7 +270,11 @@ func tuiExecute(
 	resolved planner.ResolvedPlan,
 	detection system.DetectionResult,
 	onProgress pipeline.ProgressFunc,
+	terminal tui.TerminalIO,
 ) pipeline.ExecutionResult {
+	restoreCommandIO := cli.SetCommandIO(terminal.Stdin, terminal.Stdout, terminal.Stderr)
+	defer restoreCommandIO()
+
 	restoreCommandOutput := cli.SetCommandOutputStreaming(false)
 	defer restoreCommandOutput()
 

@@ -47,6 +47,8 @@ var (
 	osStat                        = os.Stat
 	runCommand                    = executeCommand
 	commandStdin        io.Reader = os.Stdin
+	commandStdout       io.Writer = os.Stdout
+	commandStderr       io.Writer = os.Stderr
 	cmdLookPath                   = exec.LookPath
 	streamCommandOutput           = true
 
@@ -75,6 +77,32 @@ func SetCommandOutputStreaming(enabled bool) func() {
 	streamCommandOutput = enabled
 	return func() {
 		streamCommandOutput = previous
+	}
+}
+
+// SetCommandIO overrides the terminal streams used by command execution. It is
+// primarily used by the TUI while Bubble Tea has released its terminal via
+// tea.Exec, because the program's terminal streams may differ from os.Stdin and
+// os.Stdout in interactive sessions and tests. Nil values keep the defaults.
+func SetCommandIO(stdin io.Reader, stdout, stderr io.Writer) func() {
+	previousStdin := commandStdin
+	previousStdout := commandStdout
+	previousStderr := commandStderr
+
+	if stdin != nil {
+		commandStdin = stdin
+	}
+	if stdout != nil {
+		commandStdout = stdout
+	}
+	if stderr != nil {
+		commandStderr = stderr
+	}
+
+	return func() {
+		commandStdin = previousStdin
+		commandStdout = previousStdout
+		commandStderr = previousStderr
 	}
 }
 
@@ -746,8 +774,8 @@ func executeCommand(name string, args ...string) error {
 	cmd.Stdin = commandStdin
 
 	if shouldStreamCommandOutput(name, args) {
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
+		cmd.Stdout = commandStdout
+		cmd.Stderr = commandStderr
 		return cmd.Run()
 	}
 

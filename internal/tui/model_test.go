@@ -1,6 +1,7 @@
 package tui
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"reflect"
@@ -94,6 +95,7 @@ func TestStartInstallingUsesBubbleTeaExecCommand(t *testing.T) {
 		resolved planner.ResolvedPlan,
 		detection system.DetectionResult,
 		onProgress pipeline.ProgressFunc,
+		terminal TerminalIO,
 	) pipeline.ExecutionResult {
 		t.Fatal("ExecuteFn should be deferred to Bubble Tea Exec, not run by the returned command directly")
 		return pipeline.ExecutionResult{}
@@ -130,6 +132,7 @@ func TestPipelineExecCommandRunReturnsExecutionError(t *testing.T) {
 			resolved planner.ResolvedPlan,
 			detection system.DetectionResult,
 			onProgress pipeline.ProgressFunc,
+			terminal TerminalIO,
 		) pipeline.ExecutionResult {
 			onProgress(pipeline.ProgressEvent{StepID: "step-a", Status: pipeline.StepStatusRunning})
 			return pipeline.ExecutionResult{Err: wantErr}
@@ -141,6 +144,45 @@ func TestPipelineExecCommandRunReturnsExecutionError(t *testing.T) {
 	}
 	if cmd.result.Err != wantErr {
 		t.Fatalf("stored result error = %v, want %v", cmd.result.Err, wantErr)
+	}
+}
+
+func TestPipelineExecCommandForwardsTerminalIO(t *testing.T) {
+	stdin := bytes.NewBufferString("password\n")
+	stdout := &bytes.Buffer{}
+	stderr := &bytes.Buffer{}
+	seenTerminal := false
+
+	cmd := &pipelineExecCommand{
+		executeFn: func(
+			selection model.Selection,
+			resolved planner.ResolvedPlan,
+			detection system.DetectionResult,
+			onProgress pipeline.ProgressFunc,
+			terminal TerminalIO,
+		) pipeline.ExecutionResult {
+			seenTerminal = true
+			if terminal.Stdin != stdin {
+				t.Fatal("terminal stdin was not forwarded")
+			}
+			if terminal.Stdout != stdout {
+				t.Fatal("terminal stdout was not forwarded")
+			}
+			if terminal.Stderr != stderr {
+				t.Fatal("terminal stderr was not forwarded")
+			}
+			return pipeline.ExecutionResult{}
+		},
+	}
+	cmd.SetStdin(stdin)
+	cmd.SetStdout(stdout)
+	cmd.SetStderr(stderr)
+
+	if err := cmd.Run(); err != nil {
+		t.Fatalf("Run() error = %v, want nil", err)
+	}
+	if !seenTerminal {
+		t.Fatal("ExecuteFn was not called")
 	}
 }
 

@@ -139,7 +139,18 @@ type ExecuteFunc func(
 	resolved planner.ResolvedPlan,
 	detection system.DetectionResult,
 	onProgress pipeline.ProgressFunc,
+	terminal TerminalIO,
 ) pipeline.ExecutionResult
+
+// TerminalIO carries the terminal streams Bubble Tea provides after releasing
+// control with tea.Exec. Install executors must pass these streams to any
+// interactive subprocesses so tools like sudo can read passwords from the same
+// terminal the user is typing into.
+type TerminalIO struct {
+	Stdin  io.Reader
+	Stdout io.Writer
+	Stderr io.Writer
+}
 
 // RestoreFunc restores a backup from a manifest.
 type RestoreFunc func(manifest backup.Manifest) error
@@ -1680,6 +1691,10 @@ type pipelineExecCommand struct {
 	resolved  planner.ResolvedPlan
 	detection system.DetectionResult
 	result    pipeline.ExecutionResult
+
+	stdin  io.Reader
+	stdout io.Writer
+	stderr io.Writer
 }
 
 var _ tea.ExecCommand = (*pipelineExecCommand)(nil)
@@ -1691,21 +1706,24 @@ func (c *pipelineExecCommand) Run() error {
 		// source of truth for updating progress once the TUI resumes.
 	}
 
-	c.result = c.executeFn(c.selection, c.resolved, c.detection, onProgress)
+	c.result = c.executeFn(c.selection, c.resolved, c.detection, onProgress, TerminalIO{
+		Stdin:  c.stdin,
+		Stdout: c.stdout,
+		Stderr: c.stderr,
+	})
 	return c.result.Err
 }
 
-func (c *pipelineExecCommand) SetStdin(io.Reader) {
-	// executeFn delegates command I/O to the CLI layer. This ExecCommand exists
-	// to make Bubble Tea release/restore the terminal around that execution.
+func (c *pipelineExecCommand) SetStdin(r io.Reader) {
+	c.stdin = r
 }
 
-func (c *pipelineExecCommand) SetStdout(io.Writer) {
-	// See SetStdin.
+func (c *pipelineExecCommand) SetStdout(w io.Writer) {
+	c.stdout = w
 }
 
-func (c *pipelineExecCommand) SetStderr(io.Writer) {
-	// See SetStdin.
+func (c *pipelineExecCommand) SetStderr(w io.Writer) {
+	c.stderr = w
 }
 
 // withResetSyncState clears sync-result state so ScreenSync shows the confirmation

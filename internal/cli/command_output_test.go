@@ -34,6 +34,38 @@ func TestSetCommandOutputStreamingRestore(t *testing.T) {
 	}
 }
 
+func TestSetCommandIORestore(t *testing.T) {
+	stdin := bytes.NewBufferString("input\n")
+	stdout := &bytes.Buffer{}
+	stderr := &bytes.Buffer{}
+
+	previousStdin := commandStdin
+	previousStdout := commandStdout
+	previousStderr := commandStderr
+	restore := SetCommandIO(stdin, stdout, stderr)
+
+	if commandStdin != stdin {
+		t.Fatal("commandStdin was not replaced")
+	}
+	if commandStdout != stdout {
+		t.Fatal("commandStdout was not replaced")
+	}
+	if commandStderr != stderr {
+		t.Fatal("commandStderr was not replaced")
+	}
+
+	restore()
+	if commandStdin != previousStdin {
+		t.Fatal("commandStdin was not restored")
+	}
+	if commandStdout != previousStdout {
+		t.Fatal("commandStdout was not restored")
+	}
+	if commandStderr != previousStderr {
+		t.Fatal("commandStderr was not restored")
+	}
+}
+
 func TestExecuteCommandStreamingUsesConfiguredStdin(t *testing.T) {
 	restoreStreaming := SetCommandOutputStreaming(true)
 	defer restoreStreaming()
@@ -44,6 +76,26 @@ func TestExecuteCommandStreamingUsesConfiguredStdin(t *testing.T) {
 
 	if err := executeCommand("bash", "-c", `read value; test "$value" = "ok"`); err != nil {
 		t.Fatalf("executeCommand() error = %v, want nil", err)
+	}
+}
+
+func TestExecuteCommandStreamingUsesConfiguredIO(t *testing.T) {
+	restoreStreaming := SetCommandOutputStreaming(true)
+	defer restoreStreaming()
+
+	stdout := &bytes.Buffer{}
+	stderr := &bytes.Buffer{}
+	restoreIO := SetCommandIO(bytes.NewBufferString("ok\n"), stdout, stderr)
+	defer restoreIO()
+
+	if err := executeCommand("bash", "-c", `read value; printf "%s" "$value"; printf "err" >&2`); err != nil {
+		t.Fatalf("executeCommand() error = %v, want nil", err)
+	}
+	if got := stdout.String(); got != "ok" {
+		t.Fatalf("stdout = %q, want ok", got)
+	}
+	if got := stderr.String(); got != "err" {
+		t.Fatalf("stderr = %q, want err", got)
 	}
 }
 
