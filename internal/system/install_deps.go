@@ -96,8 +96,7 @@ func InstallCommandsForDep(name string, profile PlatformProfile) [][]string {
 	case "node":
 		return installCommandsNode(profile)
 	case "npm":
-		// npm comes with node; installing node installs npm.
-		return nil
+		return installCommandsNpm(profile)
 	case "brew":
 		return installCommandsBrew(profile)
 	case "go":
@@ -162,6 +161,23 @@ func installCommandsNode(profile PlatformProfile) [][]string {
 			{"bash", "-c", "curl -fsSL https://rpm.nodesource.com/setup_lts.x | sudo bash -"},
 			{"sudo", "dnf", "install", "-y", "nodejs"},
 		}
+	default:
+		return nil
+	}
+}
+
+func installCommandsNpm(profile PlatformProfile) [][]string {
+	switch {
+	case profile.OS == "darwin":
+		return nil
+	case profile.OS == "windows":
+		return nil
+	case profile.PackageManager == "apt":
+		return [][]string{{"sudo", "apt-get", "install", "-y", "npm"}}
+	case profile.PackageManager == "pacman":
+		return nil
+	case profile.PackageManager == "dnf":
+		return [][]string{{"sudo", "dnf", "install", "-y", "npm"}}
 	default:
 		return nil
 	}

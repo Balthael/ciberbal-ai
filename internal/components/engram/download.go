@@ -96,6 +96,13 @@ func fetchLatestEngramVersion() (string, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
+		if resp.StatusCode == http.StatusForbidden {
+			version, fallbackErr := fetchLatestEngramVersionFromRedirect()
+			if fallbackErr == nil {
+				return version, nil
+			}
+			return "", fmt.Errorf("GitHub API returned HTTP %d (redirect fallback failed: %v)", resp.StatusCode, fallbackErr)
+		}
 		return "", fmt.Errorf("GitHub API returned HTTP %d", resp.StatusCode)
 	}
 
@@ -111,6 +118,32 @@ func fetchLatestEngramVersion() (string, error) {
 		return "", fmt.Errorf("empty tag_name in GitHub release response")
 	}
 
+	return version, nil
+}
+
+func fetchLatestEngramVersionFromRedirect() (string, error) {
+	url := fmt.Sprintf("%s/%s/%s/releases/latest", engramGitHubBaseURL, engramOwner, engramRepo)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return "", fmt.Errorf("build redirect fallback request: %w", err)
+	}
+
+	resp, err := engramHTTPClient.Do(req)
+	if err != nil {
+		return "", fmt.Errorf("call latest-release redirect: %w", err)
+	}
+	defer resp.Body.Close()
+
+	finalPath := strings.Trim(resp.Request.URL.Path, "/")
+	parts := strings.Split(finalPath, "/")
+	if len(parts) == 0 {
+		return "", fmt.Errorf("unexpected redirect path %q", resp.Request.URL.Path)
+	}
+	last := parts[len(parts)-1]
+	version := strings.TrimPrefix(last, "v")
+	if last == "latest" || version == "" {
+		return "", fmt.Errorf("could not resolve version from redirect path %q", resp.Request.URL.Path)
+	}
 	return version, nil
 }
 

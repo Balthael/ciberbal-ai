@@ -326,3 +326,45 @@ func TestDownloadLatestBinaryAPIError(t *testing.T) {
 		t.Fatal("expected error when GitHub API returns 500, got nil")
 	}
 }
+
+func TestDownloadLatestBinaryFallsBackToLatestRedirectOn403(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.Contains(r.URL.Path, "/repos/") && strings.Contains(r.URL.Path, "/releases/latest"):
+			w.WriteHeader(http.StatusForbidden)
+		case r.URL.Path == "/Gentleman-Programming/engram/releases/latest":
+			http.Redirect(w, r, "/Gentleman-Programming/engram/releases/tag/v1.3.0", http.StatusFound)
+		case r.URL.Path == "/Gentleman-Programming/engram/releases/tag/v1.3.0":
+			w.WriteHeader(http.StatusOK)
+			_, _ = w.Write([]byte("ok"))
+		default:
+			w.Header().Set("Content-Type", "application/octet-stream")
+			w.WriteHeader(http.StatusOK)
+			_, _ = w.Write(buildFakeTarGz(t, "engram"))
+		}
+	}))
+	defer server.Close()
+
+	origClient := engramHTTPClient
+	origBaseURL := engramGitHubBaseURL
+	engramHTTPClient = server.Client()
+	engramGitHubBaseURL = server.URL
+	t.Cleanup(func() {
+		engramHTTPClient = origClient
+		engramGitHubBaseURL = origBaseURL
+	})
+
+	tmpDir := t.TempDir()
+	origInstallDirFn := engramInstallDirFn
+	engramInstallDirFn = func(goos string) string { return tmpDir }
+	t.Cleanup(func() { engramInstallDirFn = origInstallDirFn })
+
+	profile := system.PlatformProfile{OS: "linux", PackageManager: "apt"}
+	installedPath, err := DownloadLatestBinary(profile)
+	if err != nil {
+		t.Fatalf("DownloadLatestBinary() error = %v", err)
+	}
+	if !strings.HasPrefix(installedPath, tmpDir) {
+		t.Fatalf("installedPath = %q, want prefix %q", installedPath, tmpDir)
+	}
+}

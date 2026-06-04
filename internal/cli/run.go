@@ -1047,9 +1047,25 @@ func (s checkDependenciesStep) Run() error {
 		return nil
 	}
 
-	installedNode := false
 	for _, dep := range report.MissingRequired {
-		if dep == "npm" && installedNode {
+		// npm is bundled with node on most platforms. Always recheck before
+		// attempting a separate install: a prior node install (or an existing
+		// node binary) may have already satisfied this dependency.
+		if dep == "npm" {
+			recheck := detectDependenciesFn(context.Background(), s.profile)
+			if !containsMissingDep(recheck.MissingRequired, "npm") {
+				continue
+			}
+			// npm is still missing after recheck; try a platform install command
+			// when one is available, otherwise emit a warning and move on.
+			commands := system.InstallCommandsForDep(dep, s.profile)
+			if len(commands) == 0 {
+				log.Printf("WARNING: npm is still missing and no automatic install command is available — install node to get npm")
+				continue
+			}
+			if err := runCommandSequence(commands); err != nil {
+				return fmt.Errorf("install required dependency %q: %w", dep, err)
+			}
 			continue
 		}
 
@@ -1060,9 +1076,6 @@ func (s checkDependenciesStep) Run() error {
 		if err := runCommandSequence(commands); err != nil {
 			return fmt.Errorf("install required dependency %q: %w", dep, err)
 		}
-		if dep == "node" {
-			installedNode = true
-		}
 	}
 
 	recheck := detectDependenciesFn(context.Background(), s.profile)
@@ -1071,6 +1084,15 @@ func (s checkDependenciesStep) Run() error {
 	}
 
 	return nil
+}
+
+func containsMissingDep(missing []string, target string) bool {
+	for _, dep := range missing {
+		if dep == target {
+			return true
+		}
+	}
+	return false
 }
 
 type noopStep struct {

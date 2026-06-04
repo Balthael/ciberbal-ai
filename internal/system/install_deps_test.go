@@ -128,11 +128,22 @@ func TestInstallCommandsForDepNodeFedoraHasTwoSteps(t *testing.T) {
 	}
 }
 
-func TestInstallCommandsForDepNpmReturnsNil(t *testing.T) {
+func TestInstallCommandsForDepNpmDarwinReturnsNil(t *testing.T) {
 	profile := PlatformProfile{OS: "darwin", PackageManager: "brew"}
 	cmds := InstallCommandsForDep("npm", profile)
 	if cmds != nil {
 		t.Fatalf("npm commands = %v, want nil (comes with node)", cmds)
+	}
+}
+
+func TestInstallCommandsForDepNpmUbuntuUsesApt(t *testing.T) {
+	profile := PlatformProfile{OS: "linux", PackageManager: "apt", LinuxDistro: "ubuntu"}
+	cmds := InstallCommandsForDep("npm", profile)
+	if len(cmds) != 1 {
+		t.Fatalf("npm ubuntu commands = %d, want 1", len(cmds))
+	}
+	if cmds[0][0] != "sudo" || cmds[0][1] != "apt-get" || cmds[0][4] != "npm" {
+		t.Fatalf("npm ubuntu command = %v, want sudo apt-get install -y npm", cmds[0])
 	}
 }
 
