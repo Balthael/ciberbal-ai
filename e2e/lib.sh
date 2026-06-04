@@ -31,29 +31,29 @@ log_info()  { printf "${BLUE}[INFO]${NC}  %s\n" "$1"; }
 # ---------------------------------------------------------------------------
 # Binary resolution
 # ---------------------------------------------------------------------------
-# The binary should be built and placed at /usr/local/bin/gentle-ai inside
-# the Docker container. If not found, fall back to $HOME/gentle-ai or the
+# The binary should be built and placed at /usr/local/bin/ciberbal-ai inside
+# the Docker container. If not found, fall back to $HOME/ciberbal-ai or the
 # current directory.
 # Resolution priority (highest → lowest):
-#   1. ./gentle-ai in the current repo directory (freshly built local binary)
-#   2. ~/gentle-ai (explicit copy in home)
-#   3. gentle-ai on PATH (system-installed, e.g. Homebrew)
-# This ensures `go build ./cmd/gentle-ai && bash e2e/e2e_test.sh` always
+#   1. ./ciberbal-ai in the current repo directory (freshly built local binary)
+#   2. ~/ciberbal-ai (explicit copy in home)
+#   3. ciberbal-ai on PATH (system-installed, e.g. Homebrew)
+# This ensures `go build ./cmd/ciberbal-ai && bash e2e/e2e_test.sh` always
 # tests the locally built binary rather than the installed release version.
 resolve_binary() {
-    # Prefer the locally built binary (./gentle-ai) produced by `go build ./cmd/gentle-ai`.
+    # Prefer the locally built binary (./ciberbal-ai) produced by `go build ./cmd/ciberbal-ai`.
     # We check both the current directory and the script's parent directory so
     # the resolver works whether the test is invoked from the repo root or from e2e/.
     local repo_root
     repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-    if [ -x "$repo_root/gentle-ai" ]; then
-        echo "$repo_root/gentle-ai"
-    elif [ -x "./gentle-ai" ]; then
-        echo "./gentle-ai"
-    elif [ -x "$HOME/gentle-ai" ]; then
-        echo "$HOME/gentle-ai"
-    elif command -v gentle-ai >/dev/null 2>&1; then
-        echo "gentle-ai"
+    if [ -x "$repo_root/ciberbal-ai" ]; then
+        echo "$repo_root/ciberbal-ai"
+    elif [ -x "./ciberbal-ai" ]; then
+        echo "./ciberbal-ai"
+    elif [ -x "$HOME/ciberbal-ai" ]; then
+        echo "$HOME/ciberbal-ai"
+    elif command -v ciberbal-ai >/dev/null 2>&1; then
+        echo "ciberbal-ai"
     else
         echo ""
     fi
@@ -75,7 +75,60 @@ cleanup_test_env() {
     rm -rf "$HOME/.gentle-ai" 2>/dev/null || true
     rm -rf "$HOME/.codeium" 2>/dev/null || true
     rm -rf "$HOME/.cursor" 2>/dev/null || true
+    rm -rf "$HOME/.qwen" 2>/dev/null || true
+    rm -rf "$HOME/.kiro" 2>/dev/null || true
+    rm -rf "$HOME/.kimi" 2>/dev/null || true
     mkdir -p "$HOME/.config"
+}
+
+# setup_fake_engram_binary — install a deterministic local engram shim for E2E.
+#
+# Full Docker E2E validates ciberbal-ai's agent/config injection behavior, not the
+# external Engram release CDN. The real installer skips the network download when
+# an `engram` binary already exists on PATH, so this shim keeps coverage of the
+# install pipeline while avoiding flaky GitHub API/rate-limit failures.
+#
+# Set GENTLE_AI_E2E_REAL_ENGRAM=1 to opt out and exercise the live download path.
+setup_fake_engram_binary() {
+    if [ "${GENTLE_AI_E2E_REAL_ENGRAM:-0}" = "1" ]; then
+        log_info "Using real Engram binary/download path for E2E"
+        return 0
+    fi
+
+    local fake_bin_dir="$HOME/.ciberbal-ai-e2e/bin"
+    local fake_engram="$fake_bin_dir/engram"
+
+    mkdir -p "$fake_bin_dir"
+    cat > "$fake_engram" <<'EOF'
+#!/usr/bin/env sh
+set -eu
+
+case "${1:-}" in
+  setup)
+    exit 0
+    ;;
+  mcp)
+    # Keep the shim alive if an MCP client probes it during E2E, but do not
+    # require real Engram services or network access.
+    exit 0
+    ;;
+  version|--version|-v)
+    printf 'engram e2e-shim\n'
+    exit 0
+    ;;
+  *)
+    exit 0
+    ;;
+esac
+EOF
+    chmod +x "$fake_engram"
+
+    case ":$PATH:" in
+        *":$fake_bin_dir:"*) ;;
+        *) export PATH="$fake_bin_dir:$PATH" ;;
+    esac
+
+    log_info "Using deterministic Engram E2E shim: $fake_engram"
 }
 
 # setup_fake_configs — seed fake config files so backup tests have something

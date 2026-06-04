@@ -1,4 +1,4 @@
-# Dockerfile.ubuntu — E2E test image for gentle-ai on Ubuntu 22.04
+# Dockerfile.ubuntu — E2E test image for ciberbal-ai on Ubuntu 22.04
 # Builds the binary from source and runs the E2E test suite as a non-root user.
 FROM ubuntu:22.04
 
@@ -43,7 +43,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
-    go build -o /usr/local/bin/gentle-ai ./cmd/gentle-ai
+    go build -o /usr/local/bin/ciberbal-ai ./cmd/ciberbal-ai
 
 # ---------------------------------------------------------------------------
 # Prepare test environment

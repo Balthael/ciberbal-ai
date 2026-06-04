@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# e2e_test.sh — End-to-end tests for gentle-ai installer
+# e2e_test.sh — End-to-end tests for ciberbal-ai installer
 #
 # Test tiers (controlled by environment variables):
 #   (default)            Tier 1: binary existence + dry-run tests (fast, no side-effects)
@@ -17,15 +17,27 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=lib.sh
 source "$SCRIPT_DIR/lib.sh"
 
+# E2E validates installer behavior for the binary under test. Disable the
+# opportunistic self-update path so dry-run checks never create upgrade backups
+# or reach external release services before the actual test command runs.
+export GENTLE_AI_NO_SELF_UPDATE=1
+
 # ---------------------------------------------------------------------------
 # Resolve binary
 # ---------------------------------------------------------------------------
 BINARY="$(resolve_binary)"
 if [ -z "$BINARY" ]; then
-    echo "ERROR: gentle-ai binary not found. Build it first."
+    echo "ERROR: ciberbal-ai binary not found. Build it first."
     exit 1
 fi
 log_info "Using binary: $BINARY"
+
+# Side-effect E2E exercises install/injection behavior. Keep it deterministic by
+# satisfying the installer's "engram already exists on PATH" branch unless a
+# maintainer explicitly opts into the live GitHub release download path.
+if [ "${RUN_FULL_E2E:-0}" = "1" ] || [ "${RUN_BACKUP_TESTS:-0}" = "1" ]; then
+    setup_fake_engram_binary
+fi
 
 # ===========================================================================
 # TIER 1 — Basic binary & dry-run tests (always run)
@@ -62,7 +74,7 @@ test_version_command() {
 
     output=$($BINARY version 2>&1) || true
 
-    if echo "$output" | grep -q "gentle-ai"; then
+    if echo "$output" | grep -q "ciberbal-ai"; then
         log_pass "Version command returns binary name"
     else
         log_fail "Version command failed: $output"
@@ -154,19 +166,19 @@ test_dry_run_preset_minimal() {
 }
 
 test_dry_run_preset_ecosystem() {
-    log_test "Dry-run with --preset ecosystem-only"
+    log_test "Dry-run with --preset ecosystem-core"
 
-    output=$($BINARY install --preset ecosystem-only --dry-run 2>&1) || true
+    output=$($BINARY install --preset ecosystem-core --dry-run 2>&1) || true
 
-    assert_output_contains "$output" "Preset: ecosystem-only" "Shows ecosystem-only preset"
+    assert_output_contains "$output" "Preset: ecosystem-core" "Shows ecosystem-core preset"
 }
 
 test_dry_run_preset_full() {
-    log_test "Dry-run with --preset full-gentleman"
+    log_test "Dry-run with --preset full-pentest"
 
-    output=$($BINARY install --preset full-gentleman --dry-run 2>&1) || true
+    output=$($BINARY install --preset full-pentest --dry-run 2>&1) || true
 
-    assert_output_contains "$output" "Preset: full-gentleman" "Shows full-gentleman preset"
+    assert_output_contains "$output" "Preset: full-pentest" "Shows full-pentest preset"
 }
 
 test_dry_run_preset_custom() {
@@ -192,11 +204,11 @@ test_preset_minimal_components() {
 }
 
 test_preset_ecosystem_components() {
-    log_test "Preset ecosystem-only produces 5 components"
+    log_test "Preset ecosystem-core produces 5 components"
 
-    output=$($BINARY install --preset ecosystem-only --agent claude-code --dry-run 2>&1) || true
+    output=$($BINARY install --preset ecosystem-core --agent claude-code --dry-run 2>&1) || true
 
-    # ecosystem-only = engram, sdd, skills, context7, gga
+    # ecosystem-core = engram, sdd, skills, context7, gga
     local components_line
     components_line=$(echo "$output" | grep "Components order:")
 
@@ -210,9 +222,9 @@ test_preset_ecosystem_components() {
 }
 
 test_preset_full_components() {
-    log_test "Preset full-gentleman produces 7 components"
+    log_test "Preset full-pentest produces 7 components"
 
-    output=$($BINARY install --preset full-gentleman --agent claude-code --dry-run 2>&1) || true
+    output=$($BINARY install --preset full-pentest --agent claude-code --dry-run 2>&1) || true
 
     local components_line
     components_line=$(echo "$output" | grep "Components order:")
@@ -229,7 +241,7 @@ test_preset_full_components() {
 test_dry_run_full_preset_persona_before_sdd() {
     log_test "Dry-run: persona appears before engram and sdd in component order"
 
-    output=$($BINARY install --preset full-gentleman --agent opencode --dry-run 2>&1) || true
+    output=$($BINARY install --preset full-pentest --agent opencode --dry-run 2>&1) || true
 
     local components_line
     components_line=$(echo "$output" | grep "Components order:")
@@ -265,7 +277,7 @@ test_dry_run_full_preset_persona_before_sdd() {
 test_preset_no_theme_in_any_preset() {
     log_test "Theme is NOT in any preset"
 
-    for preset in minimal ecosystem-only full-gentleman; do
+    for preset in minimal ecosystem-core full-pentest; do
         output=$($BINARY install --preset "$preset" --agent claude-code --dry-run 2>&1) || true
         local components_line
         components_line=$(echo "$output" | grep "Components order:")
@@ -557,10 +569,10 @@ test_cc_skills_minimal() {
 }
 
 test_cc_skills_full() {
-    log_test "Claude Code: skills injection (full-gentleman = 11 foundation skills)"
+    log_test "Claude Code: skills injection (full-pentest = domain/workflow skill set)"
     cleanup_test_env
 
-    if $BINARY install --agent claude-code --component skills --preset full-gentleman --persona neutral 2>&1; then
+    if $BINARY install --agent claude-code --component skills --preset full-pentest --persona neutral 2>&1; then
         local skills_dir="$HOME/.claude/skills"
         assert_dir_exists "$skills_dir" "Claude skills directory"
 
@@ -586,14 +598,14 @@ test_cc_skills_full() {
 }
 
 test_cc_skills_ecosystem() {
-    log_test "Claude Code: skills injection (ecosystem-only = 11 foundation skills)"
+    log_test "Claude Code: skills injection (ecosystem-core = core skill set)"
     cleanup_test_env
 
-    if $BINARY install --agent claude-code --component skills --preset ecosystem-only --persona neutral 2>&1; then
+    if $BINARY install --agent claude-code --component skills --preset ecosystem-core --persona neutral 2>&1; then
         local skills_dir="$HOME/.claude/skills"
         assert_dir_exists "$skills_dir" "Claude skills directory"
 
-        # ecosystem-only = 10 SDD + judgment-day + 5 foundation = 16
+        # ecosystem-core includes SDD, workflow, and core operational skills.
         assert_file_count "$skills_dir" "SKILL.md" 16 "Ecosystem preset: 16 skill files"
 
         # SDD skills present
@@ -819,10 +831,10 @@ test_oc_skills_minimal() {
 }
 
 test_oc_skills_full() {
-    log_test "OpenCode: skills injection (full-gentleman = 11 foundation skills)"
+    log_test "OpenCode: skills injection (full-pentest = domain/workflow skill set)"
     cleanup_test_env
 
-    if $BINARY install --agent opencode --component skills --preset full-gentleman --persona neutral 2>&1; then
+    if $BINARY install --agent opencode --component skills --preset full-pentest --persona neutral 2>&1; then
         local skill_dir="$HOME/.config/opencode/skills"
         assert_dir_exists "$skill_dir" "OpenCode skill directory"
         assert_file_count "$skill_dir" "SKILL.md" 16 "Full preset: 16 skill files"
@@ -886,15 +898,15 @@ test_oc_theme_injection() {
 # --- Category 4: Full preset integration ---
 
 test_full_preset_claude_code() {
-    log_test "Full-gentleman preset: Claude Code (all components coexist)"
+    log_test "Full-pentest preset: Claude Code (all components coexist)"
     cleanup_test_env
 
-    # full-gentleman has: engram, sdd, skills, context7, persona, permissions, gga
+    # full-pentest has: engram, sdd, skills, context7, persona, permissions, gga
     # Engram/GGA need binary install (go install) — may fail but injection components
     # that don't need binary install should be tested.
     # We test injection-only components first, then try the full preset.
     # If full preset fails due to binary install, we fall back to individual injection-only test.
-    if $BINARY install --agent claude-code --component sdd --component persona --component skills --component context7 --component permissions --component theme --preset full-gentleman --persona gentleman 2>&1; then
+    if $BINARY install --agent claude-code --component sdd --component persona --component skills --component context7 --component permissions --component theme --preset full-pentest --persona gentleman 2>&1; then
         local claude_md="$HOME/.claude/CLAUDE.md"
         local settings="$HOME/.claude/settings.json"
 
@@ -927,10 +939,10 @@ test_full_preset_claude_code() {
 }
 
 test_full_preset_opencode() {
-    log_test "Full-gentleman preset: OpenCode (all components coexist)"
+    log_test "Full-pentest preset: OpenCode (all components coexist)"
     cleanup_test_env
 
-    if $BINARY install --agent opencode --component engram --component sdd --component persona --component skills --component context7 --component permissions --component theme --preset full-gentleman --persona gentleman 2>&1; then
+    if $BINARY install --agent opencode --component engram --component sdd --component persona --component skills --component context7 --component permissions --component theme --preset full-pentest --persona gentleman 2>&1; then
         local settings="$HOME/.config/opencode/opencode.json"
         local agents_md="$HOME/.config/opencode/AGENTS.md"
 
@@ -1021,7 +1033,7 @@ test_ecosystem_both_agents() {
     log_test "Ecosystem preset: both agents"
     cleanup_test_env
 
-    if $BINARY install --agent claude-code --agent opencode --component sdd --component skills --component context7 --preset ecosystem-only --persona neutral 2>&1; then
+    if $BINARY install --agent claude-code --agent opencode --component sdd --component skills --component context7 --preset ecosystem-core --persona neutral 2>&1; then
         # Claude Code
         assert_file_exists "$HOME/.claude/CLAUDE.md" "Claude CLAUDE.md"
         assert_file_contains "$HOME/.claude/CLAUDE.md" "gentle-ai:sdd-orchestrator" "Claude has SDD"
@@ -1081,7 +1093,7 @@ test_content_skills_are_real() {
     log_test "Content validation: skill files contain real instructions"
     cleanup_test_env
 
-    $BINARY install --agent claude-code --component skills --preset full-gentleman --persona neutral 2>&1 || true
+    $BINARY install --agent claude-code --component skills --preset full-pentest --persona neutral 2>&1 || true
 
     local skills_dir="$HOME/.claude/skills"
     if [ -d "$skills_dir" ]; then
@@ -1336,13 +1348,13 @@ test_idempotent_full_claude() {
     log_test "Idempotency: full injection-only on Claude Code"
     cleanup_test_env
 
-    $BINARY install --agent claude-code --component sdd --component persona --component context7 --component permissions --component theme --preset full-gentleman --persona gentleman 2>&1 || true
+    $BINARY install --agent claude-code --component sdd --component persona --component context7 --component permissions --component theme --preset full-pentest --persona gentleman 2>&1 || true
     local first_md_hash
     first_md_hash=$(md5sum "$HOME/.claude/CLAUDE.md" 2>/dev/null | cut -d' ' -f1)
     local first_settings_hash
     first_settings_hash=$(md5sum "$HOME/.claude/settings.json" 2>/dev/null | cut -d' ' -f1)
 
-    $BINARY install --agent claude-code --component sdd --component persona --component context7 --component permissions --component theme --preset full-gentleman --persona gentleman 2>&1 || true
+    $BINARY install --agent claude-code --component sdd --component persona --component context7 --component permissions --component theme --preset full-pentest --persona gentleman 2>&1 || true
     local second_md_hash
     second_md_hash=$(md5sum "$HOME/.claude/CLAUDE.md" 2>/dev/null | cut -d' ' -f1)
     local second_settings_hash
@@ -1742,7 +1754,7 @@ test_integrity_full_preset_all_skills_nonempty() {
     log_test "Integrity: full preset — every SKILL.md is non-empty"
     cleanup_test_env
 
-    if $BINARY install --agent opencode --component sdd --component skills --preset full-gentleman --persona gentleman 2>&1; then
+    if $BINARY install --agent opencode --component sdd --component skills --preset full-pentest --persona gentleman 2>&1; then
         local skill_dir="$HOME/.config/opencode/skills"
         local all_ok=true
         local empty_count=0
@@ -1788,7 +1800,7 @@ test_integrity_skills_plus_sdd_coexist() {
     log_test "Integrity: SDD + skills components write non-empty files that coexist"
     cleanup_test_env
 
-    if $BINARY install --agent opencode --component sdd --component skills --preset full-gentleman --persona neutral 2>&1; then
+    if $BINARY install --agent opencode --component sdd --component skills --preset full-pentest --persona neutral 2>&1; then
         local skill_dir="$HOME/.config/opencode/skills"
 
         # SDD skills should exist
