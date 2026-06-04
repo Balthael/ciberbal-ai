@@ -745,7 +745,7 @@ func executeCommand(name string, args ...string) error {
 	cmd := exec.Command(name, args...)
 	cmd.Stdin = commandStdin
 
-	if streamCommandOutput {
+	if shouldStreamCommandOutput(name, args) {
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		return cmd.Run()
@@ -760,6 +760,83 @@ func executeCommand(name string, args ...string) error {
 	}
 
 	return nil
+}
+
+func shouldStreamCommandOutput(name string, args []string) bool {
+	return streamCommandOutput || commandRequiresTerminal(name, args)
+}
+
+func commandRequiresTerminal(name string, args []string) bool {
+	baseName := filepath.Base(name)
+	switch baseName {
+	case "sudo", "su", "doas":
+		return true
+	}
+
+	if !isShellCommand(baseName) {
+		return false
+	}
+
+	script, ok := shellCommandScript(args)
+	return ok && containsAnyCommandToken(script, "sudo", "su", "doas")
+}
+
+func isShellCommand(name string) bool {
+	switch name {
+	case "bash", "sh", "zsh", "fish":
+		return true
+	default:
+		return false
+	}
+}
+
+func shellCommandScript(args []string) (string, bool) {
+	for i, arg := range args {
+		if arg == "-c" && i+1 < len(args) {
+			return args[i+1], true
+		}
+	}
+	return "", false
+}
+
+func containsCommandToken(command, token string) bool {
+	for _, field := range strings.FieldsFunc(command, func(r rune) bool {
+		switch r {
+		case ' ', '\t', '\n', '\r', ';', '|', '&', '(', ')', '{', '}':
+			return true
+		default:
+			return false
+		}
+	}) {
+		if matchesCommandToken(field, token) {
+			return true
+		}
+	}
+	return false
+}
+
+func matchesCommandToken(field, token string) bool {
+	field = strings.Trim(field, `"'`)
+	if field == token {
+		return true
+	}
+
+	if strings.HasPrefix(field, string(os.PathSeparator)) ||
+		strings.HasPrefix(field, "./") ||
+		strings.HasPrefix(field, "../") {
+		return filepath.Base(field) == token
+	}
+
+	return false
+}
+
+func containsAnyCommandToken(command string, tokens ...string) bool {
+	for _, token := range tokens {
+		if containsCommandToken(command, token) {
+			return true
+		}
+	}
+	return false
 }
 
 // selectedSkillIDs returns the skill IDs to install. If the selection

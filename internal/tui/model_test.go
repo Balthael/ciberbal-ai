@@ -86,6 +86,64 @@ func TestReviewToInstallingInitializesProgress(t *testing.T) {
 	}
 }
 
+func TestStartInstallingUsesBubbleTeaExecCommand(t *testing.T) {
+	m := NewModel(system.DetectionResult{}, "dev")
+	m.Screen = ScreenReview
+	m.ExecuteFn = func(
+		selection model.Selection,
+		resolved planner.ResolvedPlan,
+		detection system.DetectionResult,
+		onProgress pipeline.ProgressFunc,
+	) pipeline.ExecutionResult {
+		t.Fatal("ExecuteFn should be deferred to Bubble Tea Exec, not run by the returned command directly")
+		return pipeline.ExecutionResult{}
+	}
+
+	updated, cmd := m.startInstalling()
+	state := updated.(Model)
+	if !state.pipelineRunning {
+		t.Fatal("pipelineRunning = false, want true")
+	}
+	if cmd == nil {
+		t.Fatal("startInstalling() returned nil command, want tick plus exec batch")
+	}
+
+	msg := cmd()
+	batch, ok := msg.(tea.BatchMsg)
+	if !ok {
+		t.Fatalf("command message type = %T, want tea.BatchMsg", msg)
+	}
+	if len(batch) != 2 {
+		t.Fatalf("batch length = %d, want 2", len(batch))
+	}
+
+	if msg := batch[1](); msg == nil {
+		t.Fatal("second batch command returned nil message, want Bubble Tea exec handoff")
+	}
+}
+
+func TestPipelineExecCommandRunReturnsExecutionError(t *testing.T) {
+	wantErr := fmt.Errorf("pipeline failed")
+	cmd := &pipelineExecCommand{
+		executeFn: func(
+			selection model.Selection,
+			resolved planner.ResolvedPlan,
+			detection system.DetectionResult,
+			onProgress pipeline.ProgressFunc,
+		) pipeline.ExecutionResult {
+			onProgress(pipeline.ProgressEvent{StepID: "step-a", Status: pipeline.StepStatusRunning})
+			return pipeline.ExecutionResult{Err: wantErr}
+		},
+	}
+
+	if gotErr := cmd.Run(); gotErr != wantErr {
+		t.Fatalf("Run() error = %v, want %v", gotErr, wantErr)
+	}
+	if cmd.result.Err != wantErr {
+		t.Fatalf("stored result error = %v, want %v", cmd.result.Err, wantErr)
+	}
+}
+
 func TestStepProgressMsgUpdatesProgressState(t *testing.T) {
 	m := NewModel(system.DetectionResult{}, "dev")
 	m.Screen = ScreenInstalling

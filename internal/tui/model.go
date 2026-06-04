@@ -3,6 +3,7 @@ package tui
 import (
 	"context"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -1621,7 +1622,10 @@ func (m Model) confirmSelection() (tea.Model, tea.Cmd) {
 }
 
 // startInstalling initializes the progress state from the resolved plan and
-// starts the pipeline execution in a goroutine if ExecuteFn is provided.
+// starts the pipeline execution with Bubble Tea's Exec support if ExecuteFn is
+// provided. Exec releases the terminal while the pipeline runs, which keeps
+// interactive dependency installers such as sudo from competing with the TUI
+// input loop.
 func (m Model) startInstalling() (tea.Model, tea.Cmd) {
 	m.setScreen(ScreenInstalling)
 	m.SpinnerFrame = 0
@@ -1648,24 +1652,60 @@ func (m Model) startInstalling() (tea.Model, tea.Cmd) {
 
 	m.pipelineRunning = true
 
-	// Capture values for the goroutine closure.
+	// Capture values for the Exec command.
 	executeFn := m.ExecuteFn
 	selection := m.Selection
 	resolved := m.DependencyPlan
 	detection := m.Detection
 
-	return m, tea.Batch(tickCmd(), func() tea.Msg {
-		onProgress := func(event pipeline.ProgressEvent) {
-			// NOTE: ProgressFunc is called synchronously from the pipeline goroutine.
-			// We cannot use p.Send() here because we don't have a reference to the
-			// tea.Program. Instead, these events are collected in the ExecutionResult
-			// and the PipelineDoneMsg handles the final state. For real-time updates,
-			// we rely on the pipeline calling this synchronously from each step.
-		}
+	installCmd := &pipelineExecCommand{
+		executeFn: executeFn,
+		selection: selection,
+		resolved:  resolved,
+		detection: detection,
+	}
 
-		result := executeFn(selection, resolved, detection, onProgress)
+	return m, tea.Batch(tickCmd(), tea.Exec(installCmd, func(err error) tea.Msg {
+		result := installCmd.result
+		if err != nil && result.Err == nil {
+			result.Err = err
+		}
 		return PipelineDoneMsg{Result: result}
-	})
+	}))
+}
+
+type pipelineExecCommand struct {
+	executeFn ExecuteFunc
+	selection model.Selection
+	resolved  planner.ResolvedPlan
+	detection system.DetectionResult
+	result    pipeline.ExecutionResult
+}
+
+var _ tea.ExecCommand = (*pipelineExecCommand)(nil)
+
+func (c *pipelineExecCommand) Run() error {
+	onProgress := func(event pipeline.ProgressEvent) {
+		// NOTE: ProgressFunc is called synchronously while Bubble Tea's Exec has
+		// released the terminal. The final ExecutionResult remains the durable
+		// source of truth for updating progress once the TUI resumes.
+	}
+
+	c.result = c.executeFn(c.selection, c.resolved, c.detection, onProgress)
+	return c.result.Err
+}
+
+func (c *pipelineExecCommand) SetStdin(io.Reader) {
+	// executeFn delegates command I/O to the CLI layer. This ExecCommand exists
+	// to make Bubble Tea release/restore the terminal around that execution.
+}
+
+func (c *pipelineExecCommand) SetStdout(io.Writer) {
+	// See SetStdin.
+}
+
+func (c *pipelineExecCommand) SetStderr(io.Writer) {
+	// See SetStdin.
 }
 
 // withResetSyncState clears sync-result state so ScreenSync shows the confirmation
