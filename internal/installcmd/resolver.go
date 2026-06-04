@@ -48,14 +48,46 @@ func (profileResolver) ResolveAgentInstall(profile system.PlatformProfile, agent
 	}
 }
 
+// NpmGlobalInstallCommand returns a command sequence for installing an npm
+// package globally. On Linux, sudo may reset PATH via secure_path, so invoke
+// npm through `sudo env PATH=... npm` instead of `sudo npm`.
+func NpmGlobalInstallCommand(profile system.PlatformProfile, packageName string) CommandSequence {
+	command := []string{"npm", "install", "-g", packageName}
+	if profile.OS == "linux" && !profile.NpmWritable {
+		return CommandSequence{append([]string{"sudo", "env", "PATH=" + npmSudoPath()}, command...)}
+	}
+	return CommandSequence{command}
+}
+
+func npmSudoPath() string {
+	pathValue := osGetenv("PATH")
+	if pathValue == "" {
+		pathValue = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+	}
+
+	if npmPath, err := cmdLookPath("npm"); err == nil {
+		npmDir := filepath.Dir(npmPath)
+		if !pathListContains(pathValue, npmDir) {
+			pathValue = npmDir + string(os.PathListSeparator) + pathValue
+		}
+	}
+	return pathValue
+}
+
+func pathListContains(pathValue, dir string) bool {
+	for _, entry := range filepath.SplitList(pathValue) {
+		if entry == dir {
+			return true
+		}
+	}
+	return false
+}
+
 // resolveClaudeCodeInstall returns the npm install command sequence for Claude Code.
 // On Linux with system npm, sudo is required. With nvm/fnm/volta, it is not.
 // On Windows and macOS, sudo is never needed.
 func resolveClaudeCodeInstall(profile system.PlatformProfile) CommandSequence {
-	if profile.OS == "linux" && !profile.NpmWritable {
-		return CommandSequence{{"sudo", "npm", "install", "-g", "@anthropic-ai/claude-code"}}
-	}
-	return CommandSequence{{"npm", "install", "-g", "@anthropic-ai/claude-code"}}
+	return NpmGlobalInstallCommand(profile, "@anthropic-ai/claude-code")
 }
 
 func (profileResolver) ResolveComponentInstall(profile system.PlatformProfile, component model.ComponentID) (CommandSequence, error) {
@@ -106,10 +138,7 @@ func resolveOpenCodeInstall(profile system.PlatformProfile) (CommandSequence, er
 			{"brew", "install", "anomalyco/tap/opencode"},
 		}, nil
 	case "apt", "pacman", "dnf":
-		if profile.NpmWritable {
-			return CommandSequence{{"npm", "install", "-g", "opencode-ai"}}, nil
-		}
-		return CommandSequence{{"sudo", "npm", "install", "-g", "opencode-ai"}}, nil
+		return NpmGlobalInstallCommand(profile, "opencode-ai"), nil
 	case "winget":
 		// On Windows, npm global installs do not require sudo.
 		return CommandSequence{{"npm", "install", "-g", "opencode-ai"}}, nil

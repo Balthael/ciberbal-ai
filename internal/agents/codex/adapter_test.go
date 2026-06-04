@@ -104,7 +104,7 @@ func TestInstallCommand(t *testing.T) {
 		{
 			name:    "linux system npm uses sudo",
 			profile: system.PlatformProfile{OS: "linux", LinuxDistro: system.LinuxDistroUbuntu, PackageManager: "apt"},
-			want:    [][]string{{"sudo", "npm", "install", "-g", "@openai/codex"}},
+			want:    [][]string{{"sudo", "env", "PATH=" + os.Getenv("PATH"), "npm", "install", "-g", "@openai/codex"}},
 		},
 		{
 			name:    "linux nvm skips sudo",

@@ -104,17 +104,17 @@ func TestInstallCommand(t *testing.T) {
 		{
 			name:    "ubuntu resolves npm install",
 			profile: system.PlatformProfile{OS: "linux", LinuxDistro: system.LinuxDistroUbuntu, PackageManager: "apt"},
-			want:    [][]string{{"sudo", "npm", "install", "-g", "opencode-ai"}},
+			want:    [][]string{{"sudo", "env", "PATH=" + os.Getenv("PATH"), "npm", "install", "-g", "opencode-ai"}},
 		},
 		{
 			name:    "arch resolves npm install",
 			profile: system.PlatformProfile{OS: "linux", LinuxDistro: system.LinuxDistroArch, PackageManager: "pacman"},
-			want:    [][]string{{"sudo", "npm", "install", "-g", "opencode-ai"}},
+			want:    [][]string{{"sudo", "env", "PATH=" + os.Getenv("PATH"), "npm", "install", "-g", "opencode-ai"}},
 		},
 		{
 			name:    "fedora resolves npm install",
 			profile: system.PlatformProfile{OS: "linux", LinuxDistro: system.LinuxDistroFedora, PackageManager: "dnf"},
-			want:    [][]string{{"sudo", "npm", "install", "-g", "opencode-ai"}},
+			want:    [][]string{{"sudo", "env", "PATH=" + os.Getenv("PATH"), "npm", "install", "-g", "opencode-ai"}},
 		},
 		{
 			name:    "fedora with writable npm skips sudo",

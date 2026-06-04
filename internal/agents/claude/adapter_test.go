@@ -137,12 +137,12 @@ func TestInstallCommand(t *testing.T) {
 		{
 			name:    "ubuntu profile uses sudo npm",
 			profile: system.PlatformProfile{OS: "linux", LinuxDistro: system.LinuxDistroUbuntu, PackageManager: "apt"},
-			want:    [][]string{{"sudo", "npm", "install", "-g", "@anthropic-ai/claude-code"}},
+			want:    [][]string{{"sudo", "env", "PATH=" + os.Getenv("PATH"), "npm", "install", "-g", "@anthropic-ai/claude-code"}},
 		},
 		{
 			name:    "arch profile uses sudo npm",
 			profile: system.PlatformProfile{OS: "linux", LinuxDistro: system.LinuxDistroArch, PackageManager: "pacman"},
-			want:    [][]string{{"sudo", "npm", "install", "-g", "@anthropic-ai/claude-code"}},
+			want:    [][]string{{"sudo", "env", "PATH=" + os.Getenv("PATH"), "npm", "install", "-g", "@anthropic-ai/claude-code"}},
 		},
 	}
 

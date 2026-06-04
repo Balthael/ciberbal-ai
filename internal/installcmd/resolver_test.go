@@ -214,6 +214,48 @@ func TestResolveDependencyInstall(t *testing.T) {
 	}
 }
 
+func TestNpmGlobalInstallCommandLinuxSudoPreservesPath(t *testing.T) {
+	origLookPath := cmdLookPath
+	origGetenv := osGetenv
+	t.Cleanup(func() {
+		cmdLookPath = origLookPath
+		osGetenv = origGetenv
+	})
+
+	osGetenv = func(key string) string {
+		if key == "PATH" {
+			return "/opt/node/bin:/usr/bin:/bin"
+		}
+		return ""
+	}
+	cmdLookPath = func(name string) (string, error) {
+		if name == "npm" {
+			return "/opt/node/bin/npm", nil
+		}
+		return "", fmt.Errorf("not found")
+	}
+
+	got := NpmGlobalInstallCommand(
+		system.PlatformProfile{OS: "linux", PackageManager: "apt", NpmWritable: false},
+		"opencode-ai",
+	)
+	want := CommandSequence{{"sudo", "env", "PATH=/opt/node/bin:/usr/bin:/bin", "npm", "install", "-g", "opencode-ai"}}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("NpmGlobalInstallCommand() = %v, want %v", got, want)
+	}
+}
+
+func TestNpmGlobalInstallCommandWritableSkipsSudo(t *testing.T) {
+	got := NpmGlobalInstallCommand(
+		system.PlatformProfile{OS: "linux", PackageManager: "apt", NpmWritable: true},
+		"opencode-ai",
+	)
+	want := CommandSequence{{"npm", "install", "-g", "opencode-ai"}}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("NpmGlobalInstallCommand() = %v, want %v", got, want)
+	}
+}
+
 func TestGitBashPathResolvesFromGitOnPath(t *testing.T) {
 	// Create a fake directory structure mimicking Git for Windows layout:
 	// tmpdir/cmd/git.exe  (git binary)
@@ -301,7 +343,7 @@ func TestResolveAgentInstall(t *testing.T) {
 			name:    "claude-code on linux system npm uses sudo",
 			profile: system.PlatformProfile{OS: "linux", LinuxDistro: system.LinuxDistroUbuntu, PackageManager: "apt"},
 			agent:   model.AgentClaudeCode,
-			want:    CommandSequence{{"sudo", "npm", "install", "-g", "@anthropic-ai/claude-code"}},
+			want:    CommandSequence{{"sudo", "env", "PATH=" + os.Getenv("PATH"), "npm", "install", "-g", "@anthropic-ai/claude-code"}},
 		},
 		{
 			name:    "claude-code on linux nvm skips sudo",
@@ -313,7 +355,7 @@ func TestResolveAgentInstall(t *testing.T) {
 			name:    "claude-code on arch system npm uses sudo",
 			profile: system.PlatformProfile{OS: "linux", LinuxDistro: system.LinuxDistroArch, PackageManager: "pacman"},
 			agent:   model.AgentClaudeCode,
-			want:    CommandSequence{{"sudo", "npm", "install", "-g", "@anthropic-ai/claude-code"}},
+			want:    CommandSequence{{"sudo", "env", "PATH=" + os.Getenv("PATH"), "npm", "install", "-g", "@anthropic-ai/claude-code"}},
 		},
 		{
 			name:    "claude-code on fedora nvm skips sudo",
@@ -331,7 +373,7 @@ func TestResolveAgentInstall(t *testing.T) {
 			name:    "opencode on ubuntu system npm uses sudo",
 			profile: system.PlatformProfile{OS: "linux", LinuxDistro: system.LinuxDistroUbuntu, PackageManager: "apt"},
 			agent:   model.AgentOpenCode,
-			want:    CommandSequence{{"sudo", "npm", "install", "-g", "opencode-ai"}},
+			want:    CommandSequence{{"sudo", "env", "PATH=" + os.Getenv("PATH"), "npm", "install", "-g", "opencode-ai"}},
 		},
 		{
 			name:    "opencode on ubuntu nvm skips sudo",
@@ -343,13 +385,13 @@ func TestResolveAgentInstall(t *testing.T) {
 			name:    "opencode on arch system npm uses sudo",
 			profile: system.PlatformProfile{OS: "linux", LinuxDistro: system.LinuxDistroArch, PackageManager: "pacman"},
 			agent:   model.AgentOpenCode,
-			want:    CommandSequence{{"sudo", "npm", "install", "-g", "opencode-ai"}},
+			want:    CommandSequence{{"sudo", "env", "PATH=" + os.Getenv("PATH"), "npm", "install", "-g", "opencode-ai"}},
 		},
 		{
 			name:    "opencode on fedora system npm uses sudo",
 			profile: system.PlatformProfile{OS: "linux", LinuxDistro: system.LinuxDistroFedora, PackageManager: "dnf"},
 			agent:   model.AgentOpenCode,
-			want:    CommandSequence{{"sudo", "npm", "install", "-g", "opencode-ai"}},
+			want:    CommandSequence{{"sudo", "env", "PATH=" + os.Getenv("PATH"), "npm", "install", "-g", "opencode-ai"}},
 		},
 		{
 			name:    "opencode on fedora nvm skips sudo",

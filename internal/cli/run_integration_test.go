@@ -461,7 +461,7 @@ func TestRunInstallLinuxAgentInstallResolvesGoInstallCommand(t *testing.T) {
 	}
 	foundNpmInstall := false
 	for _, cmd := range commands {
-		if strings.Contains(cmd, "sudo npm install -g opencode-ai") {
+		if strings.Contains(cmd, "sudo env PATH=") && strings.Contains(cmd, "npm install -g opencode-ai") {
 			foundNpmInstall = true
 			break
 		}

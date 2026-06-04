@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"path/filepath"
 
+	"github.com/gentleman-programming/gentle-ai/internal/installcmd"
 	"github.com/gentleman-programming/gentle-ai/internal/model"
 	"github.com/gentleman-programming/gentle-ai/internal/system"
 )
@@ -66,10 +67,7 @@ func (a *Adapter) SupportsAutoInstall() bool {
 
 func (a *Adapter) InstallCommand(profile system.PlatformProfile) ([][]string, error) {
 	// Codex CLI installs via npm on all platforms.
-	if profile.OS == "linux" && !profile.NpmWritable {
-		return [][]string{{"sudo", "npm", "install", "-g", "@openai/codex"}}, nil
-	}
-	return [][]string{{"npm", "install", "-g", "@openai/codex"}}, nil
+	return installcmd.NpmGlobalInstallCommand(profile, "@openai/codex"), nil
 }
 
 // --- Config paths ---
