@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 
@@ -82,6 +83,9 @@ func RunArgs(args []string, stdout io.Writer) error {
 		if err != nil {
 			return fmt.Errorf("resolve user home directory: %w", err)
 		}
+		if err := preauthenticateSudoForTUIInstall(result, profile, stdout); err != nil {
+			return err
+		}
 
 		m := tui.NewModel(result, Version)
 		m.ExecuteFn = tuiExecute
@@ -136,6 +140,59 @@ func RunArgs(args []string, stdout io.Writer) error {
 	default:
 		return fmt.Errorf("unknown command %q — run 'ciberbal-ai help' for available commands", args[0])
 	}
+}
+
+func preauthenticateSudoForTUIInstall(detection system.DetectionResult, profile system.PlatformProfile, stdout io.Writer) error {
+	if !tuiInstallNeedsSudo(detection.Dependencies, profile) {
+		return nil
+	}
+	if _, err := exec.LookPath("sudo"); err != nil {
+		return nil
+	}
+
+	_, _ = fmt.Fprintln(stdout, "ciberbal-ai necesita permisos sudo para instalar dependencias faltantes.")
+	_, _ = fmt.Fprintln(stdout, "Validando sudo antes de abrir la TUI...")
+
+	cmd := exec.Command("sudo", "-v")
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("validar sudo antes de abrir la TUI: %w", err)
+	}
+	return nil
+}
+
+func tuiInstallNeedsSudo(report system.DependencyReport, profile system.PlatformProfile) bool {
+	for _, dep := range report.MissingRequired {
+		for _, command := range system.InstallCommandsForDep(dep, profile) {
+			if len(command) == 0 {
+				continue
+			}
+			if command[0] == "sudo" || commandContainsSudo(command) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func commandContainsSudo(command []string) bool {
+	for _, part := range command {
+		for _, field := range strings.FieldsFunc(part, func(r rune) bool {
+			switch r {
+			case ' ', '\t', '\n', '\r', ';', '|', '&', '(', ')', '{', '}':
+				return true
+			default:
+				return false
+			}
+		}) {
+			if strings.Trim(field, `"'`) == "sudo" {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 func runSkillRegistry(args []string, stdout io.Writer) error {

@@ -186,6 +186,24 @@ func TestRunArgsUnknownCommandReturnsError(t *testing.T) {
 	}
 }
 
+func TestTUIInstallNeedsSudoForMissingAptDependency(t *testing.T) {
+	report := system.DependencyReport{MissingRequired: []string{"node"}}
+	profile := system.PlatformProfile{OS: "linux", PackageManager: "apt"}
+
+	if !tuiInstallNeedsSudo(report, profile) {
+		t.Fatal("tuiInstallNeedsSudo() = false, want true for missing apt dependency")
+	}
+}
+
+func TestTUIInstallNeedsSudoSkipsWhenNoMissingRequiredDeps(t *testing.T) {
+	report := system.DependencyReport{AllPresent: true}
+	profile := system.PlatformProfile{OS: "linux", PackageManager: "apt"}
+
+	if tuiInstallNeedsSudo(report, profile) {
+		t.Fatal("tuiInstallNeedsSudo() = true, want false when required dependencies are present")
+	}
+}
+
 // --- Sync command wiring tests ---
 
 // TestRunArgsSyncDryRunIsDispatchedAndPrintsReport verifies that
