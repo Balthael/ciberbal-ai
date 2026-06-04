@@ -194,12 +194,21 @@ detect_install_method() {
     # go install is last resort because the Go module proxy can lag
     # behind new tags for up to 30 minutes, causing @latest to install
     # a stale version.
+    local repo_root_detected=false
+    if find_repo_root >/dev/null 2>&1; then
+        repo_root_detected=true
+    fi
+
     if command -v brew &>/dev/null; then
         INSTALL_METHOD="brew"
         success "Homebrew found — will install via brew tap"
-    elif find_repo_root >/dev/null 2>&1 && command -v go &>/dev/null; then
-        INSTALL_METHOD="source"
-        success "Local repository checkout detected — will build from source"
+    elif [ "$repo_root_detected" = true ]; then
+        if command -v go &>/dev/null; then
+            INSTALL_METHOD="source"
+            success "Local repository checkout detected — will build from source"
+        else
+            fatal "Local ciberbal-ai checkout detected, but Go is not available in PATH. Install Go first (for example: sudo apt install -y golang), then run ./scripts/install.sh again. To intentionally install the older published release instead, pass --method binary explicitly."
+        fi
     else
         INSTALL_METHOD="binary"
         info "Will download pre-built binary from GitHub Releases"
