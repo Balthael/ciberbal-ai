@@ -16,6 +16,32 @@ func TestAllEmbeddedAssetsAreReadable(t *testing.T) {
 		"claude/persona-gentleman.md",
 		"claude/sdd-orchestrator.md",
 
+		// Claude sub-agent files
+		"claude/agents/sdd-init.md",
+		"claude/agents/sdd-explore.md",
+		"claude/agents/sdd-propose.md",
+		"claude/agents/sdd-spec.md",
+		"claude/agents/sdd-design.md",
+		"claude/agents/sdd-tasks.md",
+		"claude/agents/sdd-apply.md",
+		"claude/agents/sdd-verify.md",
+		"claude/agents/sdd-archive.md",
+		"claude/agents/sdd-onboard.md",
+		"claude/agents/jd-judge-a.md",
+		"claude/agents/jd-judge-b.md",
+		"claude/agents/jd-fix-agent.md",
+
+		// Claude slash command files
+		"claude/commands/sdd-apply.md",
+		"claude/commands/sdd-archive.md",
+		"claude/commands/sdd-continue.md",
+		"claude/commands/sdd-explore.md",
+		"claude/commands/sdd-ff.md",
+		"claude/commands/sdd-init.md",
+		"claude/commands/sdd-new.md",
+		"claude/commands/sdd-onboard.md",
+		"claude/commands/sdd-verify.md",
+
 		// OpenCode agent files
 		"opencode/persona-gentleman.md",
 		"opencode/sdd-overlay-single.json",

@@ -250,9 +250,10 @@ func Inject(homeDir string, adapter agents.Adapter, sddMode model.SDDModeID, opt
 	if adapter.SupportsSlashCommands() {
 		commandsDir := adapter.CommandsDir(homeDir)
 		if commandsDir != "" {
-			commandEntries, err := fs.ReadDir(assets.FS, "opencode/commands")
+			commandsAssetDir := assets.SDDCommandsAssetDir(adapter.Agent())
+			commandEntries, err := fs.ReadDir(assets.FS, commandsAssetDir)
 			if err != nil {
-				return InjectionResult{}, fmt.Errorf("read embedded opencode/commands: %w", err)
+				return InjectionResult{}, fmt.Errorf("read embedded %s: %w", commandsAssetDir, err)
 			}
 
 			for _, entry := range commandEntries {
@@ -260,7 +261,7 @@ func Inject(homeDir string, adapter agents.Adapter, sddMode model.SDDModeID, opt
 					continue
 				}
 
-				content := assets.MustRead("opencode/commands/" + entry.Name())
+				content := assets.MustRead(commandsAssetDir + "/" + entry.Name())
 				path := filepath.Join(commandsDir, entry.Name())
 				writeResult, err := filemerge.WriteFileAtomic(path, []byte(content), 0o644)
 				if err != nil {

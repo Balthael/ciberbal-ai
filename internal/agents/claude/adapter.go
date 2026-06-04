@@ -125,11 +125,11 @@ func (a *Adapter) OutputStyleDir(homeDir string) string {
 }
 
 func (a *Adapter) SupportsSlashCommands() bool {
-	return false
+	return true
 }
 
-func (a *Adapter) CommandsDir(_ string) string {
-	return ""
+func (a *Adapter) CommandsDir(homeDir string) string {
+	return filepath.Join(homeDir, ".claude", "commands")
 }
 
 func (a *Adapter) SupportsSkills() bool {
@@ -142,6 +142,25 @@ func (a *Adapter) SupportsSystemPrompt() bool {
 
 func (a *Adapter) SupportsMCP() bool {
 	return true
+}
+
+// --- Sub-agent support ---
+//
+// Claude Code loads agent files from ~/.claude/agents/*.md. Each file carries
+// frontmatter (name, description, tools, model) and a prompt body. The SDD
+// component copies the embedded set at install time so the per-phase agent
+// contract is enforced at the agent layer.
+
+func (a *Adapter) SupportsSubAgents() bool {
+	return true
+}
+
+func (a *Adapter) SubAgentsDir(homeDir string) string {
+	return filepath.Join(homeDir, ".claude", "agents")
+}
+
+func (a *Adapter) EmbeddedSubAgentsDir() string {
+	return "claude/agents"
 }
 
 func defaultStat(path string) statResult {
