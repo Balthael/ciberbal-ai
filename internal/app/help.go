@@ -25,6 +25,6 @@ FLAGS
   --help, -h    Show this help
 
 Run 'ciberbal-ai help' for this message.
-Documentation: https://github.com/Gentleman-Programming/gentle-ai
+Documentation: https://github.com/Balthael/ciberbal-ai
 `, version)
 }

@@ -8,7 +8,7 @@ import (
 
 func TestRenderCLI_IncompleteCheckDoesNotClaimUpToDate(t *testing.T) {
 	results := []UpdateResult{
-		{Tool: ToolInfo{Name: "gentle-ai"}, InstalledVersion: "1.0.0", LatestVersion: "1.0.0", Status: UpToDate},
+		{Tool: ToolInfo{Name: "ciberbal-ai"}, InstalledVersion: "1.0.0", LatestVersion: "1.0.0", Status: UpToDate},
 		{Tool: ToolInfo{Name: "engram"}, Status: CheckFailed, Err: fmt.Errorf("timeout")},
 	}
 
@@ -27,7 +27,7 @@ func TestRenderCLI_IncompleteCheckDoesNotClaimUpToDate(t *testing.T) {
 
 func TestCheckFailures(t *testing.T) {
 	results := []UpdateResult{
-		{Tool: ToolInfo{Name: "gentle-ai"}, Status: UpToDate},
+		{Tool: ToolInfo{Name: "ciberbal-ai"}, Status: UpToDate},
 		{Tool: ToolInfo{Name: "engram"}, Status: CheckFailed},
 		{Tool: ToolInfo{Name: "gga"}, Status: CheckFailed},
 	}
@@ -41,5 +41,18 @@ func TestCheckFailures(t *testing.T) {
 	}
 	if !HasCheckFailures(results) {
 		t.Fatalf("HasCheckFailures() = false, want true")
+	}
+}
+
+func TestUpdateSummaryLineUsesCiberbalName(t *testing.T) {
+	line := UpdateSummaryLine([]UpdateResult{
+		{Tool: ToolInfo{Name: "ciberbal-ai"}, InstalledVersion: "1.0.0", LatestVersion: "1.1.0", Status: UpdateAvailable},
+	})
+
+	if !strings.Contains(line, "ciberbal-ai 1.0.0 -> 1.1.0") {
+		t.Fatalf("UpdateSummaryLine() = %q, want ciberbal-ai update", line)
+	}
+	if strings.Contains(line, "gentle-ai") {
+		t.Fatalf("UpdateSummaryLine() = %q, must not mention gentle-ai", line)
 	}
 }
