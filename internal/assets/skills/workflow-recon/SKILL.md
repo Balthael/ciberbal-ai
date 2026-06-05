@@ -18,9 +18,10 @@ Guide early engagement work toward meaningful context gathering before deeper va
 
 ## Guardrails
 
+- **Authorization required**: Do NOT collect data outside the approved target set and scope boundaries. Every recon action must be covered by explicit written authorization (ROE / engagement letter).
 - Separate observation from inference.
 - Avoid noisy collection that does not improve later decision-making.
-- Keep scope and legality visible in every recon step.
+- Keep scope, legality, and authorization visible in every recon step.
 
 ## Evidence
 

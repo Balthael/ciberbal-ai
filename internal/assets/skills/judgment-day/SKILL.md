@@ -8,7 +8,7 @@ description: >
   "doble review", "juzgar", "que lo juzguen".
 license: Apache-2.0
 metadata:
-  author: gentleman-programming
+  author: ciberbal-ai
   version: "1.4"
 ---
 

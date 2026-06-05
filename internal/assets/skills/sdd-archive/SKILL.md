@@ -5,7 +5,7 @@ description: >
   Trigger: When the orchestrator launches you to archive a change after implementation and verification.
 license: MIT
 metadata:
-  author: gentleman-programming
+  author: ciberbal-ai
   version: "2.0"
 ---
 

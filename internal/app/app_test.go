@@ -105,7 +105,7 @@ func TestListBackupsWithSourceMetadata(t *testing.T) {
 	}
 }
 
-// TestRunArgsRestoreListIsDispatched verifies that `gentle-ai restore --list`
+// TestRunArgsRestoreListIsDispatched verifies that `ciberbal-ai restore --list`
 // is correctly dispatched through RunArgs and produces a meaningful response
 // (either a backup list or a "no backups" message — never "unknown command").
 func TestRunArgsRestoreListIsDispatched(t *testing.T) {

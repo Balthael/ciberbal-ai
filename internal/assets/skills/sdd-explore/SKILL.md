@@ -5,7 +5,7 @@ description: >
   Trigger: When the orchestrator launches you to think through a feature, investigate the codebase, or clarify requirements.
 license: MIT
 metadata:
-  author: gentleman-programming
+  author: ciberbal-ai
   version: "2.0"
 ---
 

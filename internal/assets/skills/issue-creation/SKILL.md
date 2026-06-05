@@ -5,7 +5,7 @@ description: >
   Trigger: When creating a GitHub issue, reporting a bug, or requesting a feature.
 license: Apache-2.0
 metadata:
-  author: gentleman-programming
+  author: ciberbal-ai
   version: "1.0"
 ---
 

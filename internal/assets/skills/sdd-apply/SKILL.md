@@ -5,7 +5,7 @@ description: >
   Trigger: When the orchestrator launches you to implement one or more tasks from a change.
 license: MIT
 metadata:
-  author: gentleman-programming
+  author: ciberbal-ai
   version: "3.0"
 ---
 

@@ -2,7 +2,7 @@
 
 ## What This Is
 
-When `gentle-ai` installs GGA on Windows, it now installs a `gga.ps1` wrapper
+When `ciberbal-ai` installs GGA on Windows, it now installs a `gga.ps1` wrapper
 alongside the main bash script. This allows users to run `gga` directly from
 PowerShell without manually switching to Git Bash.
 

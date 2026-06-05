@@ -18,7 +18,7 @@ Guide reconnaissance toward high-signal target understanding that improves later
 
 ## Guardrails
 
-- Respect scope and legal boundaries for passive and active collection.
+- **Authorization required**: Do NOT collect data outside the approved target set and scope boundaries. Every recon action must be covered by explicit written authorization (ROE / engagement letter). Passive OSINT on out-of-scope assets is still out of scope.
 - Separate confirmed observations from inference.
 - Do not bury the operator in low-signal noise.
 

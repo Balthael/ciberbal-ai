@@ -167,9 +167,9 @@ func TestInjectClaudeNeutralWritesFullPersonaWithoutRegionalLanguage(t *testing.
 	}
 
 	text := string(content)
-	// Neutral persona is the same teacher — should have Senior Architect.
-	if !strings.Contains(text, "Senior Architect") {
-		t.Fatal("Neutral persona should contain 'Senior Architect'")
+	// Neutral persona is the same senior — should have Senior Offensive Security Engineer.
+	if !strings.Contains(text, "Senior Offensive Security Engineer") {
+		t.Fatal("Neutral persona should contain 'Senior Offensive Security Engineer'")
 	}
 	// Should NOT have gentleman-specific regional language.
 	if strings.Contains(text, "Rioplatense") {
@@ -369,7 +369,7 @@ func TestInjectOpenCodeNeutralPreservesManagedSections(t *testing.T) {
 	text := string(content)
 
 	// Neutral content should be present
-	if !strings.Contains(text, "Senior Architect") {
+	if !strings.Contains(text, "Senior Offensive Security Engineer") {
 		t.Fatal("AGENTS.md missing neutral persona content")
 	}
 	if strings.Contains(text, "Rioplatense") {
@@ -425,7 +425,7 @@ func TestInjectVSCodeNeutralPreservesManagedSections(t *testing.T) {
 	}
 	text := string(content)
 
-	if !strings.Contains(text, "Senior Architect") {
+	if !strings.Contains(text, "Senior Offensive Security Engineer") {
 		t.Fatal("instructions file missing neutral persona content")
 	}
 	if strings.Contains(text, "Rioplatense") {
@@ -469,7 +469,7 @@ func TestInjectNeutralPreservesWhenMarkerAtByteZero(t *testing.T) {
 	}
 	text := string(content)
 
-	if !strings.Contains(text, "Senior Architect") {
+	if !strings.Contains(text, "Senior Offensive Security Engineer") {
 		t.Fatal("missing neutral persona content")
 	}
 	if !strings.Contains(text, "<!-- gentle-ai:sdd-orchestrator -->") {
@@ -638,8 +638,8 @@ func TestInjectCursorGentlemanWritesRulesFileWithRealContent(t *testing.T) {
 	}
 
 	text := string(content)
-	if !strings.Contains(text, "Senior Architect") {
-		t.Fatal("Cursor persona missing 'Senior Architect' — got neutral fallback instead of generic persona")
+	if !strings.Contains(text, "Senior Offensive Security Engineer") {
+		t.Fatal("Cursor persona missing 'Senior Offensive Security Engineer' — got neutral fallback instead of generic persona")
 	}
 	if !strings.Contains(text, "Skills") {
 		t.Fatal("Cursor persona missing skills section")
@@ -670,8 +670,8 @@ func TestInjectGeminiGentlemanWritesSystemPromptWithRealContent(t *testing.T) {
 	}
 
 	text := string(content)
-	if !strings.Contains(text, "Senior Architect") {
-		t.Fatal("Gemini persona missing 'Senior Architect'")
+	if !strings.Contains(text, "Senior Offensive Security Engineer") {
+		t.Fatal("Gemini persona missing 'Senior Offensive Security Engineer'")
 	}
 }
 
@@ -703,8 +703,8 @@ func TestInjectVSCodeGentlemanWritesInstructionsFile(t *testing.T) {
 	if !strings.Contains(text, "applyTo: \"**\"") {
 		t.Fatal("VS Code instructions file missing YAML frontmatter applyTo pattern")
 	}
-	if !strings.Contains(text, "Senior Architect") {
-		t.Fatal("VS Code persona missing 'Senior Architect'")
+	if !strings.Contains(text, "Senior Offensive Security Engineer") {
+		t.Fatal("VS Code persona missing 'Senior Offensive Security Engineer'")
 	}
 }
 

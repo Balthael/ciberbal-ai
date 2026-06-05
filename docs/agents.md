@@ -82,15 +82,15 @@ Antigravity is an agent-first platform with built-in sub-agents (Browser, Termin
 - Custom sub-agents defined as markdown files in `~/.gemini/agents/`
 
 ### Cursor
-- Native subagents via `~/.cursor/agents/sdd-{phase}.md` (9 files installed by gentle-ai)
+- Native subagents via `~/.cursor/agents/sdd-{phase}.md` (9 files installed by ciberbal-ai)
 - Skills at `~/.cursor/skills/`
-- System prompt in `~/.cursor/rules/gentle-ai.mdc`
+- System prompt in `~/.cursor/rules/gentle-ai.mdc` (legacy filename retained for compatibility)
 - MCP config in `~/.cursor/mcp.json`
 
 ### VS Code Copilot
 - Uses the `runSubagent` tool with support for parallel execution
 - Skills at `~/.copilot/skills/`
-- System prompt at `Code/User/prompts/gentle-ai.instructions.md`
+- System prompt at `Code/User/prompts/gentle-ai.instructions.md` (legacy filename retained for compatibility)
 - MCP config at `Code/User/mcp.json`
 
 ### Codex

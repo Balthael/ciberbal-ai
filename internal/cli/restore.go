@@ -15,7 +15,7 @@ import (
 // It matches app.tuiRestore and backup.RestoreService.Restore signatures.
 type RestoreFunc func(manifest backup.Manifest) error
 
-// RunRestore is the top-level entry point for `gentle-ai restore [args]`.
+// RunRestore is the top-level entry point for `ciberbal-ai restore [args]`.
 // It reads backups from the real home directory and uses the default restore function.
 func RunRestore(args []string, stdout io.Writer) error {
 	homeDir, err := osUserHomeDir()
@@ -91,7 +91,7 @@ func runRestoreWithHomeDir(args []string, restorer RestoreFunc, stdout io.Writer
 
 	// If no subcommand argument, show usage.
 	if len(positional) == 0 {
-		return fmt.Errorf("usage: gentle-ai restore [--list | latest | <id>] [--yes]")
+		return fmt.Errorf("usage: ciberbal-ai restore [--list | latest | <id>] [--yes]")
 	}
 
 	target := positional[0]
@@ -163,7 +163,7 @@ func resolveRestoreTarget(target string, backups []backup.Manifest) (backup.Mani
 		}
 	}
 
-	return backup.Manifest{}, fmt.Errorf("backup %q not found — use `gentle-ai restore --list` to see available backups", target)
+	return backup.Manifest{}, fmt.Errorf("backup %q not found — use `ciberbal-ai restore --list` to see available backups", target)
 }
 
 // promptRestoreConfirm asks the user to confirm a restore operation.

@@ -7,7 +7,7 @@
 - Homebrew installed and available in PATH.
 - `git` available.
 
-### Ubuntu/Debian (and derivatives like Linux Mint, Pop!_OS)
+### Ubuntu/Debian/Kali/Parrot (and derivatives like Linux Mint, Pop!_OS)
 
 - `apt-get` available (standard on these distros).
 - `sudo` access for package installs.
@@ -55,11 +55,11 @@ After completion, verify that agent configs and selected components were install
 
 When checks pass, installer reports:
 
-`You're ready. Run 'claude' or 'opencode' and start building.`
+`You're ready. Launch your agent and start the engagement.`
 
 ## Unsupported platforms
 
 If you run the installer on an unsupported OS or Linux distro, it exits immediately with an error:
 
 - `unsupported operating system: only macOS, Linux, and Windows are supported (detected <os>)`
-- `unsupported linux distro: Linux support is limited to Ubuntu/Debian, Arch, and Fedora/RHEL family (detected <distro>)`
+- `unsupported linux distro: Linux support is limited to Ubuntu/Debian (including Kali and Parrot), Arch, and Fedora/RHEL family (detected <distro>)`

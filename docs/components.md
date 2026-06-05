@@ -8,7 +8,7 @@
 
 | Component | ID | Description |
 |-----------|-----|-------------|
-| Engram | `engram` | Persistent cross-session memory via MCP — auto-detection of project name, full-text search, git sync, project consolidation. See [engram repo](https://github.com/Gentleman-Programming/engram) |
+| Engram | `engram` | Persistent cross-session memory via MCP — auto-detection of project name, full-text search, git sync, project consolidation. See the upstream [Engram repo](https://github.com/Gentleman-Programming/engram) |
 | SDD | `sdd` | Spec-Driven Development workflow (9 phases) — the agent handles SDD organically when the task warrants it, or when you ask; you don't need to learn the commands |
 | Skills | `skills` | Curated capability-layer skill library spanning pentesting domains and delivery workflows |
 | Context7 | `context7` | MCP server for live framework/library documentation |
@@ -19,7 +19,7 @@
 
 ## GGA Behavior
 
-`gentle-ai --component gga` installs/provisions the `gga` binary globally on your machine.
+`ciberbal-ai --component gga` installs/provisions the `gga` binary globally on your machine.
 
 It does **not** run project-level hook setup automatically (`gga init` / `gga install`) because that should be an explicit decision per repository.
 
@@ -66,7 +66,7 @@ These foundation skills are installed by default with both `full-pentest` and `e
 
 ### Coding Skills (separate repository)
 
-For framework-specific skills (React 19, Angular, TypeScript, Tailwind 4, Zod 4, Playwright, etc.), see [Gentleman-Programming/Gentleman-Skills](https://github.com/Gentleman-Programming/Gentleman-Skills). These are maintained by the community and installed separately by cloning the repo and copying skills to your agent's skills directory.
+For framework-specific development skills (React 19, Angular, TypeScript, Tailwind 4, Zod 4, Playwright, etc.), use an external/community skill repository such as [Gentleman-Programming/Gentleman-Skills](https://github.com/Gentleman-Programming/Gentleman-Skills). These are separate from Ciberbal's bundled pentest and workflow skills.
 
 ---
 

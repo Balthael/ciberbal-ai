@@ -5,7 +5,7 @@ description: >
   Trigger: When the orchestrator launches you to verify a completed (or partially completed) change.
 license: MIT
 metadata:
-  author: gentleman-programming
+  author: ciberbal-ai
   version: "3.0"
 ---
 

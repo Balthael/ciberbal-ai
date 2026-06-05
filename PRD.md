@@ -532,10 +532,10 @@ curl -sL get.gentleman.ai/ai | sh
 For CI, automation, and team provisioning:
 
 ```bash
-gentle-ai install \
+ciberbal-ai install \
   --agents claude-code,opencode \
-  --preset gentleman \
-  --skills full-stack \
+  --preset full-pentest \
+  --skills pentest \
   --mcp context7,notion \
   --non-interactive
 ```
@@ -727,7 +727,7 @@ graph LR
 
 ```mermaid
 flowchart TD
-    START([gentle-ai install]) --> DETECT
+    START([ciberbal-ai install]) --> DETECT
 
     subgraph PHASE_1["Phase 1: System Detection"]
         DETECT[Detect OS / Arch / WSL / Termux]
@@ -1213,9 +1213,9 @@ type Preset struct {
 ### 10.1 Self-Update
 
 **Requirements:**
-- R-UPDATE-01: The installer MUST support `gentle-ai update` to check for and install newer versions of itself
-- R-UPDATE-02: The installer MUST support `gentle-ai update --skills` to pull latest skill versions for all configured agents
-- R-UPDATE-03: The installer MUST support `gentle-ai update --engram` to update Engram to the latest version
+- R-UPDATE-01: The installer MUST support `ciberbal-ai update` to check for and install newer versions of itself
+- R-UPDATE-02: The installer MUST support `ciberbal-ai update --skills` to pull latest skill versions for all configured agents
+- R-UPDATE-03: The installer MUST support `ciberbal-ai update --engram` to update Engram to the latest version
 - R-UPDATE-04: The installer SHOULD check for updates on launch and notify (not auto-update)
 
 ### 10.2 Config Sync
@@ -1261,7 +1261,7 @@ When the installer completes with "Full Gentleman" preset + Claude Code + OpenCo
 
 **Verification:**
 - The installer runs a health check: `engram serve` responds, MCP tools are callable, skills are in correct paths
-- Clear output: "You're ready. Run `claude` or `opencode` and start building."
+- Clear output: "You're ready. Run `claude` or `opencode` and start your first engagement."
 
 ### 11.2 Next Steps Guide
 
@@ -1294,7 +1294,7 @@ The completion screen MUST show:
 ### 12.3 Reliability
 - R-REL-01: Every installation step MUST be idempotent (safe to re-run)
 - R-REL-02: If a step fails, the installer MUST continue with remaining steps and report failures at the end
-- R-REL-03: The installer MUST support `gentle-ai repair` to re-run failed steps
+- R-REL-03: The installer MUST support `ciberbal-ai repair` to re-run failed steps
 - R-REL-04: The backup system MUST create timestamped snapshots before any config modification
 
 ### 12.4 Extensibility
@@ -1383,31 +1383,31 @@ These are NOT requirements for v1 but should inform architectural decisions:
 ## Appendix B: Example Non-Interactive Commands
 
 ```bash
-# Full Gentleman preset with Claude Code + OpenCode
-gentle-ai install --preset gentleman --agents claude-code,opencode
+# Full Ciberbal preset with Claude Code + OpenCode
+ciberbal-ai install --preset full-pentest --agents claude-code,opencode
 
 # Minimal setup, just Claude Code with basic security
-gentle-ai install --preset minimal --agents claude-code
+ciberbal-ai install --preset minimal --agents claude-code
 
 # Team provisioning from shared profile
-gentle-ai install --profile ./team-ai-config.yaml
+ciberbal-ai install --profile ./team-ai-config.yaml
 
 # Update all skills to latest
-gentle-ai update --skills
+ciberbal-ai update --skills
 
 # Update Engram
-gentle-ai update --engram
+ciberbal-ai update --engram
 
 # Backup current configs
-gentle-ai backup
+ciberbal-ai backup
 
 # Restore from backup
-gentle-ai restore --list
-gentle-ai restore --id 2026-02-27-143022
+ciberbal-ai restore --list
+ciberbal-ai restore --id 2026-02-27-143022
 
 # Repair failed installation
-gentle-ai repair
+ciberbal-ai repair
 
 # Show what's installed
-gentle-ai status
+ciberbal-ai status
 ```

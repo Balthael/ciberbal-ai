@@ -824,7 +824,7 @@ func TestRenderSyncReportIncludesManagedActions(t *testing.T) {
 
 // TestRunSyncExcludesUnmanagedLookalikeFile verifies the spec scenario:
 // "User modified an unmanaged file that resembles a managed target —
-// gentle-ai sync excludes it from the plan and does not adopt it."
+// ciberbal-ai sync excludes it from the plan and does not adopt it."
 //
 // We create a file with the same NAME as a managed target but in a directory
 // that is NOT part of the managed inventory (simulating an unmanaged lookalike).

@@ -5,7 +5,7 @@ description: >
   Trigger: When the orchestrator launches you to onboard a user through the full SDD cycle.
 license: MIT
 metadata:
-  author: gentleman-programming
+  author: ciberbal-ai
   version: "1.0"
 ---
 
