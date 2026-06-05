@@ -41,9 +41,9 @@ func TestInjectClaudeGentlemanWritesSectionWithRealContent(t *testing.T) {
 	if !strings.Contains(text, "<!-- /gentle-ai:persona -->") {
 		t.Fatal("CLAUDE.md missing close marker for persona")
 	}
-	// Real content check — the embedded persona has these patterns.
-	if !strings.Contains(text, "Senior Architect") {
-		t.Fatal("CLAUDE.md missing real persona content (expected 'Senior Architect')")
+	// Real content check — the embedded Claude persona has these patterns.
+	if !strings.Contains(text, "Senior Offensive Security Engineer") {
+		t.Fatal("CLAUDE.md missing real persona content (expected 'Senior Offensive Security Engineer')")
 	}
 }
 
@@ -779,20 +779,20 @@ func TestInjectClaudeAutoHealsStaleFreeTextPersona(t *testing.T) {
 	}
 
 	// The persona content must NOT appear twice (no duplicate blocks).
-	firstPersonaIdx := strings.Index(text, "Senior Architect")
+	firstPersonaIdx := strings.Index(text, "Senior Offensive Security Engineer")
 	if firstPersonaIdx < 0 {
-		t.Fatal("CLAUDE.md missing 'Senior Architect' persona content")
+		t.Fatal("CLAUDE.md missing 'Senior Offensive Security Engineer' persona content")
 	}
 	// Verify there's no second occurrence outside the markers.
-	lastPersonaIdx := strings.LastIndex(text, "Senior Architect")
+	lastPersonaIdx := strings.LastIndex(text, "Senior Offensive Security Engineer")
 	if firstPersonaIdx != lastPersonaIdx {
 		// It's OK if the same string appears inside the single persona marker block
 		// multiple times (e.g., content + newlines), but there must not be a
 		// separate free-text block also containing it.
-		// Check: everything before the open marker should NOT contain "Senior Architect".
+		// Check: everything before the open marker should NOT contain the Claude persona landmark.
 		openMarkerIdx := strings.Index(text, "<!-- gentle-ai:persona -->")
-		if openMarkerIdx >= 0 && strings.Contains(text[:openMarkerIdx], "Senior Architect") {
-			t.Fatal("CLAUDE.md still has 'Senior Architect' before the persona marker — legacy block not fully stripped")
+		if openMarkerIdx >= 0 && strings.Contains(text[:openMarkerIdx], "Senior Offensive Security Engineer") {
+			t.Fatal("CLAUDE.md still has 'Senior Offensive Security Engineer' before the persona marker — legacy block not fully stripped")
 		}
 	}
 }

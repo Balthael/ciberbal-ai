@@ -1,10 +1,10 @@
 ---
-description: Inicializa una nueva feature o tarea mediana/grande usando SDD en modo Hybrid-First para Cascade en Windsurf
+description: Inicializa un nuevo engagement autorizado o auditoría mediana/grande usando Ciberbal en modo Hybrid-First para Cascade en Windsurf
 ---
 
 # /sdd-new
 
-Este workflow define el comportamiento obligatorio de **Cascade** al iniciar una nueva feature, cambio de alcance medio/grande o trabajo con incertidumbre suficiente como para requerir planificación formal.
+Este workflow define el comportamiento obligatorio de **Cascade** al iniciar un nuevo engagement autorizado, auditoría, laboratorio, CTF o trabajo con incertidumbre suficiente como para requerir planificación formal.
 
 ## Propósito
 
@@ -12,20 +12,22 @@ Usar las capacidades nativas de Windsurf de forma **Hybrid-First**:
 
 - **Plan Mode** para planificar
 - **Memories / MCP (Engram)** para recuperar contexto previo
-- **Artifacts `.sdd/`** solo como contrato formal de planificación
-- **Code Mode** únicamente después de aprobación explícita del usuario
+- **Artifacts `.sdd/`** solo como contrato formal de alcance, ROE y evidencia
+- **Code Mode** únicamente después de aprobación explícita del usuario y dentro del alcance autorizado
 
 ## Cuándo usar este workflow
 
 Activa este workflow cuando ocurra cualquiera de estas condiciones:
 
-- El usuario inicia una **nueva feature**
-- La tarea afecta **múltiples archivos o módulos**
-- El cambio tiene **riesgo arquitectónico** o incertidumbre
-- El usuario pide explícitamente trabajar con **SDD**
-- La implementación requiere un contrato formal antes de escribir código
+- El usuario inicia un **nuevo engagement autorizado**
+- La tarea afecta **múltiples servicios, targets o artefactos de evidencia**
+- El trabajo tiene **riesgo de alcance/ROE** o incertidumbre
+- El usuario pide explícitamente trabajar con **Ciberbal** o el flujo legacy **SDD**
+- La ejecución requiere un contrato formal antes de tocar targets o recolectar evidencia
 
-Si la tarea es pequeña, puntual o claramente de mantenimiento menor, este workflow NO es el camino correcto.
+Si la tarea es pequeña, puntual o claramente fuera de un engagement, este workflow NO es el camino correcto.
+
+Antes de cualquier recon, explotación, validación o reporte, confirma que el target esté explícitamente autorizado: HTB/THM/lab/CTF, ROE firmado/autorización escrita, o auditoría defensiva sobre activos propios del usuario. Si la autorización no está clara, DETENTE y pregunta.
 
 ---
 
@@ -39,37 +41,37 @@ Acciones obligatorias:
 
 1. Analizar el pedido del usuario
 2. Formular un plan de alto nivel
-3. Identificar alcance, riesgos, dependencias y archivos probables
+3. Identificar alcance, ROE, riesgos, dependencias y artefactos probables
 
 Acciones prohibidas en esta etapa:
 
-- NO escribir código de producción
+- NO ejecutar acciones contra targets
 - NO entrar en Code Mode
-- NO modificar lógica de la aplicación
-- NO ejecutar implementación parcial "para adelantar trabajo"
+- NO modificar sistemas ni evidencia
+- NO ejecutar explotación parcial "para adelantar trabajo"
 - NO asumir aprobación implícita
 
-**Este workflow es de planificación formal, no de ejecución.**
+**Este workflow es de planificación formal, no de ejecución ofensiva.**
 
 ---
 
 ### 2. Recuperar contexto antes de proponer nada
 
-Antes de redactar cualquier artefacto SDD, **DEBES recuperar contexto arquitectónico y restricciones del proyecto**.
+Antes de redactar cualquier artefacto Ciberbal, **DEBES recuperar contexto del engagement, alcance, ROE y restricciones del proyecto**.
 
 Orden de preferencia:
 
 1. Usar **Engram** mediante las herramientas MCP canónicas: `mem_search` para buscar decisiones previas y `mem_context` para recuperar el contexto reciente del proyecto
 2. Si Engram no está disponible o no devuelve contexto suficiente, leer `AGENTS.md`
-3. Si existe contexto adicional del proyecto relacionado con SDD o arquitectura, incorporarlo también
+3. Si existe contexto adicional del proyecto relacionado con Ciberbal, alcance, ROE o evidencia, incorporarlo también
 
 Debes buscar, como mínimo:
 
-- Decisiones arquitectónicas previas
+- Decisiones previas del engagement o auditoría
 - Convenciones del repositorio
-- Restricciones de implementación
+- Restricciones de alcance/ROE
 - Reglas de calidad o revisión
-- Patrones ya establecidos para cambios similares
+- Patrones ya establecidos para evidencia o reportes similares
 
 Si no encuentras contexto suficiente, debes decirlo explícitamente en el plan. **No inventes convenciones.**
 
@@ -90,11 +92,12 @@ En esta fase, esos dos archivos son **obligatorios**.
 
 Debe capturar, como mínimo:
 
-- Título del cambio
-- Problema a resolver
+- Título del engagement o auditoría
+- Target/problema a investigar
 - Objetivo
 - Alcance incluido
 - Alcance excluido
+- ROE y límites de seguridad
 - Enfoque propuesto
 - Riesgos principales
 - Supuestos abiertos
@@ -104,18 +107,18 @@ Debe capturar, como mínimo:
 
 Debe capturar, como mínimo:
 
-- Requisitos funcionales
-- Requisitos no funcionales si aplican
-- Escenarios de uso
-- Criterios de aceptación
-- Restricciones técnicas relevantes
+- Requisitos de evidencia
+- Requisitos de seguridad/ROE si aplican
+- Escenarios de validación
+- Criterios de aceptación de findings
+- Restricciones técnicas relevantes del target/lab
 - Casos límite conocidos o supuestos importantes
 
 Los artefactos deben ser:
 
 - Claros
 - Revisables
-- Ejecutables como contrato de implementación
+- Ejecutables como contrato de evidencia y ejecución autorizada
 - Consistentes con el contexto recuperado del proyecto
 
 ---
@@ -126,8 +129,9 @@ Después de crear `.sdd/proposal.md` y `.sdd/spec.md`, debes presentar un resume
 
 Ese resumen debe incluir:
 
-- Objetivo de la feature
+- Objetivo del engagement
 - Alcance propuesto
+- ROE y límites de seguridad
 - Riesgos o dudas principales
 - Confirmación de que los archivos fueron creados:
   - `.sdd/proposal.md`
@@ -143,13 +147,13 @@ Una vez generados los documentos, debes **detenerte ABSOLUTAMENTE**.
 
 Debes preguntar **exactamente**:
 
-**¿Apruebas este plan de implementación?**
+**¿Apruebas este plan de ejecución autorizada?**
 
 Luego:
 
 - Debes **esperar confirmación explícita**
 - NO puedes continuar a Code Mode sin aprobación
-- NO puedes empezar implementación "mientras tanto"
+- NO puedes empezar ejecución, explotación o recolección de evidencia "mientras tanto"
 - NO puedes interpretar silencio como aprobación
 - NO puedes reemplazar esta pausa con un resumen informal
 
@@ -166,7 +170,7 @@ Si el usuario pide cambios:
 - Debes seguir en Plan Mode
 - Debes ajustar `.sdd/proposal.md` y/o `.sdd/spec.md`
 - Debes volver a presentar el plan
-- Debes volver a preguntar: **¿Apruebas este plan de implementación?**
+- Debes volver a preguntar: **¿Apruebas este plan de ejecución autorizada?**
 
 ---
 
@@ -177,12 +181,12 @@ Sigue esta secuencia sin saltos:
 1. Detectar que el trabajo amerita `/sdd-new`
 2. Entrar en **Plan Mode**
 3. Recuperar contexto con **Engram** o, en su defecto, leer `AGENTS.md`
-4. Sintetizar restricciones, alcance y riesgos
+4. Sintetizar restricciones, alcance, ROE y riesgos
 5. Crear `.sdd/` si no existe
 6. Generar `.sdd/proposal.md`
 7. Generar `.sdd/spec.md`
 8. Presentar un resumen breve al usuario
-9. Preguntar exactamente: **¿Apruebas este plan de implementación?**
+9. Preguntar exactamente: **¿Apruebas este plan de ejecución autorizada?**
 10. **Detenerte y esperar respuesta**
 
 ---
@@ -191,13 +195,13 @@ Sigue esta secuencia sin saltos:
 
 Mientras este workflow no haya sido aprobado por el usuario:
 
-- NO escribir código de producción
-- NO editar archivos de implementación
-- NO ejecutar tareas de aplicación
+- NO ejecutar acciones contra targets
+- NO editar sistemas o evidencia fuera del plan
+- NO ejecutar tareas de explotación/aplicación
 - NO cambiar a Code Mode
 - NO crear commits
-- NO correr una implementación parcial
-- NO continuar automáticamente al siguiente paso de SDD
+- NO correr una ejecución parcial
+- NO continuar automáticamente al siguiente paso de Ciberbal
 
 ---
 
@@ -210,9 +214,7 @@ Este workflow se considera correctamente ejecutado solo si:
 - Generó `.sdd/proposal.md`
 - Generó `.sdd/spec.md`
 - Presentó un resumen al usuario
-- Preguntó exactamente: **¿Apruebas este plan de implementación?**
+- Preguntó exactamente: **¿Apruebas este plan de ejecución autorizada?**
 - Se detuvo a esperar aprobación explícita
 
 Si cualquiera de esos puntos no ocurre, el workflow está mal ejecutado.
-
-

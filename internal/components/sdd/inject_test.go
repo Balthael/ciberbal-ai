@@ -342,8 +342,8 @@ func TestInjectCursorWritesSDDOrchestratorAndSkills(t *testing.T) {
 	}
 
 	text := string(content)
-	if !strings.Contains(text, "Spec-Driven Development") {
-		t.Fatal("Cursor system prompt missing SDD orchestrator content")
+	if !strings.Contains(text, "Ciberbal Engagement Workflow") {
+		t.Fatal("Cursor system prompt missing Ciberbal orchestrator content")
 	}
 	if !strings.Contains(text, "sub-agent") {
 		t.Fatal("Cursor system prompt missing SDD sub-agent references")
@@ -375,8 +375,8 @@ func TestInjectGeminiWritesSDDOrchestratorAndSkills(t *testing.T) {
 	}
 
 	text := string(content)
-	if !strings.Contains(text, "Spec-Driven Development") {
-		t.Fatal("Gemini system prompt missing SDD orchestrator content")
+	if !strings.Contains(text, "Ciberbal Engagement Workflow") {
+		t.Fatal("Gemini system prompt missing Ciberbal orchestrator content")
 	}
 
 	// Should also write SDD skill files.
@@ -412,8 +412,8 @@ func TestInjectVSCodeWritesSDDOrchestratorAndSkills(t *testing.T) {
 	}
 
 	text := string(content)
-	if !strings.Contains(text, "Spec-Driven Development") {
-		t.Fatal("VS Code system prompt missing SDD orchestrator content")
+	if !strings.Contains(text, "Ciberbal Engagement Workflow") {
+		t.Fatal("VS Code system prompt missing Ciberbal orchestrator content")
 	}
 
 	// Should also write SDD skill files under ~/.copilot/skills/.
@@ -2504,8 +2504,8 @@ func TestInjectCodexWritesSDDOrchestratorAndSkills(t *testing.T) {
 	}
 
 	text := string(content)
-	if !strings.Contains(text, "Spec-Driven Development") {
-		t.Fatal("agents.md missing SDD orchestrator content")
+	if !strings.Contains(text, "Ciberbal Engagement Workflow") {
+		t.Fatal("agents.md missing Ciberbal orchestrator content")
 	}
 
 	// Codex-specific asset must reference Codex skill paths.

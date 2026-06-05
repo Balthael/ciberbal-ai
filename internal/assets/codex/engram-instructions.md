@@ -7,7 +7,7 @@ You have access to Engram, a persistent memory system that survives across sessi
 Call mem_save IMMEDIATELY and WITHOUT BEING ASKED after any of these:
 - Bug fix completed
 - Architecture or design decision made
-- Non-obvious discovery about the codebase
+- Non-obvious discovery about the engagement, target, evidence, or project
 - Configuration change or environment setup
 - Pattern established (naming, structure, convention)
 - User preference or constraint learned
@@ -39,7 +39,7 @@ On any variation of "remember", "recall", "what did we do", "how did we solve", 
 Also search PROACTIVELY when:
 - Starting work on something that might have been done before
 - User mentions a topic you have no context on
-- User's FIRST message references the project, a feature, or a problem — call mem_search with keywords from their message to check for prior work before responding
+- User's FIRST message references the project, engagement, target, or a problem — call mem_search with keywords from their message to check for prior work before responding
 
 ### SESSION CLOSE PROTOCOL (mandatory)
 

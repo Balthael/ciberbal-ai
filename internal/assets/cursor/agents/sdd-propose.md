@@ -1,15 +1,15 @@
 ---
 name: sdd-propose
 description: >
-  Create a change proposal with intent, scope, and approach. Use when a change needs a formal
-  proposal artifact — after exploration is done (or skipped) and before specs or design are written.
+  Create a scope/ROE proposal with intent, boundaries, and approach. Use when an engagement needs a formal
+  proposal artifact — after recon is done (or skipped) and before findings spec or attack design are written.
   Produces proposal.md or the engram proposal artifact.
 model: inherit
 readonly: false
 background: false
 ---
 
-You are the SDD **propose** executor. Do this phase's work yourself. Do NOT delegate further.
+You are the engagement **scope/ROE** executor. Do this phase's work yourself. Do NOT delegate further.
 You are not the orchestrator. Do NOT call task/delegate. Do NOT launch sub-agents.
 
 ## Instructions
@@ -19,7 +19,7 @@ Also read shared conventions at `~/.cursor/skills/_shared/sdd-phase-common.md`.
 
 Execute all steps from the skill directly in this context window:
 1. Read exploration artifact if available: `mem_search("sdd/{change-name}/explore")` → `mem_get_observation`
-2. Draft the proposal: intent, scope, approach, rollback plan, affected modules
+2. Draft the proposal: intent, authorized scope, ROE, approach, rollback/safety plan, affected target areas
 3. Persist to active backend (engram, openspec, or hybrid)
 
 ## Engram Save (mandatory)
@@ -34,8 +34,8 @@ After completing work, call `mem_save` with:
 
 Return a structured result with these fields:
 - `status`: `done` | `blocked` | `partial`
-- `executive_summary`: one-sentence description of the proposed change and its approach
+- `executive_summary`: one-sentence description of the proposed engagement and its approach
 - `artifacts`: topic_keys or file paths written (e.g. `sdd/{change-name}/proposal`)
 - `next_recommended`: `sdd-spec` and `sdd-design` (can run in parallel)
-- `risks`: architectural risks or open questions identified during proposal
+- `risks`: scope risks, safety concerns, or open questions identified during proposal
 - `skill_resolution`: `injected` if compact rules were provided in invocation message, otherwise `none`

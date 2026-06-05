@@ -1,9 +1,11 @@
 ---
-description: Guided SDD walkthrough — onboard a user through the full SDD cycle using their real codebase
+description: Guided engagement walkthrough — authorized target or lab
 ---
 
 If the native `sdd-onboard` sub-agent is available, delegate this command to it.
 Otherwise, read the skill file at `~/.claude/skills/sdd-onboard/SKILL.md` FIRST, then follow its instructions exactly inline.
+
+AUTHORIZED SCOPE GUARD: Only operate against targets you are explicitly authorized to test (HTB machines, personal labs, CTF environments, or engagement targets covered by a signed ROE). Do NOT proceed if no authorized target is defined.
 
 CONTEXT:
 - Working directory: !`pwd`
@@ -11,7 +13,7 @@ CONTEXT:
 - Artifact store mode: engram
 
 TASK:
-Guide the user through a complete SDD cycle using their actual codebase. This is a real change with real artifacts, not a toy example. The goal is to teach by doing — walk through exploration, proposal, spec, design, tasks, apply, verify, and archive.
+Guide the user through a complete authorized engagement workflow using their target or lab. This is real scoped work with real artifacts, not a toy example. The goal is to teach by doing — walk through recon, scope/ROE, findings spec, attack design, enumeration tasks, exploitation, evidence review, and reporting archive.
 
 ENGRAM PERSISTENCE (artifact store mode: engram):
 Save onboarding progress as you go:
