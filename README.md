@@ -2,6 +2,8 @@
 
 <h1>ciberbal-ai</h1>
 
+<img src="docs/assets/ciberbal.png" alt="ciberbal-ai cybersecurity agent ecosystem" width="900">
+
 <p><strong>Configure your AI coding agents for authorized cybersecurity work: pentesting methodology, persistent memory, curated skills, MCP tools, and reproducible workflows.</strong></p>
 
 <p>
