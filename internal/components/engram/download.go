@@ -124,6 +124,12 @@ func DownloadLatestBinary(profile system.PlatformProfile) (string, error) {
 
 // fetchLatestEngramVersion queries the GitHub Releases API for the latest engram
 // release and returns the version string (without leading "v").
+//
+// Fallback chain (mirrors install.sh behaviour):
+//  1. GitHub API with token (if available)
+//  2. GitHub API anonymously when the tokened request returns 401/403
+//  3. Non-API redirect resolution (/releases/latest) when the API is rate-limited
+//     or returns 401/403 regardless of whether a token was present
 func fetchLatestEngramVersion() (string, error) {
 	token := githubToken()
 	version, status, err := fetchLatestEngramVersionRequest(token)
@@ -136,9 +142,21 @@ func fetchLatestEngramVersion() (string, error) {
 	// endpoint can respond 401/403 for a different repository. Retry anonymously
 	// before failing because the release metadata is public.
 	if token != "" && (status == http.StatusUnauthorized || status == http.StatusForbidden) {
-		version, _, retryErr := fetchLatestEngramVersionRequest("")
+		var retryErr error
+		version, status, retryErr = fetchLatestEngramVersionRequest("")
 		if retryErr == nil {
 			return version, nil
+		}
+		// Fall through to redirect fallback when anonymous retry also gets 401/403.
+		err = retryErr
+	}
+
+	// Last resort: resolve the version from the non-API /releases/latest redirect.
+	// This works even when the GitHub API is rate-limiting unauthenticated clients
+	// (HTTP 403) because it hits github.com, not api.github.com.
+	if status == http.StatusUnauthorized || status == http.StatusForbidden {
+		if redirectVersion, redirectErr := fetchLatestEngramVersionFromRedirect(); redirectErr == nil {
+			return redirectVersion, nil
 		}
 	}
 

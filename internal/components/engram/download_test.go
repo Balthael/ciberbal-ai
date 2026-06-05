@@ -342,6 +342,64 @@ func TestDownloadLatestBinaryWindows(t *testing.T) {
 	}
 }
 
+// makeServerWithRedirectFallback returns an httptest.Server that:
+//   - Returns HTTP 403 for ALL calls to the GitHub API releases/latest endpoint
+//     (simulating rate-limiting or cross-repo token rejection)
+//   - Serves the non-API redirect: GET /<owner>/<repo>/releases/latest → 302 to /<owner>/<repo>/releases/tag/v<version>
+//   - Serves a valid tar.gz + checksums.txt for the given version
+//
+// apiAlwaysForbidden controls whether the API endpoint (/repos/…/releases/latest)
+// always returns 403 or only when a token is present.
+// tokenThatFails is the token that triggers 403 on the API; empty means always-403.
+func makeServerWithRedirectFallback(t *testing.T, version, tokenThatFails string) *httptest.Server {
+	t.Helper()
+	tarContent := buildFakeTarGz(t, "engram")
+	checksums := ""
+	for _, goos := range []string{"linux", "darwin"} {
+		for _, goarch := range []string{"amd64", "arm64"} {
+			name := engramArchiveName(version, goos, goarch)
+			checksums += makeChecksumsTxt(name, tarContent)
+		}
+	}
+
+	var srv *httptest.Server
+	srv = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		// API endpoint — returns 403 to force redirect fallback.
+		// In tests, engramAPIBaseURL() returns the server URL (contains 127.0.0.1).
+		case strings.Contains(r.URL.Path, "repos/") && strings.Contains(r.URL.Path, "releases"):
+			authHeader := r.Header.Get("Authorization")
+			if tokenThatFails == "" || authHeader == "Bearer "+tokenThatFails || authHeader == "" {
+				// Always 403, or specifically when the matching token is present, or no token.
+				w.WriteHeader(http.StatusForbidden)
+				return
+			}
+			// Any other token: also 403 (defensive — only used in "always forbidden" scenario).
+			w.WriteHeader(http.StatusForbidden)
+
+		// The non-API redirect path: GitHub redirects /releases/latest → /releases/tag/vX.Y.Z
+		case r.URL.Path == "/"+engramOwner+"/"+engramRepo+"/releases/latest":
+			http.Redirect(w, r, srv.URL+"/"+engramOwner+"/"+engramRepo+"/releases/tag/v"+version, http.StatusFound)
+
+		// The resolved tag page — the client lands here after following the redirect.
+		case strings.Contains(r.URL.Path, "/releases/tag/v"):
+			w.WriteHeader(http.StatusOK)
+
+		// checksums.txt download
+		case strings.HasSuffix(r.URL.Path, "checksums.txt"):
+			w.Header().Set("Content-Type", "text/plain")
+			fmt.Fprint(w, checksums)
+
+		// Binary asset download
+		default:
+			w.Header().Set("Content-Type", "application/octet-stream")
+			w.WriteHeader(http.StatusOK)
+			w.Write(tarContent)
+		}
+	}))
+	return srv
+}
+
 // --- TestDownloadLatestBinaryAPIError ---
 
 func TestDownloadLatestBinaryAPIError(t *testing.T) {
@@ -578,6 +636,115 @@ func TestDownloadLatestBinaryFallsBackToAnonymousWhenTokenGets403(t *testing.T) 
 
 	if _, err := os.Stat(installedPath); err != nil {
 		t.Fatalf("stat installed binary: %v", err)
+	}
+}
+
+// TestDownloadLatestBinaryRedirectFallbackNoToken verifies that when there is no
+// GitHub token and the API returns 403 (e.g. rate-limited anonymous request),
+// fetchLatestEngramVersion falls back to the non-API /releases/latest redirect
+// and DownloadLatestBinary completes successfully.
+func TestDownloadLatestBinaryRedirectFallbackNoToken(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("redirect fallback test targets Linux/macOS path")
+	}
+
+	const version = "1.3.0"
+
+	server := makeServerWithRedirectFallback(t, version, "" /* always 403 on API */)
+	defer server.Close()
+
+	origClient := engramHTTPClient
+	origBaseURL := engramGitHubBaseURL
+	engramHTTPClient = server.Client()
+	engramGitHubBaseURL = server.URL
+	t.Cleanup(func() {
+		engramHTTPClient = origClient
+		engramGitHubBaseURL = origBaseURL
+	})
+
+	// Ensure no token is set so the initial anonymous API request gets 403.
+	t.Setenv("GITHUB_TOKEN", "")
+	t.Setenv("GH_TOKEN", "")
+
+	tmpDir := t.TempDir()
+	origInstallDirFn := engramInstallDirFn
+	engramInstallDirFn = func(goos string) string { return tmpDir }
+	t.Cleanup(func() { engramInstallDirFn = origInstallDirFn })
+
+	profile := system.PlatformProfile{OS: "linux", PackageManager: "apt"}
+	installedPath, err := DownloadLatestBinary(profile)
+	if err != nil {
+		t.Fatalf("DownloadLatestBinary() with redirect fallback (no token): error = %v", err)
+	}
+
+	if !strings.HasPrefix(installedPath, tmpDir) {
+		t.Errorf("installedPath = %q, want prefix %q", installedPath, tmpDir)
+	}
+
+	info, err := os.Stat(installedPath)
+	if err != nil {
+		t.Fatalf("stat installed binary: %v", err)
+	}
+	if info.Size() == 0 {
+		t.Errorf("installed binary is empty")
+	}
+	if info.Mode()&0o111 == 0 {
+		t.Errorf("installed binary is not executable")
+	}
+}
+
+// TestDownloadLatestBinaryRedirectFallbackTokenAndRetryBothForbidden verifies that
+// when a GitHub token is present AND the token-authed API returns 403 AND the
+// anonymous API retry also returns 403, fetchLatestEngramVersion falls back to the
+// non-API /releases/latest redirect and DownloadLatestBinary completes successfully.
+func TestDownloadLatestBinaryRedirectFallbackTokenAndRetryBothForbidden(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("redirect fallback test targets Linux/macOS path")
+	}
+
+	const fakeToken = "ci-scoped-token"
+	const version = "1.3.0"
+
+	// tokenThatFails="" means ALL API requests (with or without token) get 403.
+	server := makeServerWithRedirectFallback(t, version, "" /* always 403 on API */)
+	defer server.Close()
+
+	origClient := engramHTTPClient
+	origBaseURL := engramGitHubBaseURL
+	engramHTTPClient = server.Client()
+	engramGitHubBaseURL = server.URL
+	t.Cleanup(func() {
+		engramHTTPClient = origClient
+		engramGitHubBaseURL = origBaseURL
+	})
+
+	t.Setenv("GITHUB_TOKEN", fakeToken)
+	t.Setenv("GH_TOKEN", "")
+
+	tmpDir := t.TempDir()
+	origInstallDirFn := engramInstallDirFn
+	engramInstallDirFn = func(goos string) string { return tmpDir }
+	t.Cleanup(func() { engramInstallDirFn = origInstallDirFn })
+
+	profile := system.PlatformProfile{OS: "linux", PackageManager: "apt"}
+	installedPath, err := DownloadLatestBinary(profile)
+	if err != nil {
+		t.Fatalf("DownloadLatestBinary() with redirect fallback (token+retry both 403): error = %v", err)
+	}
+
+	if !strings.HasPrefix(installedPath, tmpDir) {
+		t.Errorf("installedPath = %q, want prefix %q", installedPath, tmpDir)
+	}
+
+	info, err := os.Stat(installedPath)
+	if err != nil {
+		t.Fatalf("stat installed binary: %v", err)
+	}
+	if info.Size() == 0 {
+		t.Errorf("installed binary is empty")
+	}
+	if info.Mode()&0o111 == 0 {
+		t.Errorf("installed binary is not executable")
 	}
 }
 
