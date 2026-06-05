@@ -180,12 +180,6 @@ See [Backup & Rollback Guide](docs/rollback.md) for details.
 
 ---
 
-## Contributors
-
-This project exists because of the community. See [CONTRIBUTORS.md](CONTRIBUTORS.md) for the full list.
-
----
-
 ## Credits
 
 `ciberbal-ai` is derived from an MIT-licensed AI agent configuration framework originally created by **Gentleman Programming**.
