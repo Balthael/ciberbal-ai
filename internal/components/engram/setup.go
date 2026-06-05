@@ -21,14 +21,16 @@ const (
 
 func ParseSetupMode(value string) SetupMode {
 	switch strings.TrimSpace(strings.ToLower(value)) {
-	case string(SetupModeOff):
+	case "", string(SetupModeOff):
+		// Default to direct config injection only. `engram setup` can be
+		// interactive for some agents and must be an explicit opt-in.
 		return SetupModeOff
 	case string(SetupModeOpenCode):
 		return SetupModeOpenCode
-	case "", string(SetupModeSupported):
+	case string(SetupModeSupported):
 		return SetupModeSupported
 	default:
-		return SetupModeSupported
+		return SetupModeOff
 	}
 }
 
@@ -76,6 +78,6 @@ func ShouldAttemptSetup(mode SetupMode, agent model.AgentID) bool {
 	case SetupModeOpenCode:
 		return slug == "opencode"
 	default:
-		return slug == "opencode"
+		return false
 	}
 }

@@ -772,6 +772,8 @@ func TestRunInstallEngramSkipsInstallWhenAlreadyOnPath(t *testing.T) {
 }
 
 func TestRunInstallEngramAttemptsOpenCodeSetupWhenBinaryPresent(t *testing.T) {
+	t.Setenv("GENTLE_AI_ENGRAM_SETUP_MODE", "opencode")
+
 	home := t.TempDir()
 	restoreHome := osUserHomeDir
 	restoreCommand := runCommand
@@ -814,6 +816,8 @@ func TestRunInstallEngramAttemptsOpenCodeSetupWhenBinaryPresent(t *testing.T) {
 }
 
 func TestRunInstallEngramFallsBackToInjectWhenSetupFails(t *testing.T) {
+	t.Setenv("GENTLE_AI_ENGRAM_SETUP_MODE", "opencode")
+
 	home := t.TempDir()
 	restoreHome := osUserHomeDir
 	restoreCommand := runCommand
@@ -853,6 +857,7 @@ func TestRunInstallEngramFallsBackToInjectWhenSetupFails(t *testing.T) {
 }
 
 func TestRunInstallEngramSetupStrictFailsWhenSetupFails(t *testing.T) {
+	t.Setenv("GENTLE_AI_ENGRAM_SETUP_MODE", "opencode")
 	t.Setenv("GENTLE_AI_ENGRAM_SETUP_STRICT", "1")
 
 	home := t.TempDir()
@@ -892,7 +897,46 @@ func TestRunInstallEngramSetupStrictFailsWhenSetupFails(t *testing.T) {
 	}
 }
 
-func TestRunInstallEngramDefaultModeAttemptsClaudeSetup(t *testing.T) {
+func TestRunInstallEngramDefaultModeSkipsClaudeSetup(t *testing.T) {
+	home := t.TempDir()
+	restoreHome := osUserHomeDir
+	restoreCommand := runCommand
+	restoreLookPath := cmdLookPath
+	t.Cleanup(func() {
+		osUserHomeDir = restoreHome
+		runCommand = restoreCommand
+		cmdLookPath = restoreLookPath
+	})
+
+	osUserHomeDir = func() (string, error) { return home, nil }
+	cmdLookPath = func(name string) (string, error) {
+		return "/usr/local/bin/" + name, nil
+	}
+	recorder := &commandRecorder{}
+	runCommand = recorder.record
+
+	result, err := RunInstall(
+		[]string{"--agent", "claude-code", "--component", "engram"},
+		macOSDetectionResult(),
+	)
+	if err != nil {
+		t.Fatalf("RunInstall() error = %v", err)
+	}
+	if !result.Verify.Ready {
+		t.Fatalf("verification ready = false")
+	}
+
+	commands := recorder.get()
+	for _, cmd := range commands {
+		if strings.Contains(cmd, "engram setup claude-code") {
+			t.Fatalf("expected default setup mode to skip claude-code setup, got commands: %v", commands)
+		}
+	}
+}
+
+func TestRunInstallEngramSupportedModeAttemptsClaudeSetup(t *testing.T) {
+	t.Setenv("GENTLE_AI_ENGRAM_SETUP_MODE", "supported")
+
 	home := t.TempDir()
 	restoreHome := osUserHomeDir
 	restoreCommand := runCommand
@@ -930,7 +974,7 @@ func TestRunInstallEngramDefaultModeAttemptsClaudeSetup(t *testing.T) {
 		}
 	}
 	if !foundSetup {
-		t.Fatalf("expected default setup mode to attempt claude-code setup, got commands: %v", commands)
+		t.Fatalf("expected supported setup mode to attempt claude-code setup, got commands: %v", commands)
 	}
 }
 

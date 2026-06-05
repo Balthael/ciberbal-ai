@@ -6,11 +6,11 @@ import (
 	"github.com/gentleman-programming/gentle-ai/internal/model"
 )
 
-func TestParseSetupModeDefaultsToSupported(t *testing.T) {
+func TestParseSetupModeDefaultsToOff(t *testing.T) {
 	tests := []string{"", "invalid", "  weird  "}
 	for _, value := range tests {
-		if got := ParseSetupMode(value); got != SetupModeSupported {
-			t.Fatalf("ParseSetupMode(%q) = %q, want %q", value, got, SetupModeSupported)
+		if got := ParseSetupMode(value); got != SetupModeOff {
+			t.Fatalf("ParseSetupMode(%q) = %q, want %q", value, got, SetupModeOff)
 		}
 	}
 }
@@ -76,6 +76,9 @@ func TestShouldAttemptSetup(t *testing.T) {
 	}
 	if ShouldAttemptSetup(SetupModeOpenCode, model.AgentGeminiCLI) {
 		t.Fatal("ShouldAttemptSetup(opencode, gemini-cli) = true, want false")
+	}
+	if ShouldAttemptSetup(SetupMode("invalid"), model.AgentOpenCode) {
+		t.Fatal("ShouldAttemptSetup(invalid, opencode) = true, want false")
 	}
 	if !ShouldAttemptSetup(SetupModeSupported, model.AgentClaudeCode) {
 		t.Fatal("ShouldAttemptSetup(supported, claude-code) = false, want true")
