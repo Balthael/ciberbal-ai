@@ -39,6 +39,7 @@ func installHintCurl(profile PlatformProfile) string {
 }
 
 // installHintNode returns the platform-specific install hint for Node.js.
+// Uses only distro packages — no external setup scripts (NodeSource, etc.).
 func installHintNode(profile PlatformProfile) string {
 	switch {
 	case profile.OS == "darwin":
@@ -46,20 +47,34 @@ func installHintNode(profile PlatformProfile) string {
 	case profile.OS == "windows":
 		return "winget install OpenJS.NodeJS.LTS"
 	case profile.PackageManager == "apt":
-		return "curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash - && sudo apt-get install -y nodejs"
+		return "sudo apt-get install -y nodejs npm"
 	case profile.PackageManager == "pacman":
 		return "sudo pacman -S --noconfirm nodejs npm"
 	case profile.PackageManager == "dnf":
-		return "curl -fsSL https://rpm.nodesource.com/setup_lts.x | sudo bash - && sudo dnf install -y nodejs"
+		return "sudo dnf install -y nodejs npm"
 	default:
 		return "install node from https://nodejs.org/"
 	}
 }
 
-// installHintNpm returns the platform-specific install hint for npm.
+// installHintNpm returns the install hint for npm.
+// Node installs include npm where the platform packages support it, but npm can
+// also be repaired independently when Node is present and npm is missing.
 func installHintNpm(profile PlatformProfile) string {
-	// npm comes with node on all platforms.
-	return "npm is included with node — install node first"
+	switch {
+	case profile.OS == "darwin":
+		return "npm is included with node — install node first"
+	case profile.OS == "windows":
+		return "npm is included with Node.js — install Node.js first"
+	case profile.PackageManager == "apt":
+		return "sudo apt-get install -y npm"
+	case profile.PackageManager == "pacman":
+		return "sudo pacman -S --noconfirm npm"
+	case profile.PackageManager == "dnf":
+		return "sudo dnf install -y npm"
+	default:
+		return "npm is included with node — install node first"
+	}
 }
 
 // installHintBrew returns the install hint for Homebrew (macOS only).
@@ -148,19 +163,13 @@ func installCommandsNode(profile PlatformProfile) [][]string {
 	case profile.OS == "windows":
 		return [][]string{{"winget", "install", "--id", "OpenJS.NodeJS.LTS", "-e", "--accept-source-agreements", "--accept-package-agreements"}}
 	case profile.PackageManager == "apt":
-		// NodeSource LTS setup + install.
-		return [][]string{
-			{"bash", "-c", "curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -"},
-			{"sudo", "apt-get", "install", "-y", "nodejs"},
-		}
+		// Use distro packages directly — no external setup scripts.
+		return [][]string{{"sudo", "apt-get", "install", "-y", "nodejs", "npm"}}
 	case profile.PackageManager == "pacman":
 		return [][]string{{"sudo", "pacman", "-S", "--noconfirm", "nodejs", "npm"}}
 	case profile.PackageManager == "dnf":
-		// Use NodeSource LTS on Fedora/RHEL family for parity with apt-based LTS behavior.
-		return [][]string{
-			{"bash", "-c", "curl -fsSL https://rpm.nodesource.com/setup_lts.x | sudo bash -"},
-			{"sudo", "dnf", "install", "-y", "nodejs"},
-		}
+		// Use distro packages directly — no external setup scripts.
+		return [][]string{{"sudo", "dnf", "install", "-y", "nodejs", "npm"}}
 	default:
 		return nil
 	}
@@ -175,7 +184,7 @@ func installCommandsNpm(profile PlatformProfile) [][]string {
 	case profile.PackageManager == "apt":
 		return [][]string{{"sudo", "apt-get", "install", "-y", "npm"}}
 	case profile.PackageManager == "pacman":
-		return nil
+		return [][]string{{"sudo", "pacman", "-S", "--noconfirm", "npm"}}
 	case profile.PackageManager == "dnf":
 		return [][]string{{"sudo", "dnf", "install", "-y", "npm"}}
 	default:

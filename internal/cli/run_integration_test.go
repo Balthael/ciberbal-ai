@@ -72,10 +72,12 @@ func TestRunInstallRollsBackOnComponentFailure(t *testing.T) {
 	restoreHome := osUserHomeDir
 	restoreCommand := runCommand
 	restoreLookPath := cmdLookPath
+	restoreDetectDeps := detectDependenciesFn
 	t.Cleanup(func() {
 		osUserHomeDir = restoreHome
 		runCommand = restoreCommand
 		cmdLookPath = restoreLookPath
+		detectDependenciesFn = restoreDetectDeps
 	})
 	cmdLookPath = missingBinaryLookPath
 
@@ -159,10 +161,12 @@ func TestRunInstallLinuxUbuntuResolvesAptCommands(t *testing.T) {
 	restoreHome := osUserHomeDir
 	restoreCommand := runCommand
 	restoreLookPath := cmdLookPath
+	restoreDetectDeps := detectDependenciesFn
 	t.Cleanup(func() {
 		osUserHomeDir = restoreHome
 		runCommand = restoreCommand
 		cmdLookPath = restoreLookPath
+		detectDependenciesFn = restoreDetectDeps
 	})
 
 	osUserHomeDir = func() (string, error) { return home, nil }
@@ -202,11 +206,13 @@ func TestRunInstallLinuxUbuntuResolvesAptCommands(t *testing.T) {
 	}
 
 	commands := recorder.get()
-	if !strings.Contains(strings.Join(commands, "\n"), "bash -c curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -") {
-		t.Fatalf("expected NodeSource setup command before agent installs, got commands: %v", commands)
+	joined := strings.Join(commands, "\n")
+	// Must use distro packages directly — no NodeSource scripts.
+	if strings.Contains(joined, "nodesource") || strings.Contains(joined, "setup_lts") {
+		t.Fatalf("must NOT use NodeSource scripts for Node install, got commands: %v", commands)
 	}
-	if !strings.Contains(strings.Join(commands, "\n"), "sudo apt-get install -y nodejs") {
-		t.Fatalf("expected apt nodejs install command before agent installs, got commands: %v", commands)
+	if !strings.Contains(joined, "sudo apt-get install -y nodejs") {
+		t.Fatalf("expected apt-get install nodejs command before agent installs, got commands: %v", commands)
 	}
 }
 
@@ -427,14 +433,26 @@ func TestRunInstallLinuxAgentInstallResolvesGoInstallCommand(t *testing.T) {
 	restoreHome := osUserHomeDir
 	restoreCommand := runCommand
 	restoreLookPath := cmdLookPath
+	restoreDetectDeps := detectDependenciesFn
 	t.Cleanup(func() {
 		osUserHomeDir = restoreHome
 		runCommand = restoreCommand
 		cmdLookPath = restoreLookPath
+		detectDependenciesFn = restoreDetectDeps
 	})
 
 	osUserHomeDir = func() (string, error) { return home, nil }
 	cmdLookPath = missingBinaryLookPath
+	detectDependenciesFn = func(_ context.Context, _ system.PlatformProfile) system.DependencyReport {
+		return system.DependencyReport{
+			Dependencies: []system.Dependency{
+				{Name: "node", Required: true, InstallHint: "apt install nodejs npm", Installed: false},
+				{Name: "npm", Required: true, InstallHint: "apt install npm", Installed: false},
+			},
+			AllPresent:      false,
+			MissingRequired: []string{"node", "npm"},
+		}
+	}
 	recorder := &commandRecorder{}
 	runCommand = recorder.record
 

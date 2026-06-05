@@ -87,18 +87,27 @@ Usage: install.sh [OPTIONS]
 Options:
   --method METHOD   Force install method: brew, go, binary, source (default: auto-detect)
   --dir DIR         Custom install directory for binary method
+  --insecure        Skip checksum verification (warning: reduces security)
   -h, --help        Show this help
 
-Install methods (auto-detected in priority order):
-  1. brew    — Homebrew tap (recommended when available)
-  2. source  — build from the local cloned repository
-  3. binary  — pre-built binary from GitHub Releases
-  4. go      — go install from module source
+Available install methods:
+  1. source  — build from the local cloned repository
+  2. brew    — Homebrew tap on macOS when available
+  3. binary  — pre-built binary from GitHub Releases (default on Linux)
+  4. go      — go install from module source (use --method go)
+
+Notes:
+  - The binary method only requires curl and tar. It does NOT require git.
+  - This script installs only the ciberbal-ai binary and does not modify
+    system packages. Agent dependencies (Node.js, etc.) are configured
+    interactively when you first run 'ciberbal-ai'.
+  - Checksum verification is fail-closed by default. Use --insecure to skip.
 
 Examples:
   curl -sL https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/main/scripts/install.sh | bash
   ./install.sh --method binary
   ./install.sh --method binary --dir \$HOME/.local/bin
+  ./install.sh --method binary --insecure
 
 EOF
 }
@@ -155,19 +164,30 @@ check_prerequisites() {
 
     local missing=()
 
-    if ! command -v curl &>/dev/null; then
-        missing+=("curl")
-    fi
-
-    if ! command -v git &>/dev/null; then
-        missing+=("git")
-    fi
+    case "${INSTALL_METHOD:-}" in
+        binary)
+            command -v curl &>/dev/null || missing+=("curl")
+            command -v tar &>/dev/null || missing+=("tar")
+            if [ "$INSECURE" != true ] && ! command -v sha256sum &>/dev/null && ! command -v shasum &>/dev/null; then
+                missing+=("sha256sum or shasum")
+            fi
+            ;;
+        brew)
+            command -v brew &>/dev/null || missing+=("brew")
+            ;;
+        source|go)
+            command -v go &>/dev/null || missing+=("go")
+            ;;
+        *)
+            fatal "Install method was not resolved before prerequisite checks"
+            ;;
+    esac
 
     if [ ${#missing[@]} -gt 0 ]; then
         fatal "Missing required tools: ${missing[*]}. Please install them and try again."
     fi
 
-    success "curl and git are available"
+    success "Prerequisites satisfied for method: ${INSTALL_METHOD}"
 }
 
 # ============================================================================
@@ -186,10 +206,11 @@ detect_install_method() {
 
     step "Detecting best install method"
 
-    # Priority: brew > source > binary > go
-    # Brew handles upgrades natively and is instant.
+    # Priority: source > macOS brew > binary > go
     # Source build is ideal when running from a cloned repository because it
     # avoids waiting for GitHub Releases or module-path migration.
+    # Brew handles upgrades natively on macOS, but Linux defaults to the
+    # release binary so a random Linux instance does not depend on Homebrew taps.
     # Binary download from GitHub Releases is always up-to-date.
     # go install is last resort because the Go module proxy can lag
     # behind new tags for up to 30 minutes, causing @latest to install
@@ -199,16 +220,16 @@ detect_install_method() {
         repo_root_detected=true
     fi
 
-    if command -v brew &>/dev/null; then
-        INSTALL_METHOD="brew"
-        success "Homebrew found — will install via brew tap"
-    elif [ "$repo_root_detected" = true ]; then
+    if [ "$repo_root_detected" = true ]; then
         if command -v go &>/dev/null; then
             INSTALL_METHOD="source"
             success "Local repository checkout detected — will build from source"
         else
             fatal "Local ciberbal-ai checkout detected, but Go is not available in PATH. Install Go first (for example: sudo apt install -y golang), then run ./scripts/install.sh again. To intentionally install the older published release instead, pass --method binary explicitly."
         fi
+    elif [ "${OS:-}" = "darwin" ] && command -v brew &>/dev/null; then
+        INSTALL_METHOD="brew"
+        success "Homebrew found on macOS — will install via brew tap"
     else
         INSTALL_METHOD="binary"
         info "Will download pre-built binary from GitHub Releases"
@@ -281,8 +302,13 @@ install_go() {
 # ============================================================================
 
 find_repo_root() {
-    local script_dir candidate
-    script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+    local script_source script_dir candidate
+    script_source="${BASH_SOURCE[0]:-}"
+    if [ -z "$script_source" ] || [ ! -f "$script_source" ]; then
+        return 1
+    fi
+
+    script_dir="$(cd -- "$(dirname -- "$script_source")" && pwd)"
     candidate="$(cd -- "${script_dir}/.." && pwd)"
 
     if [ -f "${candidate}/go.mod" ] && [ -f "${candidate}/cmd/${BINARY_NAME}/main.go" ]; then
@@ -454,32 +480,43 @@ install_binary() {
 
     success "Downloaded ${archive_name} (${file_size} bytes)"
 
-    # Download and verify checksum
+    # Download and verify checksum (fail-closed by default)
     info "Verifying checksum..."
-    if github_curl -sL -o "${tmpdir}/checksums.txt" "$checksums_url"; then
-        local expected_checksum
-        expected_checksum="$(grep "${archive_name}" "${tmpdir}/checksums.txt" 2>/dev/null | awk '{print $1}' || true)"
-
-        if [ -n "$expected_checksum" ]; then
-            local actual_checksum
-            if command -v sha256sum &>/dev/null; then
-                actual_checksum="$(sha256sum "${tmpdir}/${archive_name}" | awk '{print $1}')"
-            elif command -v shasum &>/dev/null; then
-                actual_checksum="$(shasum -a 256 "${tmpdir}/${archive_name}" | awk '{print $1}')"
-            else
-                warn "No sha256sum or shasum found — skipping checksum verification"
-                actual_checksum="$expected_checksum"
-            fi
-
-            if [ "$actual_checksum" != "$expected_checksum" ]; then
-                fatal "Checksum mismatch!\n  Expected: ${expected_checksum}\n  Got:      ${actual_checksum}"
-            fi
-            success "Checksum verified"
-        else
-            warn "Archive not found in checksums.txt — skipping verification"
-        fi
+    if [ "$INSECURE" = true ]; then
+        warn "--insecure: skipping checksum verification"
     else
-        warn "Could not download checksums.txt — skipping verification"
+        # Require a working checksum tool before downloading checksums.txt
+        local checksum_tool=""
+        if command -v sha256sum &>/dev/null; then
+            checksum_tool="sha256sum"
+        elif command -v shasum &>/dev/null; then
+            checksum_tool="shasum"
+        else
+            fatal "No sha256sum or shasum found. Cannot verify download integrity.\nInstall one of these tools or use --insecure to skip (not recommended)."
+        fi
+
+        if ! github_curl -sL -o "${tmpdir}/checksums.txt" "$checksums_url"; then
+            fatal "Could not download checksums.txt from ${checksums_url}.\nUse --insecure to skip checksum verification (not recommended)."
+        fi
+
+        local expected_checksum
+        expected_checksum="$(grep -F "${archive_name}" "${tmpdir}/checksums.txt" 2>/dev/null | awk '{print $1}' || true)"
+
+        if [ -z "$expected_checksum" ]; then
+            fatal "Archive '${archive_name}' not found in checksums.txt.\nUse --insecure to skip checksum verification (not recommended)."
+        fi
+
+        local actual_checksum
+        if [ "$checksum_tool" = "sha256sum" ]; then
+            actual_checksum="$(sha256sum "${tmpdir}/${archive_name}" | awk '{print $1}')"
+        else
+            actual_checksum="$(shasum -a 256 "${tmpdir}/${archive_name}" | awk '{print $1}')"
+        fi
+
+        if [ "$actual_checksum" != "$expected_checksum" ]; then
+            fatal "Checksum mismatch!\n  Expected: ${expected_checksum}\n  Got:      ${actual_checksum}"
+        fi
+        success "Checksum verified"
     fi
 
     # Extract binary
@@ -549,12 +586,23 @@ verify_installation() {
         return 0
     fi
 
-    # Check common locations even if not in PATH
-    local locations=(
+    # Check explicit/custom and common locations even if not in PATH.
+    local locations=()
+    if [ -n "${INSTALL_DIR:-}" ]; then
+        locations+=("${INSTALL_DIR}/${BINARY_NAME}")
+    fi
+    locations+=(
         "/usr/local/bin/${BINARY_NAME}"
         "${HOME}/.local/bin/${BINARY_NAME}"
-        "$(go env GOPATH 2>/dev/null || echo "")/bin/${BINARY_NAME}"
     )
+
+    if command -v go &>/dev/null; then
+        local gopath
+        gopath="$(go env GOPATH 2>/dev/null || true)"
+        if [ -n "$gopath" ]; then
+            locations+=("${gopath}/bin/${BINARY_NAME}")
+        fi
+    fi
 
     for loc in "${locations[@]}"; do
         if [ -n "$loc" ] && [ -x "$loc" ]; then
@@ -587,12 +635,17 @@ print_banner() {
 
 print_next_steps() {
     echo ""
-    echo -e "${GREEN}${BOLD}Installation complete!${NC}"
+    echo -e "${GREEN}${BOLD}Binary installed!${NC}"
+    echo ""
+    echo -e "${DIM}This script installed only the ${BINARY_NAME} binary.${NC}"
+    echo -e "${DIM}No system packages were modified. Agent dependencies${NC}"
+    echo -e "${DIM}(Node.js, npm, etc.) are configured when you run the tool.${NC}"
     echo ""
     echo -e "${BOLD}Next steps:${NC}"
     echo -e "  ${CYAN}1.${NC} Run ${BOLD}${BINARY_NAME}${NC} to start the TUI installer"
     echo -e "  ${CYAN}2.${NC} Select your AI agent(s) and tools to configure"
-    echo -e "  ${CYAN}3.${NC} Follow the interactive prompts"
+    echo -e "  ${CYAN}3.${NC} Follow the interactive prompts — dependencies are"
+    echo -e "     installed only for the agents you choose"
     echo ""
     echo -e "${DIM}For help: ${BINARY_NAME} --help${NC}"
     echo -e "${DIM}Docs:     https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}${NC}"
@@ -609,6 +662,7 @@ main() {
     # Parse arguments
     FORCE_METHOD=""
     INSTALL_DIR=""
+    INSECURE=false
 
     while [ $# -gt 0 ]; do
         case "$1" in
@@ -619,6 +673,9 @@ main() {
             --dir)
                 [ $# -lt 2 ] && fatal "--dir requires an argument"
                 INSTALL_DIR="$2"; shift 2
+                ;;
+            --insecure)
+                INSECURE=true; shift
                 ;;
             -h|--help)
                 setup_colors
@@ -636,8 +693,8 @@ main() {
     step "Detecting platform"
     detect_platform
 
-    check_prerequisites
     detect_install_method
+    check_prerequisites
 
     case "$INSTALL_METHOD" in
         brew)   install_brew ;;

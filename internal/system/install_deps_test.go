@@ -40,8 +40,11 @@ func TestInstallHintNodeDarwin(t *testing.T) {
 func TestInstallHintNodeUbuntu(t *testing.T) {
 	profile := PlatformProfile{OS: "linux", PackageManager: "apt", LinuxDistro: "ubuntu"}
 	hint := installHintNode(profile)
-	if !strings.Contains(hint, "nodesource") {
-		t.Fatalf("installHintNode(ubuntu) = %q, want NodeSource URL", hint)
+	if strings.Contains(hint, "nodesource") || strings.Contains(hint, "setup_lts") {
+		t.Fatalf("installHintNode(ubuntu) = %q, must NOT contain NodeSource scripts", hint)
+	}
+	if !strings.Contains(hint, "apt-get install") || !strings.Contains(hint, "nodejs") {
+		t.Fatalf("installHintNode(ubuntu) = %q, want apt-get install nodejs", hint)
 	}
 }
 
@@ -56,8 +59,11 @@ func TestInstallHintNodeArch(t *testing.T) {
 func TestInstallHintNodeFedora(t *testing.T) {
 	profile := PlatformProfile{OS: "linux", PackageManager: "dnf", LinuxDistro: LinuxDistroFedora}
 	hint := installHintNode(profile)
-	if !strings.Contains(hint, "rpm.nodesource.com") || !strings.Contains(hint, "dnf install -y nodejs") {
-		t.Fatalf("installHintNode(fedora) = %q, want NodeSource LTS setup + dnf install", hint)
+	if strings.Contains(hint, "nodesource") || strings.Contains(hint, "setup_lts") {
+		t.Fatalf("installHintNode(fedora) = %q, must NOT contain NodeSource scripts", hint)
+	}
+	if !strings.Contains(hint, "dnf install") || !strings.Contains(hint, "nodejs") {
+		t.Fatalf("installHintNode(fedora) = %q, want dnf install nodejs", hint)
 	}
 }
 
@@ -106,25 +112,36 @@ func TestInstallCommandsForDepGitUbuntu(t *testing.T) {
 	}
 }
 
-func TestInstallCommandsForDepNodeUbuntuHasTwoSteps(t *testing.T) {
+func TestInstallCommandsForDepNodeUbuntuUsesDistroPackages(t *testing.T) {
 	profile := PlatformProfile{OS: "linux", PackageManager: "apt", LinuxDistro: "ubuntu"}
 	cmds := InstallCommandsForDep("node", profile)
-	if len(cmds) != 2 {
-		t.Fatalf("node ubuntu commands = %d, want 2 (nodesource setup + install)", len(cmds))
+	if len(cmds) != 1 {
+		t.Fatalf("node ubuntu commands = %d, want 1 (single apt-get install)", len(cmds))
+	}
+	cmd := strings.Join(cmds[0], " ")
+	if strings.Contains(cmd, "nodesource") || strings.Contains(cmd, "setup_lts") {
+		t.Fatalf("node ubuntu command = %q, must NOT use NodeSource", cmd)
+	}
+	if !strings.Contains(cmd, "apt-get") || !strings.Contains(cmd, "nodejs") {
+		t.Fatalf("node ubuntu command = %q, want apt-get install nodejs", cmd)
 	}
 }
 
-func TestInstallCommandsForDepNodeFedoraHasTwoSteps(t *testing.T) {
+func TestInstallCommandsForDepNodeFedoraUsesDistroPackages(t *testing.T) {
 	profile := PlatformProfile{OS: "linux", PackageManager: "dnf", LinuxDistro: LinuxDistroFedora}
 	cmds := InstallCommandsForDep("node", profile)
-	if len(cmds) != 2 {
-		t.Fatalf("node fedora commands = %d, want 2 (nodesource setup + install)", len(cmds))
+	if len(cmds) != 1 {
+		t.Fatalf("node fedora commands = %d, want 1 (single dnf install)", len(cmds))
 	}
-	if cmds[0][0] != "bash" || !strings.Contains(cmds[0][2], "rpm.nodesource.com/setup_lts.x") {
-		t.Fatalf("node fedora step 1 = %v, want nodesource setup", cmds[0])
+	cmd := strings.Join(cmds[0], " ")
+	if strings.Contains(cmd, "nodesource") || strings.Contains(cmd, "setup_lts") {
+		t.Fatalf("node fedora command = %q, must NOT use NodeSource", cmd)
 	}
-	if cmds[1][0] != "sudo" || cmds[1][1] != "dnf" || cmds[1][4] != "nodejs" {
-		t.Fatalf("node fedora step 2 = %v, want sudo dnf install -y nodejs", cmds[1])
+	if cmds[0][0] != "sudo" || cmds[0][1] != "dnf" {
+		t.Fatalf("node fedora command = %v, want sudo dnf install -y nodejs npm", cmds[0])
+	}
+	if !strings.Contains(cmd, "nodejs") {
+		t.Fatalf("node fedora command = %q, want nodejs in args", cmd)
 	}
 }
 
@@ -137,6 +154,8 @@ func TestInstallCommandsForDepNpmDarwinReturnsNil(t *testing.T) {
 }
 
 func TestInstallCommandsForDepNpmUbuntuUsesApt(t *testing.T) {
+	// Node install includes npm, but npm can also be repaired independently when
+	// Node is present and npm is missing.
 	profile := PlatformProfile{OS: "linux", PackageManager: "apt", LinuxDistro: "ubuntu"}
 	cmds := InstallCommandsForDep("npm", profile)
 	if len(cmds) != 1 {
@@ -144,6 +163,42 @@ func TestInstallCommandsForDepNpmUbuntuUsesApt(t *testing.T) {
 	}
 	if cmds[0][0] != "sudo" || cmds[0][1] != "apt-get" || cmds[0][4] != "npm" {
 		t.Fatalf("npm ubuntu command = %v, want sudo apt-get install -y npm", cmds[0])
+	}
+}
+
+func TestInstallCommandsForDepNpmLinuxPackageManagers(t *testing.T) {
+	tests := []struct {
+		name    string
+		profile PlatformProfile
+		want    []string
+	}{
+		{
+			name:    "apt",
+			profile: PlatformProfile{OS: "linux", PackageManager: "apt", LinuxDistro: "ubuntu"},
+			want:    []string{"sudo", "apt-get", "install", "-y", "npm"},
+		},
+		{
+			name:    "pacman",
+			profile: PlatformProfile{OS: "linux", PackageManager: "pacman", LinuxDistro: "arch"},
+			want:    []string{"sudo", "pacman", "-S", "--noconfirm", "npm"},
+		},
+		{
+			name:    "dnf",
+			profile: PlatformProfile{OS: "linux", PackageManager: "dnf", LinuxDistro: LinuxDistroFedora},
+			want:    []string{"sudo", "dnf", "install", "-y", "npm"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			cmds := InstallCommandsForDep("npm", tt.profile)
+			if len(cmds) != 1 {
+				t.Fatalf("npm commands = %d, want 1", len(cmds))
+			}
+			if strings.Join(cmds[0], " ") != strings.Join(tt.want, " ") {
+				t.Fatalf("npm command = %v, want %v", cmds[0], tt.want)
+			}
+		})
 	}
 }
 
