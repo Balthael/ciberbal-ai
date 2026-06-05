@@ -8,7 +8,7 @@ import (
 	"github.com/gentleman-programming/gentle-ai/internal/tui/styles"
 )
 
-// sddSkillIDs are the SDD orchestrator skills shown in the first group.
+// sddSkillIDs are the engagement workflow orchestrator skills shown in the first group.
 var sddSkillIDs = []model.SkillID{
 	model.SkillSDDInit,
 	model.SkillSDDExplore,
@@ -33,16 +33,16 @@ var foundationSkillIDs = []model.SkillID{
 
 // skillLabels maps each SkillID to a human-readable display label.
 var skillLabels = map[model.SkillID]string{
-	model.SkillSDDInit:       "SDD Init",
-	model.SkillSDDExplore:    "SDD Explore",
-	model.SkillSDDPropose:    "SDD Propose",
-	model.SkillSDDSpec:       "SDD Spec",
-	model.SkillSDDDesign:     "SDD Design",
-	model.SkillSDDTasks:      "SDD Tasks",
-	model.SkillSDDApply:      "SDD Apply",
-	model.SkillSDDVerify:     "SDD Verify",
-	model.SkillSDDArchive:    "SDD Archive",
-	model.SkillSDDOnboard:    "SDD Onboard",
+	model.SkillSDDInit:       "Engagement Init",
+	model.SkillSDDExplore:    "Recon",
+	model.SkillSDDPropose:    "Scope / ROE",
+	model.SkillSDDSpec:       "Findings Spec",
+	model.SkillSDDDesign:     "Attack Design",
+	model.SkillSDDTasks:      "Enumeration Tasks",
+	model.SkillSDDApply:      "Exploitation",
+	model.SkillSDDVerify:     "Evidence Review",
+	model.SkillSDDArchive:    "Reporting Archive",
+	model.SkillSDDOnboard:    "Engagement Onboard",
 	model.SkillJudgmentDay:   "Judgment Day",
 	model.SkillGoTesting:     "Go Testing",
 	model.SkillCreator:       "Skill Creator",
@@ -55,7 +55,7 @@ func SkillPickerOptions() []string {
 	return []string{"Continue", "Back"}
 }
 
-// AllSkillsOrdered returns all skills in display order: SDD group first, then Foundation.
+// AllSkillsOrdered returns all skills in display order: Engagement group first, then Foundation.
 func AllSkillsOrdered() []model.SkillID {
 	return skills.AllSkillIDs()
 }
@@ -81,8 +81,8 @@ func RenderSkillPicker(selectedSkills []model.SkillID, cursor int) string {
 
 	allSkills := AllSkillsOrdered()
 
-	// ── SDD Skills group ──────────────────────────────────────────────────────
-	b.WriteString(styles.HeadingStyle.Render("SDD Skills"))
+	// ── Engagement Workflow Skills group ─────────────────────────────────────
+	b.WriteString(styles.HeadingStyle.Render("Engagement Workflow Skills"))
 	b.WriteString("\n")
 
 	for idx, skillID := range sddSkillIDs {

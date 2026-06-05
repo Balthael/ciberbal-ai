@@ -9,7 +9,7 @@ import (
 )
 
 // WelcomeOptions returns the welcome menu options.
-// When showProfiles is true, an "OpenCode SDD Profiles" option is inserted
+// When showProfiles is true, an "Engagement Profiles" option is inserted
 // between "Configure models" and "Manage backups".
 // profileCount is used to show a badge with the current profile count.
 // When hasEngines is false, "Create your own Agent" is shown as disabled
@@ -37,9 +37,9 @@ func WelcomeOptions(updateResults []update.UpdateResult, updateCheckDone bool, s
 	}
 
 	if showProfiles {
-		profilesLabel := "OpenCode SDD Profiles"
+		profilesLabel := "Engagement Profiles"
 		if profileCount > 0 {
-			profilesLabel = fmt.Sprintf("OpenCode SDD Profiles (%d)", profileCount)
+			profilesLabel = fmt.Sprintf("Engagement Profiles (%d)", profileCount)
 		}
 		opts = append(opts, profilesLabel)
 	}

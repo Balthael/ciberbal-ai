@@ -8,15 +8,15 @@ import (
 	"github.com/gentleman-programming/gentle-ai/internal/tui/styles"
 )
 
-// RenderProfiles renders the OpenCode SDD Profiles list screen.
+// RenderProfiles renders the Engagement Profiles list screen.
 // It shows all named profiles with their orchestrator model, plus Create and Back actions.
 // deleteErr is displayed when non-nil (e.g. RemoveProfileAgents returned an error).
 func RenderProfiles(profiles []model.Profile, cursor int, deleteErr error) string {
 	var b strings.Builder
 
-	b.WriteString(styles.TitleStyle.Render("OpenCode SDD Profiles"))
+	b.WriteString(styles.TitleStyle.Render("Engagement Profiles"))
 	b.WriteString("\n\n")
-	b.WriteString(styles.SubtextStyle.Render("Your SDD model profiles for OpenCode. Each profile creates its own orchestrator (visible with Tab)."))
+	b.WriteString(styles.SubtextStyle.Render("Your engagement model profiles for OpenCode. Each profile creates its own orchestrator (visible with Tab)."))
 	b.WriteString("\n\n")
 
 	if deleteErr != nil {

@@ -34,7 +34,7 @@ func TestWelcomeOptionsMatchExpectedMainMenuWithProfiles(t *testing.T) {
 		"Upgrade + Sync",
 		"Configure models",
 		"Create your own Agent",
-		"OpenCode SDD Profiles",
+		"Engagement Profiles",
 		"Manage backups",
 		"Quit",
 	}

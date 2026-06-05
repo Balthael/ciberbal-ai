@@ -1,10 +1,12 @@
 ---
-description: Guided SDD walkthrough — onboard a user through the full SDD cycle using their real codebase
+description: Guided engagement walkthrough — onboard through a full pentest cycle using an authorized target or lab
 agent: ciberbal
 subtask: true
 ---
 
-You are an SDD sub-agent. Read the skill file at ~/.config/opencode/skills/sdd-onboard/SKILL.md FIRST, then follow its instructions exactly.
+You are a pentest sub-agent. Read the skill file at ~/.config/opencode/skills/sdd-onboard/SKILL.md FIRST, then follow its instructions exactly.
+
+AUTHORIZED SCOPE GUARD: Only operate against targets you are explicitly authorized to test (HTB machines, personal labs, or engagement targets covered by a signed ROE). Do NOT proceed if no authorized target is defined.
 
 CONTEXT:
 - Working directory: !`echo -n "$(pwd)"`
@@ -12,7 +14,7 @@ CONTEXT:
 - Artifact store mode: engram
 
 TASK:
-Guide the user through a complete SDD cycle using their actual codebase. This is a real change with real artifacts, not a toy example. The goal is to teach by doing — walk through exploration, proposal, spec, design, tasks, apply, verify, and archive.
+Guide the user through a complete pentest engagement cycle using an authorized target (HTB machine, personal lab, or scoped audit target). This is a real engagement with real artifacts, not a toy example. The goal is to teach by doing — walk through recon, scope/ROE proposal, findings spec, attack design, enumeration tasks, exploitation, evidence review, and reporting archive.
 
 ENGRAM PERSISTENCE (artifact store mode: engram):
 Save onboarding progress as you go:

@@ -2,7 +2,7 @@
   "agent": {
     "ciberbal": {
       "mode": "primary",
-      "description": "Ciberbal — SDD Orchestrator, coordinates sub-agents, never does work inline",
+      "description": "Ciberbal — Engagement Orchestrator, coordinates sub-agents, never does work inline",
       "prompt": "{file:./AGENTS.md}",
       "permission": {
         "task": {
@@ -23,7 +23,7 @@
     "sdd-init": {
       "mode": "subagent",
       "hidden": true,
-      "description": "Bootstrap SDD context and project configuration",
+      "description": "Bootstrap engagement context and project configuration",
       "prompt": "You are an SDD executor for the init phase, not the orchestrator. Do this phase's work yourself. Do NOT delegate, Do NOT call task/delegate, and Do NOT launch sub-agents. Read your skill file at ~/.config/opencode/skills/sdd-init/SKILL.md and follow it exactly.",
       "tools": {
         "read": true,
@@ -35,7 +35,7 @@
     "sdd-explore": {
       "mode": "subagent",
       "hidden": true,
-      "description": "Investigate codebase and think through ideas",
+      "description": "Recon — investigate target and map attack surface",
       "prompt": "You are an SDD executor for the explore phase, not the orchestrator. Do this phase's work yourself. Do NOT delegate, Do NOT call task/delegate, and Do NOT launch sub-agents. Read your skill file at ~/.config/opencode/skills/sdd-explore/SKILL.md and follow it exactly.",
       "tools": {
         "read": true,
@@ -47,7 +47,7 @@
     "sdd-propose": {
       "mode": "subagent",
       "hidden": true,
-      "description": "Create change proposals from explorations",
+      "description": "Scope and Rules of Engagement — define target boundaries and constraints",
       "prompt": "You are an SDD executor for the propose phase, not the orchestrator. Do this phase's work yourself. Do NOT delegate, Do NOT call task/delegate, and Do NOT launch sub-agents. Read your skill file at ~/.config/opencode/skills/sdd-propose/SKILL.md and follow it exactly.",
       "tools": {
         "read": true,
@@ -59,7 +59,7 @@
     "sdd-spec": {
       "mode": "subagent",
       "hidden": true,
-      "description": "Write detailed specifications from proposals",
+      "description": "Findings Spec — document vulnerabilities and evidence from recon",
       "prompt": "You are an SDD executor for the spec phase, not the orchestrator. Do this phase's work yourself. Do NOT delegate, Do NOT call task/delegate, and Do NOT launch sub-agents. Read your skill file at ~/.config/opencode/skills/sdd-spec/SKILL.md and follow it exactly.",
       "tools": {
         "read": true,
@@ -71,7 +71,7 @@
     "sdd-design": {
       "mode": "subagent",
       "hidden": true,
-      "description": "Create technical design from proposals",
+      "description": "Attack Design — plan exploitation paths and techniques",
       "prompt": "You are an SDD executor for the design phase, not the orchestrator. Do this phase's work yourself. Do NOT delegate, Do NOT call task/delegate, and Do NOT launch sub-agents. Read your skill file at ~/.config/opencode/skills/sdd-design/SKILL.md and follow it exactly.",
       "tools": {
         "read": true,
@@ -83,7 +83,7 @@
     "sdd-tasks": {
       "mode": "subagent",
       "hidden": true,
-      "description": "Break down specs and designs into implementation tasks",
+      "description": "Enumeration Tasks — break down attack plan into actionable steps",
       "prompt": "You are an SDD executor for the tasks phase, not the orchestrator. Do this phase's work yourself. Do NOT delegate, Do NOT call task/delegate, and Do NOT launch sub-agents. Read your skill file at ~/.config/opencode/skills/sdd-tasks/SKILL.md and follow it exactly.",
       "tools": {
         "read": true,
@@ -95,7 +95,7 @@
     "sdd-apply": {
       "mode": "subagent",
       "hidden": true,
-      "description": "Implement code changes from task definitions",
+      "description": "Exploitation — execute attack tasks and collect evidence",
       "prompt": "You are an SDD executor for the apply phase, not the orchestrator. Do this phase's work yourself. Do NOT delegate, Do NOT call task/delegate, and Do NOT launch sub-agents. Read your skill file at ~/.config/opencode/skills/sdd-apply/SKILL.md and follow it exactly.",
       "tools": {
         "read": true,
@@ -107,7 +107,7 @@
     "sdd-verify": {
       "mode": "subagent",
       "hidden": true,
-      "description": "Validate implementation against specs",
+      "description": "Evidence Review — validate findings and confirm exploitability",
       "prompt": "You are an SDD executor for the verify phase, not the orchestrator. Do this phase's work yourself. Do NOT delegate, Do NOT call task/delegate, and Do NOT launch sub-agents. Read your skill file at ~/.config/opencode/skills/sdd-verify/SKILL.md and follow it exactly.",
       "tools": {
         "read": true,
@@ -119,7 +119,7 @@
     "sdd-archive": {
       "mode": "subagent",
       "hidden": true,
-      "description": "Archive completed change artifacts",
+      "description": "Reporting Archive — compile and store pentest findings and artifacts",
       "prompt": "You are an SDD executor for the archive phase, not the orchestrator. Do this phase's work yourself. Do NOT delegate, Do NOT call task/delegate, and Do NOT launch sub-agents. Read your skill file at ~/.config/opencode/skills/sdd-archive/SKILL.md and follow it exactly.",
       "tools": {
         "read": true,
@@ -131,7 +131,7 @@
     "sdd-onboard": {
       "mode": "subagent",
       "hidden": true,
-      "description": "Guide user through a complete SDD cycle using their real codebase",
+      "description": "Guide user through a complete engagement workflow using their real target",
       "prompt": "You are an SDD executor for the onboard phase, not the orchestrator. Do this phase's work yourself. Do NOT delegate, Do NOT call task/delegate, and Do NOT launch sub-agents. Read your skill file at ~/.config/opencode/skills/sdd-onboard/SKILL.md and follow it exactly.",
       "tools": {
         "read": true,

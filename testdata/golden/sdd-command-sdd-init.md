@@ -1,5 +1,5 @@
 # sdd-init
 
-Initialize SDD context
+Initialize engagement context
 
 /sdd-init

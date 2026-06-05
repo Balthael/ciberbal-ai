@@ -260,7 +260,7 @@ func renderPhaseList(
 ) string {
 	var b strings.Builder
 
-	b.WriteString(styles.TitleStyle.Render("Assign Models to SDD Phases"))
+	b.WriteString(styles.TitleStyle.Render("Assign Models to Engagement Phases"))
 	b.WriteString("\n\n")
 
 	if len(state.AvailableIDs) == 0 {
@@ -270,7 +270,7 @@ func renderPhaseList(
 		b.WriteString("\n")
 		b.WriteString(styles.SubtextStyle.Render("Using default model assignments for now."))
 		b.WriteString("\n\n")
-		b.WriteString(renderOptions([]string{"← Back to SDD mode"}, cursor))
+		b.WriteString(renderOptions([]string{"← Back to Orchestration Mode"}, cursor))
 		b.WriteString("\n")
 		b.WriteString(styles.HelpStyle.Render("enter/esc: go back"))
 		return b.String()

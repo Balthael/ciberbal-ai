@@ -257,7 +257,7 @@ func TestInjectOpenCodeGentlemanWritesAgentsFile(t *testing.T) {
 	}
 
 	text := string(content)
-	if !strings.Contains(text, "Senior Architect") {
+	if !strings.Contains(text, "Senior Offensive Security Engineer") {
 		t.Fatal("AGENTS.md missing real persona content")
 	}
 }

@@ -1,23 +1,25 @@
 ---
-description: Fast-forward all SDD planning phases — proposal through tasks
+description: Fast-forward engagement planning phases — scope through enumeration tasks
 agent: ciberbal
 ---
 
-Follow the SDD orchestrator workflow to fast-forward all planning phases for change "$ARGUMENTS".
+Follow the engagement orchestrator workflow to fast-forward all planning phases for engagement "$ARGUMENTS".
+
+AUTHORIZED SCOPE GUARD: Only operate against targets you are explicitly authorized to test (HTB machines, personal labs, or engagement targets covered by a signed ROE). Do NOT proceed if no authorized target is defined.
 
 WORKFLOW:
 Run these sub-agents in sequence:
-1. sdd-propose — create the proposal
-2. sdd-spec — write specifications
-3. sdd-design — create technical design
-4. sdd-tasks — break down into implementation tasks
+1. sdd-propose — define scope and Rules of Engagement
+2. sdd-spec — document findings spec and evidence requirements
+3. sdd-design — plan the attack design and technique selection
+4. sdd-tasks — break down into actionable enumeration tasks
 
 Present a combined summary after ALL phases complete (not between each one).
 
 CONTEXT:
 - Working directory: !`echo -n "$(pwd)"`
 - Current project: !`echo -n "$(basename $(pwd))"`
-- Change name: $ARGUMENTS
+- Engagement name: $ARGUMENTS
 - Artifact store mode: engram
 
 ENGRAM NOTE:

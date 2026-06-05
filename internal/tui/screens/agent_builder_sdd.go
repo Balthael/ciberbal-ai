@@ -6,12 +6,12 @@ import (
 	"github.com/gentleman-programming/gentle-ai/internal/tui/styles"
 )
 
-// ABSDDOptions returns the display labels for SDD integration modes.
+// ABSDDOptions returns the display labels for engagement workflow integration modes.
 func ABSDDOptions() []string {
 	return []string{
-		"Standalone — no SDD integration",
-		"New SDD Phase — add a new phase to the SDD graph",
-		"Phase Support — enhance an existing SDD phase",
+		"Standalone — no engagement workflow integration",
+		"New Engagement Phase — add a new phase to the workflow graph",
+		"Phase Support — enhance an existing engagement phase",
 		"Back",
 	}
 }
@@ -30,13 +30,13 @@ func ABSDDPhases() []string {
 	}
 }
 
-// RenderABSDD renders the SDD integration mode selection screen.
+// RenderABSDD renders the engagement workflow integration mode selection screen.
 func RenderABSDD(mode string, cursor int) string {
 	var b strings.Builder
 
-	b.WriteString(styles.TitleStyle.Render("SDD Integration"))
+	b.WriteString(styles.TitleStyle.Render("Engagement Workflow Integration"))
 	b.WriteString("\n\n")
-	b.WriteString(styles.SubtextStyle.Render("How should your agent integrate with the SDD workflow?"))
+	b.WriteString(styles.SubtextStyle.Render("How should your agent integrate with the engagement workflow?"))
 	b.WriteString("\n\n")
 
 	opts := ABSDDOptions()
@@ -66,11 +66,11 @@ func RenderABSDD(mode string, cursor int) string {
 	return b.String()
 }
 
-// RenderABSDDPhase renders the SDD phase selection screen for new-phase or phase-support modes.
+// RenderABSDDPhase renders the engagement phase selection screen for new-phase or phase-support modes.
 func RenderABSDDPhase(phases []string, cursor int, isNewPhase bool) string {
 	var b strings.Builder
 
-	b.WriteString(styles.TitleStyle.Render("Select SDD Phase"))
+	b.WriteString(styles.TitleStyle.Render("Select Engagement Phase"))
 	b.WriteString("\n\n")
 
 	if isNewPhase {

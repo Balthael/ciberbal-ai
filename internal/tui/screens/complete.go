@@ -63,7 +63,7 @@ func renderCompleteSuccess(data CompletePayload) string {
 	b.WriteString("\n")
 	b.WriteString(styles.UnselectedStyle.Render("  2. Run your selected agent"))
 	b.WriteString("\n")
-	b.WriteString(styles.UnselectedStyle.Render("  3. Try /sdd-new my-feature"))
+	b.WriteString(styles.UnselectedStyle.Render("  3. Start an engagement with Ciberbal using the installed workflow commands"))
 	b.WriteString("\n\n")
 
 	if data.GGAInstalled {

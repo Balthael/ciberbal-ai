@@ -14,7 +14,7 @@ func TestRenderABSDD_NonEmpty(t *testing.T) {
 
 func TestRenderABSDD_HeadingPresent(t *testing.T) {
 	out := RenderABSDD("standalone", 0)
-	if !strings.Contains(out, "SDD Integration") {
+	if !strings.Contains(out, "Engagement Workflow Integration") {
 		t.Errorf("heading not found; output:\n%s", out)
 	}
 }
@@ -24,8 +24,8 @@ func TestRenderABSDD_OptionsPresent(t *testing.T) {
 	if !strings.Contains(out, "Standalone") {
 		t.Errorf("Standalone option not found; output:\n%s", out)
 	}
-	if !strings.Contains(out, "New SDD Phase") {
-		t.Errorf("New SDD Phase option not found; output:\n%s", out)
+	if !strings.Contains(out, "New Engagement Phase") {
+		t.Errorf("New Engagement Phase option not found; output:\n%s", out)
 	}
 	if !strings.Contains(out, "Phase Support") {
 		t.Errorf("Phase Support option not found; output:\n%s", out)
@@ -57,7 +57,7 @@ func TestRenderABSDDPhase_NonEmpty(t *testing.T) {
 func TestRenderABSDDPhase_HeadingPresent(t *testing.T) {
 	phases := ABSDDPhases()
 	out := RenderABSDDPhase(phases, 0, false)
-	if !strings.Contains(out, "Select SDD Phase") {
+	if !strings.Contains(out, "Select Engagement Phase") {
 		t.Errorf("heading not found; output:\n%s", out)
 	}
 }

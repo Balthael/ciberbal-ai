@@ -10,59 +10,59 @@ import (
 // ─── WelcomeOptions ──────────────────────────────────────────────────────────
 
 // TestWelcomeOptions_WithoutProfiles verifies that when showProfiles is false,
-// the "OpenCode SDD Profiles" option is NOT present.
+// the "Engagement Profiles" option is NOT present.
 func TestWelcomeOptions_WithoutProfiles(t *testing.T) {
 	opts := screens.WelcomeOptions(nil, true, false, 0, true)
 	for _, opt := range opts {
-		if strings.Contains(opt, "OpenCode SDD Profiles") {
-			t.Errorf("expected no 'OpenCode SDD Profiles' option when showProfiles=false; got: %v", opts)
+		if strings.Contains(opt, "Engagement Profiles") {
+			t.Errorf("expected no 'Engagement Profiles' option when showProfiles=false; got: %v", opts)
 			break
 		}
 	}
 }
 
-// TestWelcomeOptions_WithProfiles_ZeroCount shows "OpenCode SDD Profiles" without a badge.
+// TestWelcomeOptions_WithProfiles_ZeroCount shows "Engagement Profiles" without a badge.
 func TestWelcomeOptions_WithProfiles_ZeroCount(t *testing.T) {
 	opts := screens.WelcomeOptions(nil, true, true, 0, true)
 	found := false
 	for _, opt := range opts {
-		if opt == "OpenCode SDD Profiles" {
+		if opt == "Engagement Profiles" {
 			found = true
 		}
-		if strings.HasPrefix(opt, "OpenCode SDD Profiles (") {
+		if strings.HasPrefix(opt, "Engagement Profiles (") {
 			t.Errorf("expected no badge for 0 profiles, got: %q", opt)
 		}
 	}
 	if !found {
-		t.Errorf("expected 'OpenCode SDD Profiles' option when showProfiles=true, profileCount=0; got: %v", opts)
+		t.Errorf("expected 'Engagement Profiles' option when showProfiles=true, profileCount=0; got: %v", opts)
 	}
 }
 
-// TestWelcomeOptions_WithProfiles_CountTwo shows "OpenCode SDD Profiles (2)".
+// TestWelcomeOptions_WithProfiles_CountTwo shows "Engagement Profiles (2)".
 func TestWelcomeOptions_WithProfiles_CountTwo(t *testing.T) {
 	opts := screens.WelcomeOptions(nil, true, true, 2, true)
 	found := false
 	for _, opt := range opts {
-		if opt == "OpenCode SDD Profiles (2)" {
+		if opt == "Engagement Profiles (2)" {
 			found = true
 		}
 	}
 	if !found {
-		t.Errorf("expected 'OpenCode SDD Profiles (2)' in options; got: %v", opts)
+		t.Errorf("expected 'Engagement Profiles (2)' in options; got: %v", opts)
 	}
 }
 
-// TestWelcomeOptions_WithProfiles_CountOne shows "OpenCode SDD Profiles (1)".
+// TestWelcomeOptions_WithProfiles_CountOne shows "Engagement Profiles (1)".
 func TestWelcomeOptions_WithProfiles_CountOne(t *testing.T) {
 	opts := screens.WelcomeOptions(nil, true, true, 1, true)
 	found := false
 	for _, opt := range opts {
-		if opt == "OpenCode SDD Profiles (1)" {
+		if opt == "Engagement Profiles (1)" {
 			found = true
 		}
 	}
 	if !found {
-		t.Errorf("expected 'OpenCode SDD Profiles (1)' in options; got: %v", opts)
+		t.Errorf("expected 'Engagement Profiles (1)' in options; got: %v", opts)
 	}
 }
 
@@ -83,7 +83,7 @@ func TestWelcomeOptions_OptionCount_WithoutProfiles(t *testing.T) {
 func TestWelcomeOptions_OptionCount_WithProfiles(t *testing.T) {
 	opts := screens.WelcomeOptions(nil, true, true, 2, true)
 	// Expected: Start installation, Upgrade tools, Sync configs, Upgrade + Sync,
-	// Configure models, Create your own Agent, OpenCode SDD Profiles (2), Manage backups, Quit = 9
+	// Configure models, Create your own Agent, Engagement Profiles (2), Manage backups, Quit = 9
 	want := 9
 	if len(opts) != want {
 		t.Errorf("WelcomeOptions(showProfiles=true, hasEngines=true) = %d options, want %d; opts: %v", len(opts), want, opts)
@@ -117,7 +117,7 @@ func TestWelcomeOptions_ProfilesInsertedBeforeManageBackups(t *testing.T) {
 		if strings.HasPrefix(opt, "Create your own Agent") {
 			agentIdx = i
 		}
-		if strings.HasPrefix(opt, "OpenCode SDD Profiles") {
+		if strings.HasPrefix(opt, "Engagement Profiles") {
 			profilesIdx = i
 		}
 		if opt == "Manage backups" {
@@ -129,7 +129,7 @@ func TestWelcomeOptions_ProfilesInsertedBeforeManageBackups(t *testing.T) {
 		t.Fatal("option 'Create your own Agent' not found")
 	}
 	if profilesIdx < 0 {
-		t.Fatal("option 'OpenCode SDD Profiles' not found")
+		t.Fatal("option 'Engagement Profiles' not found")
 	}
 	if manageBackupsIdx < 0 {
 		t.Fatal("option 'Manage backups' not found")
@@ -147,41 +147,41 @@ func TestWelcomeOptions_ProfilesInsertedBeforeManageBackups(t *testing.T) {
 
 // ─── RenderWelcome ────────────────────────────────────────────────────────────
 
-// TestRenderWelcome_WithoutProfiles verifies no "OpenCode SDD Profiles" in output.
+// TestRenderWelcome_WithoutProfiles verifies no "Engagement Profiles" in output.
 func TestRenderWelcome_WithoutProfiles(t *testing.T) {
 	output := screens.RenderWelcome(0, "1.0.0", "", nil, true, false, 0, true)
-	if strings.Contains(output, "OpenCode SDD Profiles") {
+	if strings.Contains(output, "Engagement Profiles") {
 		snippet := output
 		if len(snippet) > 200 {
 			snippet = snippet[:200]
 		}
-		t.Errorf("RenderWelcome(showProfiles=false) should not contain 'OpenCode SDD Profiles'; output snippet: %q", snippet)
+		t.Errorf("RenderWelcome(showProfiles=false) should not contain 'Engagement Profiles'; output snippet: %q", snippet)
 	}
 }
 
-// TestRenderWelcome_WithProfiles_ZeroCount contains "OpenCode SDD Profiles" but no badge.
+// TestRenderWelcome_WithProfiles_ZeroCount contains "Engagement Profiles" but no badge.
 func TestRenderWelcome_WithProfiles_ZeroCount(t *testing.T) {
 	output := screens.RenderWelcome(0, "1.0.0", "", nil, true, true, 0, true)
-	if !strings.Contains(output, "OpenCode SDD Profiles") {
-		t.Errorf("RenderWelcome(showProfiles=true, count=0) missing 'OpenCode SDD Profiles'")
+	if !strings.Contains(output, "Engagement Profiles") {
+		t.Errorf("RenderWelcome(showProfiles=true, count=0) missing 'Engagement Profiles'")
 	}
-	if strings.Contains(output, "OpenCode SDD Profiles (") {
+	if strings.Contains(output, "Engagement Profiles (") {
 		t.Errorf("RenderWelcome(showProfiles=true, count=0) should NOT have badge")
 	}
 }
 
-// TestRenderWelcome_WithProfiles_CountTwo contains "OpenCode SDD Profiles (2)".
+// TestRenderWelcome_WithProfiles_CountTwo contains "Engagement Profiles (2)".
 func TestRenderWelcome_WithProfiles_CountTwo(t *testing.T) {
 	output := screens.RenderWelcome(0, "1.0.0", "", nil, true, true, 2, true)
-	if !strings.Contains(output, "OpenCode SDD Profiles (2)") {
-		t.Errorf("RenderWelcome(showProfiles=true, count=2) missing 'OpenCode SDD Profiles (2)'")
+	if !strings.Contains(output, "Engagement Profiles (2)") {
+		t.Errorf("RenderWelcome(showProfiles=true, count=2) missing 'Engagement Profiles (2)'")
 	}
 }
 
-// TestRenderWelcome_WithProfiles_CountOne contains "OpenCode SDD Profiles (1)".
+// TestRenderWelcome_WithProfiles_CountOne contains "Engagement Profiles (1)".
 func TestRenderWelcome_WithProfiles_CountOne(t *testing.T) {
 	output := screens.RenderWelcome(0, "1.0.0", "", nil, true, true, 1, true)
-	if !strings.Contains(output, "OpenCode SDD Profiles (1)") {
-		t.Errorf("RenderWelcome(showProfiles=true, count=1) missing 'OpenCode SDD Profiles (1)'")
+	if !strings.Contains(output, "Engagement Profiles (1)") {
+		t.Errorf("RenderWelcome(showProfiles=true, count=1) missing 'Engagement Profiles (1)'")
 	}
 }

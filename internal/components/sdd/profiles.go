@@ -223,7 +223,7 @@ func GenerateProfileOverlay(profile model.Profile, homeDir string) ([]byte, erro
 	// Orchestrator entry
 	orchEntry := map[string]any{
 		"mode":        "primary",
-		"description": "Ciberbal — SDD Orchestrator (" + profile.Name + " profile), coordinates sub-agents, never does work inline",
+		"description": "Ciberbal — Engagement Orchestrator (" + profile.Name + " profile), coordinates sub-agents, never does work inline",
 		"prompt":      orchestratorPrompt,
 		"permission": map[string]any{
 			"task": map[string]any{
@@ -249,16 +249,16 @@ func GenerateProfileOverlay(profile model.Profile, homeDir string) ([]byte, erro
 	// Sub-agent entries
 	promptDir := SharedPromptDir(homeDir)
 	phaseDescriptions := map[string]string{
-		"sdd-init":    "Bootstrap SDD context and project configuration",
-		"sdd-explore": "Investigate codebase and think through ideas",
-		"sdd-propose": "Create change proposals from explorations",
-		"sdd-spec":    "Write detailed specifications from proposals",
-		"sdd-design":  "Create technical design from proposals",
-		"sdd-tasks":   "Break down specs and designs into implementation tasks",
-		"sdd-apply":   "Implement code changes from task definitions",
-		"sdd-verify":  "Validate implementation against specs",
-		"sdd-archive": "Archive completed change artifacts",
-		"sdd-onboard": "Guide user through a complete SDD cycle using their real codebase",
+		"sdd-init":    "Bootstrap engagement context and target scope",
+		"sdd-explore": "Recon — investigate target and map attack surface",
+		"sdd-propose": "Scope and Rules of Engagement — define boundaries and constraints",
+		"sdd-spec":    "Findings Spec — document vulnerabilities and evidence requirements",
+		"sdd-design":  "Attack Design — plan exploitation paths and techniques",
+		"sdd-tasks":   "Enumeration Tasks — break attack plan into actionable checks",
+		"sdd-apply":   "Exploitation — execute authorized tasks and collect evidence",
+		"sdd-verify":  "Evidence Review — validate findings against scope and evidence",
+		"sdd-archive": "Reporting Archive — close engagement and preserve artifacts",
+		"sdd-onboard": "Guide user through a complete authorized engagement workflow",
 	}
 
 	for _, phase := range profilePhaseOrder {

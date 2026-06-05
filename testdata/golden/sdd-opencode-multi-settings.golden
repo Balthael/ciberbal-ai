@@ -1,7 +1,7 @@
 {
   "agent": {
     "ciberbal": {
-      "description": "Ciberbal — SDD Orchestrator, coordinates sub-agents, never does work inline",
+      "description": "Ciberbal — Engagement Orchestrator, coordinates sub-agents, never does work inline",
       "mode": "primary",
       "permission": {
         "task": {
@@ -21,7 +21,7 @@
       }
     },
     "sdd-apply": {
-      "description": "Implement code changes from task definitions",
+      "description": "Exploitation — execute attack tasks and collect evidence",
       "hidden": true,
       "mode": "subagent",
       "prompt": "{file:{{HOME}}/.config/opencode/prompts/sdd/sdd-apply.md}",
@@ -33,7 +33,7 @@
       }
     },
     "sdd-archive": {
-      "description": "Archive completed change artifacts",
+      "description": "Reporting Archive — compile and store pentest findings and artifacts",
       "hidden": true,
       "mode": "subagent",
       "prompt": "{file:{{HOME}}/.config/opencode/prompts/sdd/sdd-archive.md}",
@@ -45,7 +45,7 @@
       }
     },
     "sdd-design": {
-      "description": "Create technical design from proposals",
+      "description": "Attack Design — plan exploitation paths and techniques",
       "hidden": true,
       "mode": "subagent",
       "prompt": "{file:{{HOME}}/.config/opencode/prompts/sdd/sdd-design.md}",
@@ -57,7 +57,7 @@
       }
     },
     "sdd-explore": {
-      "description": "Investigate codebase and think through ideas",
+      "description": "Recon — investigate target and map attack surface",
       "hidden": true,
       "mode": "subagent",
       "prompt": "{file:{{HOME}}/.config/opencode/prompts/sdd/sdd-explore.md}",
@@ -69,7 +69,7 @@
       }
     },
     "sdd-init": {
-      "description": "Bootstrap SDD context and project configuration",
+      "description": "Bootstrap engagement context and project configuration",
       "hidden": true,
       "mode": "subagent",
       "prompt": "{file:{{HOME}}/.config/opencode/prompts/sdd/sdd-init.md}",
@@ -81,7 +81,7 @@
       }
     },
     "sdd-onboard": {
-      "description": "Guide user through a complete SDD cycle using their real codebase",
+      "description": "Guide user through a complete engagement workflow using their real target",
       "hidden": true,
       "mode": "subagent",
       "prompt": "{file:{{HOME}}/.config/opencode/prompts/sdd/sdd-onboard.md}",
@@ -93,7 +93,7 @@
       }
     },
     "sdd-propose": {
-      "description": "Create change proposals from explorations",
+      "description": "Scope and Rules of Engagement — define target boundaries and constraints",
       "hidden": true,
       "mode": "subagent",
       "prompt": "{file:{{HOME}}/.config/opencode/prompts/sdd/sdd-propose.md}",
@@ -105,7 +105,7 @@
       }
     },
     "sdd-spec": {
-      "description": "Write detailed specifications from proposals",
+      "description": "Findings Spec — document vulnerabilities and evidence from recon",
       "hidden": true,
       "mode": "subagent",
       "prompt": "{file:{{HOME}}/.config/opencode/prompts/sdd/sdd-spec.md}",
@@ -117,7 +117,7 @@
       }
     },
     "sdd-tasks": {
-      "description": "Break down specs and designs into implementation tasks",
+      "description": "Enumeration Tasks — break down attack plan into actionable steps",
       "hidden": true,
       "mode": "subagent",
       "prompt": "{file:{{HOME}}/.config/opencode/prompts/sdd/sdd-tasks.md}",
@@ -129,7 +129,7 @@
       }
     },
     "sdd-verify": {
-      "description": "Validate implementation against specs",
+      "description": "Evidence Review — validate findings and confirm exploitability",
       "hidden": true,
       "mode": "subagent",
       "prompt": "{file:{{HOME}}/.config/opencode/prompts/sdd/sdd-verify.md}",

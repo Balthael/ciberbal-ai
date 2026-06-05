@@ -1136,15 +1136,15 @@ var claudeModelAssignmentRowOrder = []string{
 
 var claudeModelAssignmentReasons = map[string]string{
 	"orchestrator": "Coordinates, makes decisions",
-	"sdd-explore":  "Reads code, structural - not architectural",
-	"sdd-propose":  "Architectural decisions",
-	"sdd-spec":     "Structured writing",
-	"sdd-design":   "Architecture decisions",
-	"sdd-tasks":    "Mechanical breakdown",
-	"sdd-apply":    "Implementation",
-	"sdd-verify":   "Validation against spec",
-	"sdd-archive":  "Copy and close",
-	"default":      "Non-SDD general delegation",
+	"sdd-explore":  "Recon — reads target, structural analysis",
+	"sdd-propose":  "Scope and ROE — engagement boundaries",
+	"sdd-spec":     "Findings Spec — structured vulnerability writing",
+	"sdd-design":   "Attack Design — exploitation path planning",
+	"sdd-tasks":    "Enumeration Tasks — mechanical breakdown",
+	"sdd-apply":    "Exploitation — executes attack tasks",
+	"sdd-verify":   "Evidence Review — validates findings",
+	"sdd-archive":  "Reporting Archive — compile and close",
+	"default":      "General Support — non-engagement delegation",
 }
 
 func injectClaudeModelAssignments(content string, assignments map[string]model.ClaudeModelAlias) (string, error) {

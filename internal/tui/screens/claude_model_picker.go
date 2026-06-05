@@ -20,10 +20,10 @@ const (
 
 // claudePresetDescriptions describes each preset.
 var claudePresetDescriptions = map[ClaudeModelPreset]string{
-	ClaudePresetBalanced:    "Smart defaults: opus for architecture, sonnet for most phases, haiku for archiving",
-	ClaudePresetPerformance: "Maximum quality: opus for architecture, planning & verification phases",
+	ClaudePresetBalanced:    "Smart defaults: opus for strategy, sonnet for most phases, haiku for archiving",
+	ClaudePresetPerformance: "Maximum quality: opus for strategy, attack design & evidence review",
 	ClaudePresetEconomy:     "Cost-optimised: sonnet for all phases, haiku for archiving",
-	ClaudePresetCustom:      "Pick the model alias for each SDD phase individually",
+	ClaudePresetCustom:      "Pick the model alias for each engagement phase individually",
 }
 
 // claudePresetOrder is the display order for presets.
@@ -48,18 +48,18 @@ var claudePhases = []string{
 	"default",
 }
 
-// claudePhaseLabels are the human-readable labels for each SDD phase.
+// claudePhaseLabels are the human-readable labels for each engagement phase.
 var claudePhaseLabels = map[string]string{
-	"orchestrator": "Orchestrator",
-	"sdd-explore":  "Explore",
-	"sdd-propose":  "Propose",
-	"sdd-spec":     "Spec",
-	"sdd-design":   "Design",
-	"sdd-tasks":    "Tasks",
-	"sdd-apply":    "Apply",
-	"sdd-verify":   "Verify",
-	"sdd-archive":  "Archive",
-	"default":      "General delegation",
+	"orchestrator": "Ciberbal Orchestrator",
+	"sdd-explore":  "Recon",
+	"sdd-propose":  "Scope / ROE",
+	"sdd-spec":     "Findings Spec",
+	"sdd-design":   "Attack Design",
+	"sdd-tasks":    "Enumeration Tasks",
+	"sdd-apply":    "Exploitation",
+	"sdd-verify":   "Evidence Review",
+	"sdd-archive":  "Reporting Archive",
+	"default":      "General Support",
 }
 
 // claudeAliasOrder defines the cycling order when pressing Enter on a phase row.
@@ -209,9 +209,9 @@ func RenderClaudeModelPicker(state ClaudeModelPickerState, cursor int) string {
 func renderPresetList(state ClaudeModelPickerState, cursor int) string {
 	var b strings.Builder
 
-	b.WriteString(styles.TitleStyle.Render("Claude Model Assignments"))
+	b.WriteString(styles.TitleStyle.Render("Ciberbal Offensive Workflow Models"))
 	b.WriteString("\n\n")
-	b.WriteString(styles.SubtextStyle.Render("Choose how Claude models are assigned to each SDD phase:"))
+	b.WriteString(styles.SubtextStyle.Render("Choose how Claude models are assigned to each engagement phase:"))
 	b.WriteString("\n\n")
 
 	for idx, preset := range claudePresetOrder {
@@ -232,7 +232,7 @@ func renderPresetList(state ClaudeModelPickerState, cursor int) string {
 func renderCustomPhaseList(state ClaudeModelPickerState, cursor int) string {
 	var b strings.Builder
 
-	b.WriteString(styles.TitleStyle.Render("Custom Model Assignments"))
+	b.WriteString(styles.TitleStyle.Render("Ciberbal Offensive Workflow Models"))
 	b.WriteString("\n\n")
 	b.WriteString(styles.SubtextStyle.Render("Press enter on a phase to cycle: opus → sonnet → haiku"))
 	b.WriteString("\n\n")

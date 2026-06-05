@@ -7,8 +7,8 @@ import (
 
 func TestRenderStrictTDDContainsTitle(t *testing.T) {
 	output := RenderStrictTDD(false, 0)
-	if !strings.Contains(output, "STRICT TDD MODE") {
-		t.Errorf("RenderStrictTDD output missing title %q\ngot: %s", "STRICT TDD MODE", output)
+	if !strings.Contains(output, "STRICT VERIFICATION MODE") {
+		t.Errorf("RenderStrictTDD output missing title %q\ngot: %s", "STRICT VERIFICATION MODE", output)
 	}
 }
 

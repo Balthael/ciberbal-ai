@@ -12,16 +12,16 @@ func SDDModeOptions() []model.SDDModeID {
 }
 
 var sddModeDescriptions = map[model.SDDModeID]string{
-	model.SDDModeSingle: "Single orchestrator — one agent handles all SDD phases",
-	model.SDDModeMulti:  "Multi-agent — dedicated sub-agent per SDD phase (9 hidden agents)",
+	model.SDDModeSingle: "Single orchestrator — one agent handles all engagement phases",
+	model.SDDModeMulti:  "Multi-agent — dedicated sub-agent per engagement phase (9 hidden agents)",
 }
 
 func RenderSDDMode(selected model.SDDModeID, cursor int) string {
 	var b strings.Builder
 
-	b.WriteString(styles.TitleStyle.Render("Select SDD Mode"))
+	b.WriteString(styles.TitleStyle.Render("Select Orchestration Mode"))
 	b.WriteString("\n\n")
-	b.WriteString(styles.SubtextStyle.Render("How should the SDD orchestrator be configured for OpenCode?"))
+	b.WriteString(styles.SubtextStyle.Render("How should the Ciberbal orchestrator be configured for OpenCode?"))
 	b.WriteString("\n\n")
 
 	for idx, mode := range SDDModeOptions() {

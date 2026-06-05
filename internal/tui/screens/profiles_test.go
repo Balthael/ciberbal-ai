@@ -27,8 +27,8 @@ func TestRenderProfiles_TitleIsPresent(t *testing.T) {
 	profiles := []model.Profile{makeProfile("cheap", "anthropic", "claude-haiku-4")}
 	output := screens.RenderProfiles(profiles, 0, nil)
 
-	if !strings.Contains(output, "OpenCode SDD Profiles") {
-		t.Errorf("expected title 'OpenCode SDD Profiles' in output, got:\n%s", output)
+	if !strings.Contains(output, "Engagement Profiles") {
+		t.Errorf("expected title 'Engagement Profiles' in output, got:\n%s", output)
 	}
 }
 

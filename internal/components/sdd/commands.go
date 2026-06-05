@@ -8,13 +8,13 @@ type OpenCodeCommand struct {
 
 func OpenCodeCommands() []OpenCodeCommand {
 	return []OpenCodeCommand{
-		{Name: "sdd-init", Description: "Initialize SDD context", Body: "/sdd-init"},
-		{Name: "sdd-new", Description: "Start a new SDD change", Body: "/sdd-new ${change-name}"},
-		{Name: "sdd-continue", Description: "Continue next pending artifact", Body: "/sdd-continue ${change-name}"},
-		{Name: "sdd-ff", Description: "Generate all planning artifacts", Body: "/sdd-ff ${change-name}"},
-		{Name: "sdd-apply", Description: "Implement tasks", Body: "/sdd-apply ${change-name}"},
-		{Name: "sdd-verify", Description: "Verify implementation", Body: "/sdd-verify ${change-name}"},
-		{Name: "sdd-archive", Description: "Archive completed change", Body: "/sdd-archive ${change-name}"},
-		{Name: "sdd-onboard", Description: "Guided SDD walkthrough", Body: "/sdd-onboard"},
+		{Name: "sdd-init", Description: "Initialize engagement context", Body: "/sdd-init"},
+		{Name: "sdd-new", Description: "Start a new engagement workflow", Body: "/sdd-new ${engagement-name}"},
+		{Name: "sdd-continue", Description: "Continue next engagement phase", Body: "/sdd-continue ${engagement-name}"},
+		{Name: "sdd-ff", Description: "Fast-forward engagement planning phases", Body: "/sdd-ff ${engagement-name}"},
+		{Name: "sdd-apply", Description: "Execute exploitation tasks", Body: "/sdd-apply ${engagement-name}"},
+		{Name: "sdd-verify", Description: "Review evidence and findings", Body: "/sdd-verify ${engagement-name}"},
+		{Name: "sdd-archive", Description: "Archive engagement and compile report", Body: "/sdd-archive ${engagement-name}"},
+		{Name: "sdd-onboard", Description: "Guided engagement walkthrough", Body: "/sdd-onboard"},
 	}
 }

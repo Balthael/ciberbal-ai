@@ -140,8 +140,8 @@ func TestInjectClaudeCustomModelAssignments(t *testing.T) {
 	text := string(content)
 	for _, want := range []string{
 		"| orchestrator | sonnet | Coordinates, makes decisions |",
-		"| sdd-design | sonnet | Architecture decisions |",
-		"| default | haiku | Non-SDD general delegation |",
+		"| sdd-design | sonnet | Attack Design — exploitation path planning |",
+		"| default | haiku | General Support — non-engagement delegation |",
 	} {
 		if !strings.Contains(text, want) {
 			t.Fatalf("CLAUDE.md missing custom table row %q", want)

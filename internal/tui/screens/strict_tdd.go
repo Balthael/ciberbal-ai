@@ -17,19 +17,19 @@ func StrictTDDOptions() []string {
 	return []string{"Enable", "Disable"}
 }
 
-// RenderStrictTDD renders the Strict TDD Mode selection screen.
-// enabled indicates whether Strict TDD Mode is currently active.
+// RenderStrictTDD renders the Verification Mode selection screen.
+// enabled indicates whether Strict Verification Mode is currently active.
 // cursor is the current cursor position.
 func RenderStrictTDD(enabled bool, cursor int) string {
 	var b strings.Builder
 
-	b.WriteString(styles.TitleStyle.Render("STRICT TDD MODE"))
+	b.WriteString(styles.TitleStyle.Render("STRICT VERIFICATION MODE"))
 	b.WriteString("\n\n")
-	b.WriteString(styles.SubtextStyle.Render("Should agents follow Strict TDD (RED → GREEN → REFACTOR) for every task?"))
+	b.WriteString(styles.SubtextStyle.Render("Should agents enforce strict verification (test → exploit → validate) for every task?"))
 	b.WriteString("\n")
-	b.WriteString(styles.SubtextStyle.Render("When enabled, the sdd-apply agent writes tests first, confirms failure,"))
+	b.WriteString(styles.SubtextStyle.Render("When enabled, the exploitation agent tests hypotheses first, confirms findings,"))
 	b.WriteString("\n")
-	b.WriteString(styles.SubtextStyle.Render("then implements the minimum code to pass before refactoring."))
+	b.WriteString(styles.SubtextStyle.Render("then implements the minimum proof-of-concept before writing evidence."))
 	b.WriteString("\n\n")
 
 	options := StrictTDDOptions()
