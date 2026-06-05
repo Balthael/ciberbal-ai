@@ -1858,7 +1858,7 @@ func TestOpenCodePersonaBeforeSDDPreservesAllSections(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ReadFile(opencode.json) error = %v", err)
 	}
-	if !strings.Contains(string(jsonContent), "sdd-orchestrator") {
-		t.Error("opencode.json missing sdd-orchestrator agent entry (SDD not injected)")
+	if !strings.Contains(string(jsonContent), "ciberbal") {
+		t.Error("opencode.json missing ciberbal agent entry (SDD not injected)")
 	}
 }

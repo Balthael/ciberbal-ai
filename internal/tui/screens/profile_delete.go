@@ -24,7 +24,7 @@ func RenderProfileDelete(profileName string, cursor int) string {
 	b.WriteString("\n\n")
 
 	// Show orchestrator key.
-	b.WriteString(styles.UnselectedStyle.Render("  • sdd-orchestrator-" + profileName))
+	b.WriteString(styles.UnselectedStyle.Render("  • ciberbal-" + profileName))
 	b.WriteString("\n")
 
 	// Show phase keys using the canonical phase list from the sdd package.

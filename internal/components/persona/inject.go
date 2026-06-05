@@ -1,6 +1,7 @@
 package persona
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -21,9 +22,8 @@ type InjectionResult struct {
 var outputStyleOverlayJSON = []byte("{\n  \"outputStyle\": \"Gentleman\"\n}\n")
 
 // openCodeAgentOverlayJSON defines Tab-switchable agents for OpenCode.
-// "gentleman" is the primary agent, "sdd-orchestrator" is available via Tab.
-// Both reference AGENTS.md via {file:./AGENTS.md} for their system prompt.
-var openCodeAgentOverlayJSON = []byte("{\n  \"agent\": {\n    \"gentleman\": {\n      \"mode\": \"primary\",\n      \"description\": \"Senior Architect mentor - helpful first, challenging when it matters\",\n      \"prompt\": \"{file:./AGENTS.md}\",\n      \"tools\": {\n        \"write\": true,\n        \"edit\": true\n      }\n    },\n    \"sdd-orchestrator\": {\n      \"mode\": \"all\",\n      \"description\": \"Gentleman personality + SDD delegate-only orchestrator\",\n      \"prompt\": \"{file:./AGENTS.md}\",\n      \"tools\": {\n        \"read\": true,\n        \"write\": true,\n        \"edit\": true,\n        \"bash\": true\n      }\n    }\n  }\n}\n")
+// "ciberbal" is the primary agent key. Both reference AGENTS.md via {file:./AGENTS.md}.
+var openCodeAgentOverlayJSON = []byte("{\n  \"agent\": {\n    \"ciberbal\": {\n      \"mode\": \"primary\",\n      \"description\": \"Ciberbal — Senior Architect mentor\",\n      \"prompt\": \"{file:./AGENTS.md}\",\n      \"tools\": {\n        \"write\": true,\n        \"edit\": true\n      }\n    }\n  }\n}\n")
 
 func Inject(homeDir string, adapter agents.Adapter, persona model.PersonaID) (InjectionResult, error) {
 	if !adapter.SupportsSystemPrompt() {
@@ -247,12 +247,96 @@ func mergeJSONFile(path string, overlay []byte) (filemerge.WriteResult, error) {
 		return filemerge.WriteResult{}, err
 	}
 
+	// Migrate: remove stale installer-managed agent keys before merging.
+	// These keys were written by older installer versions and are no longer needed.
+	// We remove them so they don't shadow the new "ciberbal" key.
+	baseJSON, err = removeStalePersonaAgentKeys(baseJSON)
+	if err != nil {
+		return filemerge.WriteResult{}, err
+	}
+
 	merged, err := filemerge.MergeJSONObjects(baseJSON, overlay)
 	if err != nil {
 		return filemerge.WriteResult{}, err
 	}
 
 	return filemerge.WriteFileAtomic(path, merged, 0o644)
+}
+
+// staleInstallerAgentKeys are OpenCode agent keys that were injected by older
+// installer versions and are superseded by "ciberbal". We remove them during
+// migration to prevent stale entries from appearing in the agent picker.
+// "sdd-orchestrator" is NOT removed here — it is managed by the SDD component
+// and will be replaced by "ciberbal" via the SDD overlay during sync.
+var staleInstallerAgentKeys = []string{
+	"gentleman",
+	"gentle-orchestrator",
+}
+
+// removeStalePersonaAgentKeys removes installer-managed agent keys that are
+// no longer written by the current installer version from the opencode.json
+// agent map. Only keys that match the known stale set are removed; all other
+// user-defined agents are preserved.
+func removeStalePersonaAgentKeys(baseJSON []byte) ([]byte, error) {
+	if len(strings.TrimSpace(string(baseJSON))) == 0 {
+		return baseJSON, nil
+	}
+
+	root := map[string]any{}
+	if err := json.Unmarshal(baseJSON, &root); err != nil {
+		// Non-parseable JSON — leave unchanged.
+		return baseJSON, nil
+	}
+
+	agentRaw, hasAgent := root["agent"]
+	if !hasAgent {
+		return baseJSON, nil
+	}
+	agentMap, ok := agentRaw.(map[string]any)
+	if !ok {
+		return baseJSON, nil
+	}
+
+	removed := 0
+	for _, key := range staleInstallerAgentKeys {
+		if raw, exists := agentMap[key]; exists && isManagedStalePersonaAgent(key, raw) {
+			delete(agentMap, key)
+			removed++
+		}
+	}
+
+	if removed == 0 {
+		return baseJSON, nil
+	}
+
+	root["agent"] = agentMap
+	encoded, err := json.MarshalIndent(root, "", "  ")
+	if err != nil {
+		return nil, fmt.Errorf("marshal opencode json after stale key removal: %w", err)
+	}
+	return append(encoded, '\n'), nil
+}
+
+func isManagedStalePersonaAgent(key string, raw any) bool {
+	agent, ok := raw.(map[string]any)
+	if !ok {
+		return false
+	}
+
+	description, _ := agent["description"].(string)
+	prompt, _ := agent["prompt"].(string)
+
+	switch key {
+	case "gentleman":
+		return prompt == "{file:./AGENTS.md}" && (description == "Senior Architect mentor - helpful first, challenging when it matters" ||
+			description == "Ciberbal — Senior Architect mentor")
+	case "gentle-orchestrator":
+		return strings.Contains(description, "Gentle AI SDD Orchestrator") ||
+			strings.Contains(prompt, "# Gentle AI — SDD Orchestrator Instructions") ||
+			strings.Contains(prompt, "dedicated `gentle-orchestrator`")
+	default:
+		return false
+	}
 }
 
 var osReadFile = func(path string) ([]byte, error) {

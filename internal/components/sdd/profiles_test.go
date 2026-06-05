@@ -39,6 +39,7 @@ func TestValidateProfileName_Invalid(t *testing.T) {
 		{"", "empty"},
 		{"default", "reserved word"},
 		{"sdd-orchestrator", "reserved word"},
+		{"ciberbal", "reserved word"},
 		{"my profile", "contains space"},
 		{"has spaces", "contains spaces"},
 		{"has_underscores", "slug convention: lowercase + hyphens only"},
@@ -61,7 +62,7 @@ func TestProfileAgentKeys_Named(t *testing.T) {
 	keys := ProfileAgentKeys("cheap")
 
 	want := []string{
-		"sdd-orchestrator-cheap",
+		"ciberbal-cheap",
 		"sdd-init-cheap",
 		"sdd-explore-cheap",
 		"sdd-propose-cheap",
@@ -94,7 +95,7 @@ func TestProfileAgentKeys_Default(t *testing.T) {
 	keys := ProfileAgentKeys("")
 
 	want := []string{
-		"sdd-orchestrator",
+		"ciberbal",
 		"sdd-init",
 		"sdd-explore",
 		"sdd-propose",
@@ -139,8 +140,8 @@ func TestDetectProfiles_SingleProfile(t *testing.T) {
 
 	content := `{
   "agent": {
-    "sdd-orchestrator": { "mode": "primary", "prompt": "orchestrator" },
-    "sdd-orchestrator-cheap": { "mode": "primary", "model": "anthropic:claude-haiku-3-5" },
+    "ciberbal": { "mode": "primary", "prompt": "orchestrator" },
+    "ciberbal-cheap": { "mode": "primary", "model": "anthropic:claude-haiku-3-5" },
     "sdd-init-cheap": { "mode": "subagent", "model": "anthropic:claude-haiku-3-5" },
     "sdd-explore-cheap": { "mode": "subagent", "model": "anthropic:claude-haiku-3-5" },
     "sdd-propose-cheap": { "mode": "subagent", "model": "anthropic:claude-haiku-3-5" },
@@ -183,7 +184,7 @@ func TestDetectProfiles_DefaultOnly(t *testing.T) {
 
 	content := `{
   "agent": {
-    "sdd-orchestrator": { "mode": "primary" },
+    "ciberbal": { "mode": "primary" },
     "sdd-init": { "mode": "subagent" },
     "sdd-apply": { "mode": "subagent" }
   }
@@ -231,8 +232,8 @@ func TestDetectProfiles_TwoProfiles(t *testing.T) {
 
 	content := `{
   "agent": {
-    "sdd-orchestrator": { "mode": "primary" },
-    "sdd-orchestrator-cheap": { "mode": "primary", "model": "anthropic:claude-haiku-3-5" },
+    "ciberbal": { "mode": "primary" },
+    "ciberbal-cheap": { "mode": "primary", "model": "anthropic:claude-haiku-3-5" },
     "sdd-init-cheap": { "mode": "subagent", "model": "anthropic:claude-haiku-3-5" },
     "sdd-explore-cheap": { "mode": "subagent" },
     "sdd-propose-cheap": { "mode": "subagent" },
@@ -243,7 +244,7 @@ func TestDetectProfiles_TwoProfiles(t *testing.T) {
     "sdd-verify-cheap": { "mode": "subagent" },
     "sdd-archive-cheap": { "mode": "subagent" },
     "sdd-onboard-cheap": { "mode": "subagent" },
-    "sdd-orchestrator-premium": { "mode": "primary", "model": "anthropic:claude-opus-4-5" },
+    "ciberbal-premium": { "mode": "primary", "model": "anthropic:claude-opus-4-5" },
     "sdd-init-premium": { "mode": "subagent", "model": "anthropic:claude-opus-4-5" },
     "sdd-explore-premium": { "mode": "subagent" },
     "sdd-propose-premium": { "mode": "subagent" },
@@ -338,22 +339,22 @@ func TestGenerateProfileOverlay_Structure(t *testing.T) {
 	}
 
 	// Orchestrator checks
-	orchRaw, ok := agentMap["sdd-orchestrator-cheap"]
+	orchRaw, ok := agentMap["ciberbal-cheap"]
 	if !ok {
-		t.Fatal("missing sdd-orchestrator-cheap")
+		t.Fatal("missing ciberbal-cheap")
 	}
 	orch, ok := orchRaw.(map[string]any)
 	if !ok {
-		t.Fatal("sdd-orchestrator-cheap is not an object")
+		t.Fatal("ciberbal-cheap is not an object")
 	}
 	if mode, _ := orch["mode"].(string); mode != "primary" {
-		t.Errorf("sdd-orchestrator-cheap mode = %q, want %q", mode, "primary")
+		t.Errorf("ciberbal-cheap mode = %q, want %q", mode, "primary")
 	}
 	if model, _ := orch["model"].(string); model != "anthropic/claude-haiku-3-5" {
-		t.Errorf("sdd-orchestrator-cheap model = %q, want %q", model, "anthropic/claude-haiku-3-5")
+		t.Errorf("ciberbal-cheap model = %q, want %q", model, "anthropic/claude-haiku-3-5")
 	}
-	if prompt, _ := orch["prompt"].(string); !strings.Contains(prompt, "Agent Teams") && !strings.Contains(prompt, "Orchestrator") {
-		t.Errorf("sdd-orchestrator-cheap prompt does not contain orchestrator content; got: %q", prompt[:min(100, len(prompt))])
+	if prompt, _ := orch["prompt"].(string); !strings.Contains(prompt, "Agent Teams") && !strings.Contains(prompt, "Orchestrator") && !strings.Contains(prompt, "Ciberbal") {
+		t.Errorf("ciberbal-cheap prompt does not contain orchestrator content; got: %q", prompt[:min(100, len(prompt))])
 	}
 
 	// Sub-agent checks — each phase should be hidden subagent with file ref
@@ -396,15 +397,15 @@ func TestGenerateProfileOverlay_PermissionScoped(t *testing.T) {
 	}
 
 	agentMap := root["agent"].(map[string]any)
-	orch := agentMap["sdd-orchestrator-cheap"].(map[string]any)
+	orch := agentMap["ciberbal-cheap"].(map[string]any)
 
 	permRaw, ok := orch["permission"]
 	if !ok {
-		t.Fatal("sdd-orchestrator-cheap missing 'permission'")
+		t.Fatal("ciberbal-cheap missing 'permission'")
 	}
 	perm, ok := permRaw.(map[string]any)
 	if !ok {
-		t.Fatal("sdd-orchestrator-cheap 'permission' is not an object")
+		t.Fatal("ciberbal-cheap 'permission' is not an object")
 	}
 	taskRaw, ok := perm["task"]
 	if !ok {
@@ -469,7 +470,7 @@ func TestGenerateProfileOverlay_OrchestratorPromptSuffixed(t *testing.T) {
 		t.Fatalf("overlay is not valid JSON: %v", err)
 	}
 	agentMap := root["agent"].(map[string]any)
-	orch := agentMap["sdd-orchestrator-cheap"].(map[string]any)
+	orch := agentMap["ciberbal-cheap"].(map[string]any)
 	prompt, _ := orch["prompt"].(string)
 
 	// The orchestrator prompt should reference suffixed sub-agents
@@ -489,13 +490,13 @@ func buildSettingsWithProfiles(t *testing.T) (path string) {
 	agents := make(map[string]any)
 
 	// Default agents (no suffix)
-	for _, key := range []string{"sdd-orchestrator", "sdd-init", "sdd-explore",
+	for _, key := range []string{"ciberbal", "sdd-init", "sdd-explore",
 		"sdd-propose", "sdd-spec", "sdd-design", "sdd-tasks",
 		"sdd-apply", "sdd-verify", "sdd-archive", "sdd-onboard"} {
 		agents[key] = map[string]any{"mode": "primary"}
 	}
 	// cheap profile
-	for _, key := range []string{"sdd-orchestrator-cheap", "sdd-init-cheap", "sdd-explore-cheap",
+	for _, key := range []string{"ciberbal-cheap", "sdd-init-cheap", "sdd-explore-cheap",
 		"sdd-propose-cheap", "sdd-spec-cheap", "sdd-design-cheap", "sdd-tasks-cheap",
 		"sdd-apply-cheap", "sdd-verify-cheap", "sdd-archive-cheap", "sdd-onboard-cheap"} {
 		agents[key] = map[string]any{"mode": "subagent"}
@@ -541,7 +542,7 @@ func TestRemoveProfileAgents_RemovesExactly11(t *testing.T) {
 	}
 
 	// Default keys all preserved
-	for _, key := range []string{"sdd-orchestrator", "sdd-init", "sdd-explore",
+	for _, key := range []string{"ciberbal", "sdd-init", "sdd-explore",
 		"sdd-propose", "sdd-spec", "sdd-design", "sdd-tasks",
 		"sdd-apply", "sdd-verify", "sdd-archive", "sdd-onboard"} {
 		if _, ok := agentMap[key]; !ok {

@@ -1066,14 +1066,19 @@ func TestRunSyncWithProfilesIntegration(t *testing.T) {
 
 	// Check all 11 agent keys for each profile.
 	profileNames := []string{"cheap", "premium", "balanced"}
-	phases := []string{
-		"sdd-orchestrator",
-		"sdd-init", "sdd-explore", "sdd-propose", "sdd-spec", "sdd-design",
-		"sdd-tasks", "sdd-apply", "sdd-verify", "sdd-archive", "sdd-onboard",
-	}
 
 	for _, profileName := range profileNames {
-		for _, phase := range phases {
+		// Orchestrator key uses ciberbal- prefix.
+		orchKey := `"ciberbal-` + profileName + `"`
+		if !strings.Contains(settingsStr, orchKey) {
+			t.Errorf("opencode.json missing profile orchestrator key %s (profile=%s)", orchKey, profileName)
+		}
+		// Sub-agent phases use sdd-*-{name} keys.
+		subPhases := []string{
+			"sdd-init", "sdd-explore", "sdd-propose", "sdd-spec", "sdd-design",
+			"sdd-tasks", "sdd-apply", "sdd-verify", "sdd-archive", "sdd-onboard",
+		}
+		for _, phase := range subPhases {
 			key := `"` + phase + "-" + profileName + `"`
 			if !strings.Contains(settingsStr, key) {
 				t.Errorf("opencode.json missing profile agent key %s (profile=%s phase=%s)", key, profileName, phase)
@@ -1182,8 +1187,8 @@ func TestRunSyncDetectsExistingProfilesOnRegularSync(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ReadFile error = %v", err)
 	}
-	if !strings.Contains(string(settingsData), `"sdd-orchestrator-test-profile"`) {
-		t.Fatalf("run1 did not create sdd-orchestrator-test-profile in opencode.json")
+	if !strings.Contains(string(settingsData), `"ciberbal-test-profile"`) {
+		t.Fatalf("run1 did not create ciberbal-test-profile in opencode.json")
 	}
 
 	// Run 2: normal sync (no explicit profiles) → DetectProfiles should find the
@@ -1213,8 +1218,8 @@ func TestRunSyncDetectsExistingProfilesOnRegularSync(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ReadFile run2 error = %v", err)
 	}
-	if !strings.Contains(string(settingsData2), `"sdd-orchestrator-test-profile"`) {
-		t.Errorf("run2 (regular sync): sdd-orchestrator-test-profile key should still be present after DetectProfiles re-sync")
+	if !strings.Contains(string(settingsData2), `"ciberbal-test-profile"`) {
+		t.Errorf("run2 (regular sync): ciberbal-test-profile key should still be present after DetectProfiles re-sync")
 	}
 	_ = result2 // result2 may or may not be no-op depending on whether profile overlay is idempotent
 }

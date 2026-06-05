@@ -262,6 +262,76 @@ func TestInjectOpenCodeGentlemanWritesAgentsFile(t *testing.T) {
 	}
 }
 
+func TestRemoveStalePersonaAgentKeysRemovesManagedOpenCodeAgents(t *testing.T) {
+	base := []byte(`{
+  "agent": {
+    "gentleman": {
+      "description": "Senior Architect mentor - helpful first, challenging when it matters",
+      "prompt": "{file:./AGENTS.md}"
+    },
+    "gentle-orchestrator": {
+      "description": "Gentle AI SDD Orchestrator - coordinates sub-agents, never does work inline",
+      "prompt": "# Gentle AI — SDD Orchestrator Instructions"
+    },
+    "keep-me": {
+      "description": "User agent"
+    }
+  }
+}`)
+
+	updated, err := removeStalePersonaAgentKeys(base)
+	if err != nil {
+		t.Fatalf("removeStalePersonaAgentKeys() error = %v", err)
+	}
+
+	var root map[string]any
+	if err := json.Unmarshal(updated, &root); err != nil {
+		t.Fatalf("updated JSON invalid: %v", err)
+	}
+	agentMap := root["agent"].(map[string]any)
+	if _, ok := agentMap["gentleman"]; ok {
+		t.Fatal("managed gentleman agent should be removed")
+	}
+	if _, ok := agentMap["gentle-orchestrator"]; ok {
+		t.Fatal("managed gentle-orchestrator agent should be removed")
+	}
+	if _, ok := agentMap["keep-me"]; !ok {
+		t.Fatal("unrelated user agent should be preserved")
+	}
+}
+
+func TestRemoveStalePersonaAgentKeysPreservesCustomAgentsWithOldNames(t *testing.T) {
+	base := []byte(`{
+  "agent": {
+    "gentleman": {
+      "description": "My custom agent",
+      "prompt": "Do custom work"
+    },
+    "gentle-orchestrator": {
+      "description": "My custom orchestrator",
+      "prompt": "Do custom orchestration"
+    }
+  }
+}`)
+
+	updated, err := removeStalePersonaAgentKeys(base)
+	if err != nil {
+		t.Fatalf("removeStalePersonaAgentKeys() error = %v", err)
+	}
+
+	var root map[string]any
+	if err := json.Unmarshal(updated, &root); err != nil {
+		t.Fatalf("updated JSON invalid: %v", err)
+	}
+	agentMap := root["agent"].(map[string]any)
+	if _, ok := agentMap["gentleman"]; !ok {
+		t.Fatal("custom gentleman agent should be preserved")
+	}
+	if _, ok := agentMap["gentle-orchestrator"]; !ok {
+		t.Fatal("custom gentle-orchestrator agent should be preserved")
+	}
+}
+
 func TestInjectOpenCodeNeutralPreservesManagedSections(t *testing.T) {
 	home := t.TempDir()
 

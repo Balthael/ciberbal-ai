@@ -14,7 +14,7 @@ func TestReadCurrentModelAssignments(t *testing.T) {
 
 	content := `{
   "agent": {
-    "sdd-orchestrator": { "model": "anthropic:claude-sonnet-4-20250514" },
+    "ciberbal": { "model": "anthropic:claude-sonnet-4-20250514" },
     "sdd-apply": { "model": "openai:gpt-4o" },
     "sdd-verify": { "model": "anthropic:claude-haiku-3-20240307" },
     "gentleman": { "model": "anthropic:claude-sonnet-4-20250514" }
@@ -34,7 +34,7 @@ func TestReadCurrentModelAssignments(t *testing.T) {
 		providerID string
 		modelID    string
 	}{
-		{"sdd-orchestrator", "anthropic", "claude-sonnet-4-20250514"},
+		{"ciberbal", "anthropic", "claude-sonnet-4-20250514"},
 		{"sdd-apply", "openai", "gpt-4o"},
 		{"sdd-verify", "anthropic", "claude-haiku-3-20240307"},
 	}
@@ -56,6 +56,10 @@ func TestReadCurrentModelAssignments(t *testing.T) {
 	// "gentleman" is not an SDD phase — it should NOT be in the result
 	if _, ok := got["gentleman"]; ok {
 		t.Error("non-SDD agent 'gentleman' should not be in result")
+	}
+	// "ciberbal" IS an SDD orchestrator — it SHOULD be in the result
+	if _, ok := got["ciberbal"]; !ok {
+		t.Error("ciberbal (SDD orchestrator) should be in result")
 	}
 }
 
@@ -94,7 +98,7 @@ func TestReadCurrentModelAssignmentsPartialModels(t *testing.T) {
 	// Some agents have model, some don't
 	content := `{
   "agent": {
-    "sdd-orchestrator": { "model": "anthropic:claude-opus-4-5" },
+    "ciberbal": { "model": "anthropic:claude-opus-4-5" },
     "sdd-apply": { "prompt": "You are a coder" },
     "sdd-verify": {}
   }
@@ -108,18 +112,18 @@ func TestReadCurrentModelAssignmentsPartialModels(t *testing.T) {
 		t.Fatalf("ReadCurrentModelAssignments() error = %v", err)
 	}
 
-	// Only sdd-orchestrator has a model — only it should appear
+	// Only ciberbal has a model — only it should appear
 	if len(got) != 1 {
 		t.Errorf("ReadCurrentModelAssignments() len = %d, want 1; got %v", len(got), got)
 	}
 
-	a, ok := got["sdd-orchestrator"]
+	a, ok := got["ciberbal"]
 	if !ok {
-		t.Fatal("sdd-orchestrator missing from result")
+		t.Fatal("ciberbal missing from result")
 	}
 	want := model.ModelAssignment{ProviderID: "anthropic", ModelID: "claude-opus-4-5"}
 	if a != want {
-		t.Errorf("sdd-orchestrator assignment = %+v, want %+v", a, want)
+		t.Errorf("ciberbal assignment = %+v, want %+v", a, want)
 	}
 }
 
@@ -130,7 +134,7 @@ func TestReadCurrentModelAssignmentsMalformedModelField(t *testing.T) {
 	// Model without colon — should be skipped without error
 	content := `{
   "agent": {
-    "sdd-orchestrator": { "model": "no-colon-here" },
+    "ciberbal": { "model": "no-colon-here" },
     "sdd-apply": { "model": "anthropic:claude-sonnet-4-20250514" }
   }
 }`
@@ -143,8 +147,8 @@ func TestReadCurrentModelAssignmentsMalformedModelField(t *testing.T) {
 		t.Fatalf("ReadCurrentModelAssignments() error = %v", err)
 	}
 
-	// Malformed sdd-orchestrator skipped, sdd-apply parsed
-	if _, ok := got["sdd-orchestrator"]; ok {
+	// Malformed ciberbal skipped, sdd-apply parsed
+	if _, ok := got["ciberbal"]; ok {
 		t.Error("malformed model 'no-colon-here' should be skipped")
 	}
 	a, ok := got["sdd-apply"]
@@ -165,7 +169,7 @@ func TestReadCurrentModelAssignmentsSlashSeparator(t *testing.T) {
 
 	content := `{
   "agent": {
-    "sdd-orchestrator": { "model": "zai-coding-plan/glm-5-turbo" }
+    "ciberbal": { "model": "zai-coding-plan/glm-5-turbo" }
   }
 }`
 	if err := os.WriteFile(settingsPath, []byte(content), 0o644); err != nil {
@@ -177,9 +181,9 @@ func TestReadCurrentModelAssignmentsSlashSeparator(t *testing.T) {
 		t.Fatalf("ReadCurrentModelAssignments() error = %v", err)
 	}
 
-	a, ok := got["sdd-orchestrator"]
+	a, ok := got["ciberbal"]
 	if !ok {
-		t.Fatal("sdd-orchestrator missing from result — slash-separated format not parsed")
+		t.Fatal("ciberbal missing from result — slash-separated format not parsed")
 	}
 	if a.ProviderID != "zai-coding-plan" {
 		t.Errorf("ProviderID = %q, want %q", a.ProviderID, "zai-coding-plan")
@@ -197,10 +201,10 @@ func TestReadCurrentModelAssignmentsMixedSeparators(t *testing.T) {
 
 	content := `{
   "agent": {
-    "sdd-orchestrator": { "model": "anthropic:claude-sonnet-4-20250514" },
-    "sdd-apply":        { "model": "zai-coding-plan/glm-5-turbo" },
-    "sdd-verify":       { "model": "openai:gpt-4o" },
-    "sdd-explore":      { "model": "custom-provider/some-model-v2" }
+    "ciberbal":    { "model": "anthropic:claude-sonnet-4-20250514" },
+    "sdd-apply":   { "model": "zai-coding-plan/glm-5-turbo" },
+    "sdd-verify":  { "model": "openai:gpt-4o" },
+    "sdd-explore": { "model": "custom-provider/some-model-v2" }
   }
 }`
 	if err := os.WriteFile(settingsPath, []byte(content), 0o644); err != nil {
@@ -217,7 +221,7 @@ func TestReadCurrentModelAssignmentsMixedSeparators(t *testing.T) {
 		providerID string
 		modelID    string
 	}{
-		{"sdd-orchestrator", "anthropic", "claude-sonnet-4-20250514"},
+		{"ciberbal", "anthropic", "claude-sonnet-4-20250514"},
 		{"sdd-apply", "zai-coding-plan", "glm-5-turbo"},
 		{"sdd-verify", "openai", "gpt-4o"},
 		{"sdd-explore", "custom-provider", "some-model-v2"},

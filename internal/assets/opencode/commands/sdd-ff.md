@@ -1,6 +1,6 @@
 ---
 description: Fast-forward all SDD planning phases — proposal through tasks
-agent: sdd-orchestrator
+agent: ciberbal
 ---
 
 Follow the SDD orchestrator workflow to fast-forward all planning phases for change "$ARGUMENTS".

@@ -191,7 +191,7 @@ func Inject(homeDir string, adapter agents.Adapter, sddMode model.SDDModeID, opt
 
 	// 1. Inject SDD orchestrator into the global system prompt for agents that
 	// rely on prompt files. OpenCode is handled differently: its orchestrator
-	// instructions must be scoped to the sdd-orchestrator agent only, otherwise
+	// instructions must be scoped to the ciberbal agent only, otherwise
 	// the SDD phase sub-agents inherit coordinator-only delegation rules.
 	if adapter.Agent() != model.AgentOpenCode {
 		switch adapter.SystemPromptStrategy() {
@@ -274,7 +274,7 @@ func Inject(homeDir string, adapter agents.Adapter, sddMode model.SDDModeID, opt
 		}
 	}
 
-	// 2b. OpenCode /sdd-* commands reference agent: sdd-orchestrator.
+	// 2b. OpenCode /sdd-* commands reference agent: ciberbal.
 	// Ensure that agent is present even when persona component is not installed.
 	//
 	// mergedSettingsBytes holds the final merged opencode.json bytes produced by
@@ -543,13 +543,13 @@ func Inject(homeDir string, adapter agents.Adapter, sddMode model.SDDModeID, opt
 			}
 		}
 
-		if !strings.Contains(settingsText, `"sdd-orchestrator"`) {
+		if !strings.Contains(settingsText, `"ciberbal"`) {
 			// In-memory check failed — try reading from disk as last resort.
 			if diskBytes, readErr := os.ReadFile(settingsPath); readErr == nil {
 				settingsText = string(diskBytes)
 			}
-			if !strings.Contains(settingsText, `"sdd-orchestrator"`) {
-				return InjectionResult{}, fmt.Errorf("post-check: %q missing sdd-orchestrator agent definition — OpenCode /sdd-* commands will fail", settingsPath)
+			if !strings.Contains(settingsText, `"ciberbal"`) {
+				return InjectionResult{}, fmt.Errorf("post-check: %q missing ciberbal agent definition — OpenCode /sdd-* commands will fail", settingsPath)
 			}
 		}
 		if sddMode == model.SDDModeMulti && !strings.Contains(settingsText, `"sdd-apply"`) {
@@ -562,20 +562,20 @@ func Inject(homeDir string, adapter agents.Adapter, sddMode model.SDDModeID, opt
 		}
 
 		// Verify profile orchestrators were injected correctly.
-		// For each named profile, check that sdd-orchestrator-{name} is present
+		// For each named profile, check that ciberbal-{name} is present
 		// in the merged settings. A missing key means the overlay merge silently failed.
 		for _, profile := range opts.Profiles {
 			if profile.Name == "" || profile.Name == "default" {
 				continue
 			}
-			orchKey := `"sdd-orchestrator-` + profile.Name + `"`
+			orchKey := `"ciberbal-` + profile.Name + `"`
 			if !strings.Contains(settingsText, orchKey) {
 				// Last-resort disk read.
 				if diskBytes, readErr := os.ReadFile(settingsPath); readErr == nil {
 					settingsText = string(diskBytes)
 				}
 				if !strings.Contains(settingsText, orchKey) {
-					return InjectionResult{}, fmt.Errorf("post-check: %q missing profile orchestrator %q — profile overlay was not injected correctly", settingsPath, "sdd-orchestrator-"+profile.Name)
+					return InjectionResult{}, fmt.Errorf("post-check: %q missing profile orchestrator %q — profile overlay was not injected correctly", settingsPath, "ciberbal-"+profile.Name)
 				}
 			}
 		}
@@ -616,7 +616,7 @@ func inlineOpenCodeSDDPrompts(overlayBytes []byte, homeDir string) ([]byte, erro
 	}
 
 	// Inline the orchestrator prompt (always inlined, not a file reference).
-	orchestratorRaw, ok := agentsMap["sdd-orchestrator"]
+	orchestratorRaw, ok := agentsMap["ciberbal"]
 	if !ok {
 		return overlayBytes, nil
 	}
@@ -624,7 +624,7 @@ func inlineOpenCodeSDDPrompts(overlayBytes []byte, homeDir string) ([]byte, erro
 	if !ok {
 		return overlayBytes, nil
 	}
-	orchestratorMap["prompt"] = assets.MustRead("generic/sdd-orchestrator.md")
+	orchestratorMap["prompt"] = ciberbalOpenCodeOrchestratorPrompt()
 
 	// Replace sub-agent prompt placeholders with {file:<absolutePath>} references.
 	// The placeholder format is __PROMPT_FILE_{phase}__ where {phase} is the agent name.
@@ -652,6 +652,15 @@ func inlineOpenCodeSDDPrompts(overlayBytes []byte, homeDir string) ([]byte, erro
 	}
 
 	return append(result, '\n'), nil
+}
+
+func ciberbalOpenCodeOrchestratorPrompt() string {
+	prompt := assets.MustRead("generic/sdd-orchestrator.md")
+	return strings.ReplaceAll(
+		prompt,
+		"dedicated `sdd-orchestrator` agent or rule only",
+		"dedicated `ciberbal` agent or rule only",
+	)
 }
 
 // installOpenCodePlugins copies the background-agents plugin and installs its
@@ -1225,19 +1234,24 @@ func injectModelAssignments(overlayBytes []byte, assignments map[string]model.Mo
 		}
 	}
 
-	// Mirror sdd-orchestrator model to gentleman — both are primary conductors in OpenCode.
-	// gentleman is defined by the persona overlay (not the SDD overlay), so we inject
-	// its model field here to prevent silent runtime inheritance.
-	// Guard: only inject if gentleman already exists in opencode.json (persona was installed)
-	// and sdd-orchestrator has an explicit TUI assignment.
-	if orchAssignment, hasOrch := assignments["sdd-orchestrator"]; hasOrch &&
-		orchAssignment.ProviderID != "" && orchAssignment.ModelID != "" &&
-		existingAgentKeys["gentleman"] {
-		if _, exists := agents["gentleman"]; !exists {
-			agents["gentleman"] = map[string]any{}
+	// Mirror ciberbal model to ciberbal persona agent — both are primary conductors in OpenCode.
+	// The persona ciberbal agent is defined by the persona overlay (not the SDD overlay),
+	// so we inject its model field here to prevent silent runtime inheritance.
+	// Guard: only inject if ciberbal already exists in opencode.json (persona was installed)
+	// and ciberbal (SDD) has an explicit TUI assignment.
+	// Also accept legacy "sdd-orchestrator" assignment key for backward compatibility
+	// with existing configs that were saved before the rename.
+	orchAssignment, hasOrch := assignments["ciberbal"]
+	if !hasOrch {
+		orchAssignment, hasOrch = assignments["sdd-orchestrator"]
+	}
+	if hasOrch && orchAssignment.ProviderID != "" && orchAssignment.ModelID != "" &&
+		existingAgentKeys["ciberbal"] {
+		if _, exists := agents["ciberbal"]; !exists {
+			agents["ciberbal"] = map[string]any{}
 		}
-		if gentlemanMap, ok := agents["gentleman"].(map[string]any); ok {
-			gentlemanMap["model"] = orchAssignment.FullID()
+		if ciberbalMap, ok := agents["ciberbal"].(map[string]any); ok {
+			ciberbalMap["model"] = orchAssignment.FullID()
 		}
 	}
 

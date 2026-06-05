@@ -38,8 +38,8 @@ func TestModelPickerRows_Count(t *testing.T) {
 
 func TestModelPickerRows_OrchestratorIsFirst(t *testing.T) {
 	rows := ModelPickerRows()
-	if rows[0] != "sdd-orchestrator" {
-		t.Fatalf("ModelPickerRows()[0] = %q, want %q", rows[0], "sdd-orchestrator")
+	if rows[0] != "ciberbal" {
+		t.Fatalf("ModelPickerRows()[0] = %q, want %q", rows[0], "ciberbal")
 	}
 }
 
@@ -73,7 +73,7 @@ func TestHandleModelNav_OrchestratorRowAssignsOnlyOrchestrator(t *testing.T) {
 		t.Fatal("handleModelNav should return handled=true on enter")
 	}
 
-	// "sdd-orchestrator" key must be set
+	// "ciberbal" key must be set
 	orch, ok := updated[SDDOrchestratorPhase]
 	if !ok || orch.ProviderID == "" {
 		t.Fatalf("expected %q to be assigned, got: %v", SDDOrchestratorPhase, updated)
@@ -134,9 +134,9 @@ func TestHandleModelNav_SetAllPhasesRow_SetsOnlySubAgents(t *testing.T) {
 		}
 	}
 
-	// sdd-orchestrator must NOT be touched by "Set all phases"
+	// ciberbal must NOT be touched by "Set all phases"
 	if _, exists := updated[SDDOrchestratorPhase]; exists {
-		t.Errorf("sdd-orchestrator should NOT be assigned by 'Set all phases'; assignments: %v", updated)
+		t.Errorf("ciberbal should NOT be assigned by 'Set all phases'; assignments: %v", updated)
 	}
 }
 
@@ -192,7 +192,7 @@ func TestHandleModelNav_SubAgentRow_AssignsCorrectPhase(t *testing.T) {
 
 			// Orchestrator must NOT be assigned
 			if _, exists := updated[SDDOrchestratorPhase]; exists {
-				t.Errorf("sdd-orchestrator should not be assigned; assignments: %v", updated)
+				t.Errorf("ciberbal should not be assigned; assignments: %v", updated)
 			}
 		})
 	}
@@ -201,8 +201,8 @@ func TestHandleModelNav_SubAgentRow_AssignsCorrectPhase(t *testing.T) {
 // ─── SDDOrchestratorPhase constant ────────────────────────────────────────
 
 func TestSDDOrchestratorPhaseConstant(t *testing.T) {
-	if SDDOrchestratorPhase != "sdd-orchestrator" {
-		t.Fatalf("SDDOrchestratorPhase = %q, want %q", SDDOrchestratorPhase, "sdd-orchestrator")
+	if SDDOrchestratorPhase != "ciberbal" {
+		t.Fatalf("SDDOrchestratorPhase = %q, want %q", SDDOrchestratorPhase, "ciberbal")
 	}
 }
 

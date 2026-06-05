@@ -22,6 +22,7 @@ var profileNameRegex = regexp.MustCompile(`^[a-z0-9]([a-z0-9-]*[a-z0-9])?$`)
 var reservedProfileNames = map[string]bool{
 	"default":          true,
 	"sdd-orchestrator": true,
+	"ciberbal":         true,
 }
 
 // ValidateProfileName returns an error if the profile name is not a valid
@@ -66,6 +67,7 @@ func ProfilePhaseOrder() []string {
 // ProfileAgentKeys returns the 11 agent keys for the given profile name.
 // When name is empty, it returns the default (unsuffixed) keys.
 // When name is non-empty, each key is suffixed with "-{name}".
+// The orchestrator key is "ciberbal" (default) or "ciberbal-{name}" (named profile).
 func ProfileAgentKeys(name string) []string {
 	suffix := ""
 	if name != "" {
@@ -73,7 +75,7 @@ func ProfileAgentKeys(name string) []string {
 	}
 
 	keys := make([]string, 0, 11)
-	keys = append(keys, "sdd-orchestrator"+suffix)
+	keys = append(keys, "ciberbal"+suffix)
 	for _, phase := range profilePhaseOrder {
 		keys = append(keys, phase+suffix)
 	}
@@ -107,15 +109,21 @@ func DetectProfiles(settingsPath string) ([]model.Profile, error) {
 		return []model.Profile{}, nil
 	}
 
-	// Scan for sdd-orchestrator-{name} keys (exclude bare sdd-orchestrator).
-	const orchPrefix = "sdd-orchestrator-"
+	// Scan for ciberbal-{name} keys (exclude bare ciberbal).
+	// Also accept legacy sdd-orchestrator-{name} keys for backward compatibility.
+	const orchPrefix = "ciberbal-"
+	const legacyOrchPrefix = "sdd-orchestrator-"
 	profileNames := make([]string, 0)
 	seen := make(map[string]bool)
 	for key := range agentMap {
-		if !strings.HasPrefix(key, orchPrefix) {
+		var profileName string
+		if strings.HasPrefix(key, orchPrefix) {
+			profileName = key[len(orchPrefix):]
+		} else if strings.HasPrefix(key, legacyOrchPrefix) {
+			profileName = key[len(legacyOrchPrefix):]
+		} else {
 			continue
 		}
-		profileName := key[len(orchPrefix):]
 		if profileName == "" || seen[profileName] {
 			continue
 		}
@@ -131,8 +139,13 @@ func DetectProfiles(settingsPath string) ([]model.Profile, error) {
 
 	profiles := make([]model.Profile, 0, len(profileNames))
 	for _, profileName := range profileNames {
-		orchKey := "sdd-orchestrator-" + profileName
-		orchRaw := agentMap[orchKey]
+		// Prefer the new ciberbal-{name} key; fall back to legacy sdd-orchestrator-{name}.
+		orchKey := "ciberbal-" + profileName
+		orchRaw, orchFound := agentMap[orchKey]
+		if !orchFound {
+			orchKey = "sdd-orchestrator-" + profileName
+			orchRaw = agentMap[orchKey]
+		}
 		orchMap, _ := orchRaw.(map[string]any)
 
 		orchModel := extractModelFromAgent(orchMap)
@@ -185,7 +198,7 @@ func extractModelFromAgent(agentMap map[string]any) model.ModelAssignment {
 
 // GenerateProfileOverlay builds an OpenCode agent overlay JSON for the given
 // profile. The overlay contains 11 agent definitions:
-//   - sdd-orchestrator-{name}: primary mode, inlined orchestrator prompt (with suffixed
+//   - ciberbal-{name}: primary mode, inlined orchestrator prompt (with suffixed
 //     sub-agent references and model assignments table), permissions scoped to *-{name}
 //   - sdd-{phase}-{name} (10 agents): subagent mode, hidden, file reference to
 //     the shared prompt at SharedPromptDir(homeDir)/sdd-{phase}.md
@@ -195,7 +208,7 @@ func GenerateProfileOverlay(profile model.Profile, homeDir string) ([]byte, erro
 	}
 
 	suffix := "-" + profile.Name
-	orchestratorKey := "sdd-orchestrator" + suffix
+	orchestratorKey := "ciberbal" + suffix
 
 	// Build the orchestrator prompt: start with the base asset, inject model
 	// assignments table, then suffix sub-agent references.
@@ -210,7 +223,7 @@ func GenerateProfileOverlay(profile model.Profile, homeDir string) ([]byte, erro
 	// Orchestrator entry
 	orchEntry := map[string]any{
 		"mode":        "primary",
-		"description": "Agent Teams Orchestrator (" + profile.Name + " profile) - coordinates sub-agents, never does work inline",
+		"description": "Ciberbal — SDD Orchestrator (" + profile.Name + " profile), coordinates sub-agents, never does work inline",
 		"prompt":      orchestratorPrompt,
 		"permission": map[string]any{
 			"task": map[string]any{
@@ -309,8 +322,9 @@ func buildProfileOrchestratorPrompt(profile model.Profile) (string, error) {
 		// Use a simple but safe approach: replace "sdd-{phase}" not already suffixed.
 		base = replacePhaseRef(base, phase, phase+suffix)
 	}
-	// Also replace the orchestrator self-reference.
-	base = replacePhaseRef(base, "sdd-orchestrator", "sdd-orchestrator"+suffix)
+	// Also replace the orchestrator self-references (both new and legacy names).
+	base = replacePhaseRef(base, "ciberbal", "ciberbal"+suffix)
+	base = replacePhaseRef(base, "sdd-orchestrator", "ciberbal"+suffix)
 
 	return base, nil
 }
@@ -397,7 +411,7 @@ func renderProfileModelAssignmentsSection(profile model.Profile) string {
 }
 
 // RemoveProfileAgents reads the opencode.json at settingsPath, removes all 11
-// agent keys belonging to the named profile (sdd-orchestrator-{name} and
+// agent keys belonging to the named profile (ciberbal-{name} and
 // sdd-{phase}-{name}), and atomically writes the result back.
 //
 // Returns an error if name is empty or "default" (cannot remove the default profile).

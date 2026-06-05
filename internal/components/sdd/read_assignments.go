@@ -15,10 +15,12 @@ var sddPhaseSet = buildSDDPhaseSet()
 
 func buildSDDPhaseSet() map[string]bool {
 	phases := opencode.SDDPhases()
-	set := make(map[string]bool, len(phases)+1)
+	set := make(map[string]bool, len(phases)+2)
 	for _, p := range phases {
 		set[p] = true
 	}
+	set["ciberbal"] = true
+	// Keep legacy key for reading existing configs written before the rename.
 	set["sdd-orchestrator"] = true
 	return set
 }
