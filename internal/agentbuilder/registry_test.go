@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gentleman-programming/gentle-ai/internal/model"
+	"github.com/gentleman-programming/ciberbal-ai/internal/model"
 )
 
 func TestLoadRegistry_NonExistentFile_ReturnsEmptyRegistry(t *testing.T) {

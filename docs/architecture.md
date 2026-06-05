@@ -6,7 +6,7 @@
 
 ## Architecture
 
-`ciberbal-ai` keeps the inherited engine architecture from `gentle-ai` where it is still useful, but the public product identity and preset/domain model are evolving toward pentesting-native terminology.
+`ciberbal-ai` keeps the inherited engine architecture from `ciberbal-ai` where it is still useful, but the public product identity and preset/domain model are evolving toward pentesting-native terminology.
 
 ```
 cmd/ciberbal-ai/           Public CLI entrypoint

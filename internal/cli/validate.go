@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/gentleman-programming/gentle-ai/internal/catalog"
-	"github.com/gentleman-programming/gentle-ai/internal/model"
-	"github.com/gentleman-programming/gentle-ai/internal/system"
+	"github.com/gentleman-programming/ciberbal-ai/internal/catalog"
+	"github.com/gentleman-programming/ciberbal-ai/internal/model"
+	"github.com/gentleman-programming/ciberbal-ai/internal/system"
 )
 
 type InstallInput struct {
@@ -58,11 +58,11 @@ func NormalizeInstallFlags(flags InstallFlags, detection system.DetectionResult)
 
 func normalizePersona(value string) (model.PersonaID, error) {
 	if strings.TrimSpace(value) == "" {
-		return model.PersonaGentleman, nil
+		return model.PersonaCiberbal, nil
 	}
 
 	switch model.PersonaID(value) {
-	case model.PersonaGentleman, model.PersonaNeutral, model.PersonaCustom:
+	case model.PersonaCiberbal, model.PersonaGentleman, model.PersonaNeutral, model.PersonaCustom:
 		return model.PersonaID(value), nil
 	default:
 		return "", fmt.Errorf("unsupported persona %q", value)

@@ -19,7 +19,7 @@ Incomplete task in `tasks.md`:
 - [ ] 4.2 Add `cmd/ciberbal-ai/main.go` delegating to `app.Run()`
 
 Implementation note:
-- `cmd/ciberbal-ai/main.go` now exists and correctly delegates to `app.Run()` while `cmd/gentle-ai/main.go` remains intact.
+- `cmd/ciberbal-ai/main.go` now exists and correctly delegates to `app.Run()` while `cmd/ciberbal-ai/main.go` remains intact.
 - The checklist and `apply-progress` artifact were not updated after that safe follow-up task, so the task artifact is stale even though the code is present.
 
 ---
@@ -31,10 +31,10 @@ Implementation note:
 **Tests**: ✅ 1696 passed / ❌ 0 failed / ⚠️ 4 skipped (`go test ./...`)
 
 Skipped tests:
-- `github.com/gentleman-programming/gentle-ai/internal/agents/windsurf::TestSettingsPathMultiplatform/Windows_with_custom_APPDATA`
-- `github.com/gentleman-programming/gentle-ai/internal/agents/windsurf::TestSettingsPathMultiplatform/Windows_with_default_APPDATA`
-- `github.com/gentleman-programming/gentle-ai/internal/agents/windsurf::TestSettingsPathMultiplatform/macOS_ignores_environment_variables`
-- `github.com/gentleman-programming/gentle-ai/internal/update/upgrade::TestDownload_WindowsAlwaysManualFallback`
+- `github.com/gentleman-programming/ciberbal-ai/internal/agents/windsurf::TestSettingsPathMultiplatform/Windows_with_custom_APPDATA`
+- `github.com/gentleman-programming/ciberbal-ai/internal/agents/windsurf::TestSettingsPathMultiplatform/Windows_with_default_APPDATA`
+- `github.com/gentleman-programming/ciberbal-ai/internal/agents/windsurf::TestSettingsPathMultiplatform/macOS_ignores_environment_variables`
+- `github.com/gentleman-programming/ciberbal-ai/internal/update/upgrade::TestDownload_WindowsAlwaysManualFallback`
 
 **Coverage**: 68.2% total (`go test -cover ./...`)
 
@@ -139,8 +139,8 @@ Notes on partial scenarios:
 | Quick mode reuses existing selection/planning helpers | ✅ Yes | Uses `preselectedAgents`, `componentsForPreset`, and `buildDependencyPlan()` |
 | Preserve `PresetFullGentleman` constant | ✅ Yes | Constant reused; display copy changed instead |
 | `goBack()` from install mode returns to Detection | ✅ Yes | Verified by route and passing test |
-| Additive binary rename via `cmd/ciberbal-ai/` | ✅ Yes | `cmd/ciberbal-ai/main.go` delegates to `app.Run()` and `cmd/gentle-ai/main.go` remains intact |
-| Backup dir rename to `.ciberbal-ai` | ⚠️ Deviated | `internal/app/app.go:323` still reads `~/.gentle-ai/backups` |
+| Additive binary rename via `cmd/ciberbal-ai/` | ✅ Yes | `cmd/ciberbal-ai/main.go` delegates to `app.Run()` and `cmd/ciberbal-ai/main.go` remains intact |
+| Backup dir rename to `.ciberbal-ai` | ⚠️ Deviated | `internal/app/app.go:323` still reads `~/.ciberbal-ai/backups` |
 
 ---
 
@@ -152,7 +152,7 @@ Notes on partial scenarios:
 **WARNING**
 - `tasks.md` and `apply-progress` are stale: task 4.2 is still unchecked/deferred even though `cmd/ciberbal-ai/main.go` now exists, so the strict-TDD audit trail for that last safe task is incomplete.
 - The welcome-entry scenario still lacks a focused runtime regression for the cancel path back to the full welcome menu.
-- `internal/app/app.go:323` still uses `~/.gentle-ai/backups`, which diverges from the current design document.
+- `internal/app/app.go:323` still uses `~/.ciberbal-ai/backups`, which diverges from the current design document.
 - Several changed files remain below 80% coverage: `cmd/ciberbal-ai/main.go`, `internal/app/app.go`, `internal/tui/model.go`, `internal/tui/router.go`, `internal/tui/screens/preset.go`, and `internal/tui/styles/logo.go`.
 
 **SUGGESTION**

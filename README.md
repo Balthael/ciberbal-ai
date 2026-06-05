@@ -38,7 +38,7 @@ This is NOT just an AI agent installer. Most agents are easy to install already.
 | **Windsurf** | Solo-agent | Plan Mode, Code Mode, native workflows |
 | **Antigravity** | Solo-agent + Mission Control | Built-in Browser/Terminal sub-agents |
 
-> **Note**: This project is a derivative adaptation of `gentle-ai` focused on cybersecurity and pentesting, but its public install flow now targets `ciberbal-ai` directly.
+> **Note**: This project is a derivative adaptation of `ciberbal-ai` focused on cybersecurity and pentesting, but its public install flow now targets `ciberbal-ai` directly.
 
 ---
 
@@ -184,21 +184,21 @@ See [Backup & Rollback Guide](docs/rollback.md) for details.
 
 This project exists because of the community. See [CONTRIBUTORS.md](CONTRIBUTORS.md) for the full list.
 
-<a href="https://github.com/Gentleman-Programming/gentle-ai/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=Gentleman-Programming/gentle-ai" />
+<a href="https://github.com/Gentleman-Programming/ciberbal-ai/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Gentleman-Programming/ciberbal-ai" />
 </a>
 
 ---
 
 ## Credits
 
-`ciberbal-ai` is based on [`gentle-ai`](https://github.com/Gentleman-Programming/gentle-ai), originally created by **Gentleman Programming**.
+`ciberbal-ai` is based on [`ciberbal-ai`](https://github.com/Gentleman-Programming/ciberbal-ai), originally created by **Gentleman Programming**.
 
 This project adapts that foundation for cybersecurity and pentesting workflows, preserving the original MIT license while extending the platform with a security-focused install flow, branding, and future domain-specific skills.
 
 ## License and Attribution
 
-This repository includes work derived from `gentle-ai`, Copyright (c) 2025 Gentleman Programming, used under the MIT License.
+This repository includes work derived from `ciberbal-ai`, Copyright (c) 2025 Gentleman Programming, used under the MIT License.
 
 The original copyright notice and permission notice are preserved in [`LICENSE`](LICENSE), as required by the license terms.
 

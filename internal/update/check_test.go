@@ -9,7 +9,7 @@ import (
 	"os/exec"
 	"testing"
 
-	"github.com/gentleman-programming/gentle-ai/internal/system"
+	"github.com/gentleman-programming/ciberbal-ai/internal/system"
 )
 
 // --- TestDetectInstalledVersion ---
@@ -24,14 +24,14 @@ func TestDetectInstalledVersion(t *testing.T) {
 		wantVersion   string
 	}{
 		{
-			name:         "gentle-ai uses build var",
-			tool:         ToolInfo{Name: "gentle-ai", DetectCmd: nil},
+			name:         "ciberbal-ai uses build var",
+			tool:         ToolInfo{Name: "ciberbal-ai", DetectCmd: nil},
 			currentBuild: "1.5.0",
 			wantVersion:  "1.5.0",
 		},
 		{
-			name:         "gentle-ai dev build",
-			tool:         ToolInfo{Name: "gentle-ai", DetectCmd: nil},
+			name:         "ciberbal-ai dev build",
+			tool:         ToolInfo{Name: "ciberbal-ai", DetectCmd: nil},
 			currentBuild: "dev",
 			wantVersion:  "dev",
 		},
@@ -372,13 +372,13 @@ func TestCheckAll_NetworkError(t *testing.T) {
 	profile := system.PlatformProfile{OS: "linux", LinuxDistro: "ubuntu", PackageManager: "apt", Supported: true}
 	results := CheckAll(context.Background(), "1.0.0", profile)
 
-	// gentle-ai has no DetectCmd, so it gets currentBuildVersion "1.0.0" as local
+	// ciberbal-ai has no DetectCmd, so it gets currentBuildVersion "1.0.0" as local
 	// but fetch fails → CheckFailed (it has a local version).
 	if results[0].Status != CheckFailed {
-		t.Fatalf("gentle-ai status = %q, want %q", results[0].Status, CheckFailed)
+		t.Fatalf("ciberbal-ai status = %q, want %q", results[0].Status, CheckFailed)
 	}
 	if results[0].Err == nil {
-		t.Fatalf("gentle-ai expected error, got nil")
+		t.Fatalf("ciberbal-ai expected error, got nil")
 	}
 
 	if results[1].Status != CheckFailed {
@@ -684,7 +684,7 @@ func TestCheckAll_DevVersion(t *testing.T) {
 	origLookPath := lookPath
 	origExecCommand := execCommand
 
-	// Override only the first tool (gentle-ai) by running CheckAll with "dev".
+	// Override only the first tool (ciberbal-ai) by running CheckAll with "dev".
 	origTools := Tools
 	t.Cleanup(func() {
 		httpClient = origClient
@@ -696,7 +696,7 @@ func TestCheckAll_DevVersion(t *testing.T) {
 	httpClient = server.Client()
 	httpClient.Transport = &testTransport{server: server}
 
-	// Restrict to just gentle-ai to isolate the test.
+	// Restrict to just ciberbal-ai to isolate the test.
 	Tools = []ToolInfo{Tools[0]}
 
 	lookPath = func(string) (string, error) { return "", fmt.Errorf("not found") }
@@ -711,14 +711,14 @@ func TestCheckAll_DevVersion(t *testing.T) {
 
 	// The spec requires: "dev" build MUST be reported as DevBuild, not VersionUnknown.
 	if results[0].Status != DevBuild {
-		t.Fatalf("gentle-ai dev status = %q, want %q", results[0].Status, DevBuild)
+		t.Fatalf("ciberbal-ai dev status = %q, want %q", results[0].Status, DevBuild)
 	}
 }
 
 // --- TestCheckFiltered ---
 
 // TestCheckFiltered verifies that CheckFiltered restricts results to the named tools
-// and that the dev-build sentinel causes gentle-ai to be reported as DevBuild.
+// and that the dev-build sentinel causes ciberbal-ai to be reported as DevBuild.
 func TestCheckFiltered_SubsetOfTools(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -878,7 +878,7 @@ func TestCheckFiltered_DevBuildSemanticsForCiberbalAI(t *testing.T) {
 }
 
 // TestCheckFiltered_DevBuildSkipNotEligible verifies that in a mixed run,
-// gentle-ai with "dev" version gets DevBuild while engram with a real version stays eligible.
+// ciberbal-ai with "dev" version gets DevBuild while engram with a real version stays eligible.
 func TestCheckFiltered_DevBuildSkipNotEligible(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -887,7 +887,7 @@ func TestCheckFiltered_DevBuildSkipNotEligible(t *testing.T) {
 		path := r.URL.Path
 		var release githubRelease
 		switch {
-		case contains(path, "gentle-ai"):
+		case contains(path, "ciberbal-ai"):
 			release = githubRelease{TagName: "v9.9.9"}
 		case contains(path, "engram"):
 			release = githubRelease{TagName: "v2.0.0"}
@@ -925,7 +925,7 @@ func TestCheckFiltered_DevBuildSkipNotEligible(t *testing.T) {
 		}
 		return exec.Command("false")
 	}
-	// Only gentle-ai and engram for this test
+	// Only ciberbal-ai and engram for this test
 	Tools = []ToolInfo{Tools[0], Tools[1]}
 
 	profile := system.PlatformProfile{OS: "darwin", PackageManager: "brew", Supported: true}
@@ -935,9 +935,9 @@ func TestCheckFiltered_DevBuildSkipNotEligible(t *testing.T) {
 		t.Fatalf("len = %d, want 2", len(results))
 	}
 
-	// gentle-ai should be DevBuild
+	// ciberbal-ai should be DevBuild
 	if results[0].Status != DevBuild {
-		t.Fatalf("gentle-ai status = %q, want DevBuild", results[0].Status)
+		t.Fatalf("ciberbal-ai status = %q, want DevBuild", results[0].Status)
 	}
 
 	// engram should be UpdateAvailable (1.0.0 < 2.0.0)
@@ -993,7 +993,7 @@ func TestNoUpdatesPath(t *testing.T) {
 		}
 		return exec.Command("false")
 	}
-	// Only engram and gga for this test (skip gentle-ai to avoid dev-build behavior)
+	// Only engram and gga for this test (skip ciberbal-ai to avoid dev-build behavior)
 	Tools = []ToolInfo{Tools[1], Tools[2]}
 
 	profile := system.PlatformProfile{OS: "darwin", PackageManager: "brew", Supported: true}

@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gentleman-programming/gentle-ai/internal/model"
+	"github.com/gentleman-programming/ciberbal-ai/internal/model"
 )
 
 func TestPresetOptionsExposePentestingPresets(t *testing.T) {

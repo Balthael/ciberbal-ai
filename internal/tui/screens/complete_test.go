@@ -40,7 +40,7 @@ func TestRenderCompleteFailedRetryTextUsesCiberbalBranding(t *testing.T) {
 	})
 
 	if strings.Contains(out, "gentle-ai again") {
-		t.Fatalf("retry text still says 'gentle-ai': %q", out)
+		t.Fatalf("retry text still says old branding 'gentle-ai': %q", out)
 	}
 	if !strings.Contains(out, "ciberbal-ai again") {
 		t.Fatalf("retry text missing 'ciberbal-ai': %q", out)

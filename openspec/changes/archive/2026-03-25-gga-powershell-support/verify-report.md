@@ -31,7 +31,7 @@ All 5 phases fully completed (asset creation, runtime.go helpers, call-site wiri
 === RUN   TestEnsurePowerShellShimIsNoOpWhenContentMatches --- PASS
 === RUN   TestAssetGGAPS1IsEmbeddedAndReadable           --- PASS
 (+ 14 pre-existing tests in the same package — all PASS)
-ok  github.com/gentleman-programming/gentle-ai/internal/components/gga  0.526s
+ok  github.com/gentleman-programming/ciberbal-ai/internal/components/gga  0.526s
 ```
 
 **Coverage**: ➖ Not configured (no `rules.verify.coverage_threshold` in `openspec/config.yaml`)

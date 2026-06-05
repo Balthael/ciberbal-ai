@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/gentleman-programming/gentle-ai/internal/tui/styles"
-	"github.com/gentleman-programming/gentle-ai/internal/update"
+	"github.com/gentleman-programming/ciberbal-ai/internal/tui/styles"
+	"github.com/gentleman-programming/ciberbal-ai/internal/update"
 )
 
 // WelcomeOptions returns the welcome menu options.

@@ -15,7 +15,7 @@ Isolate all generation logic in a new `internal/agentbuilder/` package behind cl
 | Generation engine abstraction | Interface in `agentbuilder/engine.go` with per-agent structs | Switch statement on AgentID | Interface enables test mocking via `MockEngine`; matches existing `Adapter` pattern; new engines = new struct, no switch changes |
 | Async generation | Goroutine returning `tea.Cmd` (existing `startInstalling` pattern) | Channel-based, or `tea.Exec` | Follows proven project pattern; `context.WithTimeout` for cancellation; spinner stays responsive via `TickMsg` |
 | Installation target detection | `agents.DiscoverInstalled(registry, homeDir)` | Re-run `Adapter.Detect()` per agent | `DiscoverInstalled` already exists, is pure FS check, no subprocess; returns `InstalledAgent` with ConfigDir — exactly what installer needs |
-| Custom agent registry | JSON file at `~/.config/gentle-ai/custom-agents.json` | SQLite, or embed in agent config | JSON is human-readable, zero dependencies, matches ecosystem config patterns; versioned schema for forward compat |
+| Custom agent registry | JSON file at `~/.config/ciberbal-ai/custom-agents.json` | SQLite, or embed in agent config | JSON is human-readable, zero dependencies, matches ecosystem config patterns; versioned schema for forward compat |
 
 ## Data Flow
 
@@ -64,8 +64,8 @@ ScreenABComplete ──(Enter)──▶ ScreenWelcome
 | `internal/agentbuilder/prompt.go` | Create | `ComposePrompt(userInput string, sddConfig *SDDIntegration, installedAgents []model.AgentID) string`. Concatenates system prompt template + user description + SDD context + agent list. |
 | `internal/agentbuilder/parser.go` | Create | `Parse(raw string) (*GeneratedAgent, error)`. Strips code fences, validates required sections (Description, Trigger, Instructions), extracts metadata, generates kebab-case name from title. |
 | `internal/agentbuilder/installer.go` | Create | `Install(agent *GeneratedAgent, targets []agents.InstalledAgent, homeDir string) ([]InstallResult, error)`. Writes `SKILL.md` to each target's `SkillsDir()`. Atomic: on failure, cleans up already-written files. |
-| `internal/agentbuilder/registry.go` | Create | `Registry` struct: `Load(path) error`, `Save(path) error`, `Add(entry RegistryEntry) error`, `List() []RegistryEntry`. JSON file at `~/.config/gentle-ai/custom-agents.json` with version field. |
-| `internal/agentbuilder/sdd.go` | Create | `InjectSDDReference(agent *GeneratedAgent, adapter agents.Adapter, homeDir string) error`. Reads system prompt file, injects `<!-- gentle-ai:custom-agent:{name} -->` marker section via existing `StrategyMarkdownSections` logic, writes back. |
+| `internal/agentbuilder/registry.go` | Create | `Registry` struct: `Load(path) error`, `Save(path) error`, `Add(entry RegistryEntry) error`, `List() []RegistryEntry`. JSON file at `~/.config/ciberbal-ai/custom-agents.json` with version field. |
+| `internal/agentbuilder/sdd.go` | Create | `InjectSDDReference(agent *GeneratedAgent, adapter agents.Adapter, homeDir string) error`. Reads system prompt file, injects `<!-- ciberbal-ai:custom-agent:{name} -->` marker section via existing `StrategyMarkdownSections` logic, writes back. |
 | `internal/agentbuilder/types.go` | Create | `GeneratedAgent`, `SDDIntegration`, `SDDIntegrationMode`, `RegistryEntry`, `InstallResult` structs. Shared types for the package. |
 | `internal/tui/screens/agent_builder_engine.go` | Create | `RenderABEngine(availableEngines []model.AgentID, cursor int) string`. List of detected engines with radio selection. |
 | `internal/tui/screens/agent_builder_prompt.go` | Create | `RenderABPrompt(ta textarea.Model) string`. Renders textarea component with helper text and examples. |

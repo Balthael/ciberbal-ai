@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/gentleman-programming/gentle-ai/internal/model"
-	"github.com/gentleman-programming/gentle-ai/internal/tui/styles"
+	"github.com/gentleman-programming/ciberbal-ai/internal/model"
+	"github.com/gentleman-programming/ciberbal-ai/internal/tui/styles"
 )
 
 // ClaudeModelPreset represents a named preset for Claude model assignments.

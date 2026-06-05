@@ -3,9 +3,9 @@
 // isolated from install, pipeline, planner, and config-sync code paths.
 //
 // Import boundary: this package MUST NOT import:
-//   - github.com/gentleman-programming/gentle-ai/internal/pipeline
-//   - github.com/gentleman-programming/gentle-ai/internal/planner
-//   - github.com/gentleman-programming/gentle-ai/internal/cli
+//   - github.com/gentleman-programming/ciberbal-ai/internal/pipeline
+//   - github.com/gentleman-programming/ciberbal-ai/internal/planner
+//   - github.com/gentleman-programming/ciberbal-ai/internal/cli
 package upgrade
 
 import (
@@ -19,11 +19,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gentleman-programming/gentle-ai/internal/agents"
-	"github.com/gentleman-programming/gentle-ai/internal/backup"
-	"github.com/gentleman-programming/gentle-ai/internal/components/gga"
-	"github.com/gentleman-programming/gentle-ai/internal/system"
-	"github.com/gentleman-programming/gentle-ai/internal/update"
+	"github.com/gentleman-programming/ciberbal-ai/internal/agents"
+	"github.com/gentleman-programming/ciberbal-ai/internal/backup"
+	"github.com/gentleman-programming/ciberbal-ai/internal/components/gga"
+	"github.com/gentleman-programming/ciberbal-ai/internal/system"
+	"github.com/gentleman-programming/ciberbal-ai/internal/update"
 )
 
 // Package-level vars for testability — same pattern as internal/update/detect.go.
@@ -38,7 +38,7 @@ var snapshotCreator = func(snapshotDir string, paths []string) (backup.Manifest,
 	return backup.NewSnapshotter().Create(snapshotDir, paths)
 }
 
-// AppVersion is the gentle-ai version written into backup manifests created by
+// AppVersion is the ciberbal-ai version written into backup manifests created by
 // the upgrade executor. Set by app.go before calling Execute so that upgrade
 // backups record the version that created them.
 // Default "dev" matches the ldflags default in app.Version.
@@ -240,7 +240,7 @@ func Execute(ctx context.Context, results []update.UpdateResult, profile system.
 	backupWarning := ""
 	if !dryRun && len(executable) > 0 {
 		sp := NewSpinner(pw, "Creating pre-upgrade backup")
-		snapshotDir := filepath.Join(homeDir, ".gentle-ai", "backups",
+		snapshotDir := filepath.Join(homeDir, ".ciberbal-ai", "backups",
 			fmt.Sprintf("upgrade-%s", time.Now().UTC().Format("20060102T150405Z")))
 		manifest, err := snapshotCreator(snapshotDir, configPathsForBackup(homeDir))
 		if err != nil {

@@ -43,19 +43,19 @@ to assign an individual phase model within a named profile.
 #### Scenario: `--profile` creates new profile during sync
 
 - GIVEN `cheap` does not exist in `opencode.json`
-- WHEN `gentle-ai sync --profile cheap:anthropic/claude-haiku-3.5-20241022` runs
+- WHEN `ciberbal-ai sync --profile cheap:anthropic/claude-haiku-3.5-20241022` runs
 - THEN `sdd-orchestrator-cheap` and 10 sub-agents are added to `opencode.json`
 - AND the sync proceeds normally
 
 #### Scenario: `--profile` flag with invalid format rejected
 
-- GIVEN `gentle-ai sync --profile badformat` is run (no colon separator)
+- GIVEN `ciberbal-ai sync --profile badformat` is run (no colon separator)
 - WHEN argument parsing runs
 - THEN the command exits with a usage error: "invalid --profile format: expected name:provider/model"
 
 #### Scenario: `--profile-phase` overrides a specific sub-agent model
 
-- GIVEN `gentle-ai sync --profile cheap:haiku --profile-phase cheap:sdd-apply:sonnet`
+- GIVEN `ciberbal-ai sync --profile cheap:haiku --profile-phase cheap:sdd-apply:sonnet`
 - WHEN sync runs
 - THEN `sdd-apply-cheap.model = sonnet`
 - AND all other `cheap` sub-agents use `haiku`

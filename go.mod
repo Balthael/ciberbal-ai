@@ -1,4 +1,4 @@
-module github.com/gentleman-programming/gentle-ai
+module github.com/gentleman-programming/ciberbal-ai
 
 go 1.24.2
 

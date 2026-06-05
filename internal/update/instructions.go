@@ -1,7 +1,7 @@
 package update
 
 import (
-	"github.com/gentleman-programming/gentle-ai/internal/system"
+	"github.com/gentleman-programming/ciberbal-ai/internal/system"
 )
 
 // updateHint returns a platform-specific instruction string for updating the given tool.

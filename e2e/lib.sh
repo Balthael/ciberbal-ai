@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# lib.sh — shared test helpers for gentle-ai E2E tests
+# lib.sh — shared test helpers for ciberbal-ai E2E tests
 # Sourced by e2e_test.sh; never executed directly.
 set -euo pipefail
 
@@ -72,7 +72,7 @@ cleanup_test_env() {
     rm -rf "$HOME/.claude" 2>/dev/null || true
     rm -rf "$HOME/.codex" 2>/dev/null || true
     rm -rf "$HOME/.gemini" 2>/dev/null || true
-    rm -rf "$HOME/.gentle-ai" 2>/dev/null || true
+    rm -rf "$HOME/.ciberbal-ai" 2>/dev/null || true
     rm -rf "$HOME/.codeium" 2>/dev/null || true
     rm -rf "$HOME/.cursor" 2>/dev/null || true
     rm -rf "$HOME/.qwen" 2>/dev/null || true
@@ -351,7 +351,7 @@ assert_md5_match() {
 }
 
 # assert_no_duplicate_section FILE SECTION_ID LABEL
-# Checks that the gentle-ai section marker appears exactly once (no duplicates).
+# Checks that the ciberbal-ai section marker appears exactly once (no duplicates).
 assert_no_duplicate_section() {
     local file="$1"
     local section_id="$2"
@@ -360,7 +360,7 @@ assert_no_duplicate_section() {
         log_fail "Cannot check sections — file not found: $file"
         return 1
     fi
-    local marker="<!-- gentle-ai:${section_id} -->"
+    local marker="<!-- ciberbal-ai:${section_id} -->"
     local count
     count=$(grep -c "$marker" "$file" 2>/dev/null || echo "0")
     if [ "$count" -eq 1 ]; then

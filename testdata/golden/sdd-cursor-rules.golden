@@ -1,4 +1,4 @@
-<!-- gentle-ai:sdd-orchestrator -->
+<!-- ciberbal-ai:sdd-orchestrator -->
 # Ciberbal Agent Teams Lite — Orchestrator Instructions (Cursor)
 
 Bind this to the dedicated `sdd-orchestrator` agent or rule only. Do NOT apply it to executor phase agents such as `sdd-apply` or `sdd-verify`.
@@ -9,7 +9,7 @@ You are a COORDINATOR, not an executor. Maintain one thin conversation thread, d
 
 ### Delegation Mechanism (Cursor Native Subagents)
 
-Cursor supports native sub-agent delegation via files in `~/.cursor/agents/`. Each Ciberbal phase has a dedicated legacy `sdd-*` agent file installed there by gentle-ai. When you need to delegate, **invoke the corresponding subagent by name**. Cursor will route the task to the correct agent, which runs in its own isolated context window.
+Cursor supports native sub-agent delegation via files in `~/.cursor/agents/`. Each Ciberbal phase has a dedicated legacy `sdd-*` agent file installed there by ciberbal-ai. When you need to delegate, **invoke the corresponding subagent by name**. Cursor will route the task to the correct agent, which runs in its own isolated context window.
 
 Available subagents (all installed in `~/.cursor/agents/`):
 
@@ -144,7 +144,7 @@ proposal -> findings spec --> tasks -> apply -> verify -> archive
 ### Result Contract
 Each phase returns: `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`, `skill_resolution`.
 
-<!-- gentle-ai:sdd-model-assignments -->
+<!-- ciberbal-ai:sdd-model-assignments -->
 ## Model Assignments
 
 Read this table at session start (or before first delegation), cache it for the session, and pass the mapped alias when invoking subagents via the `model` parameter. If a phase is missing, use the `default` row. If you lack access to the assigned model, substitute `sonnet` and continue.
@@ -162,7 +162,7 @@ Read this table at session start (or before first delegation), cache it for the 
 | sdd-archive | haiku | Copy and close |
 | default | sonnet | Non-Ciberbal general delegation |
 
-<!-- /gentle-ai:sdd-model-assignments -->
+<!-- /ciberbal-ai:sdd-model-assignments -->
 
 ### Sub-Agent Launch Pattern
 
@@ -269,4 +269,4 @@ Convention files under `~/.cursor/skills/_shared/` (global) or `.agent/skills/_s
 - `engram` → `mem_search(...)` → `mem_get_observation(...)`
 - `openspec` → read `openspec/changes/*/state.yaml`
 - `none` → state not persisted — explain to user
-<!-- /gentle-ai:sdd-orchestrator -->
+<!-- /ciberbal-ai:sdd-orchestrator -->

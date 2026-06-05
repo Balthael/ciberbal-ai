@@ -3,8 +3,8 @@ package screens
 import (
 	"strings"
 
-	"github.com/gentleman-programming/gentle-ai/internal/agentbuilder"
-	"github.com/gentleman-programming/gentle-ai/internal/tui/styles"
+	"github.com/gentleman-programming/ciberbal-ai/internal/agentbuilder"
+	"github.com/gentleman-programming/ciberbal-ai/internal/tui/styles"
 )
 
 // RenderABComplete renders the agent-builder completion screen.

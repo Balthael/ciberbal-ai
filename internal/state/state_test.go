@@ -26,7 +26,7 @@ func TestWriteAndRead(t *testing.T) {
 	}
 }
 
-// TestWriteCreatesStateDir verifies that Write creates the .gentle-ai directory
+// TestWriteCreatesStateDir verifies that Write creates the .ciberbal-ai directory
 // when it does not exist yet.
 func TestWriteCreatesStateDir(t *testing.T) {
 	home := t.TempDir()
@@ -44,7 +44,7 @@ func TestWriteCreatesStateDir(t *testing.T) {
 func TestWriteStateFilePath(t *testing.T) {
 	home := t.TempDir()
 	got := Path(home)
-	want := filepath.Join(home, ".gentle-ai", "state.json")
+	want := filepath.Join(home, ".ciberbal-ai", "state.json")
 	if got != want {
 		t.Errorf("Path() = %q, want %q", got, want)
 	}

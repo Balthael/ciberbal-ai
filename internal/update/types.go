@@ -30,7 +30,7 @@ const (
 
 // ToolInfo describes a managed tool that can be checked for updates.
 type ToolInfo struct {
-	Name          string        // human-readable name (e.g., "gentle-ai")
+	Name          string        // human-readable name (e.g., "ciberbal-ai")
 	Owner         string        // GitHub repository owner
 	Repo          string        // GitHub repository name
 	DetectCmd     []string      // command to detect installed version; nil = use build var

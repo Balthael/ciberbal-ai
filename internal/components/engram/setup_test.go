@@ -3,7 +3,7 @@ package engram
 import (
 	"testing"
 
-	"github.com/gentleman-programming/gentle-ai/internal/model"
+	"github.com/gentleman-programming/ciberbal-ai/internal/model"
 )
 
 func TestParseSetupModeDefaultsToOff(t *testing.T) {

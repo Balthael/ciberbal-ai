@@ -13,8 +13,8 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/gentleman-programming/gentle-ai/internal/system"
-	"github.com/gentleman-programming/gentle-ai/internal/update"
+	"github.com/gentleman-programming/ciberbal-ai/internal/system"
+	"github.com/gentleman-programming/ciberbal-ai/internal/update"
 )
 
 // --- test helpers ---
@@ -75,7 +75,7 @@ func TestAssetURLResolution(t *testing.T) {
 		{
 			name:       "darwin amd64",
 			owner:      "Gentleman-Programming",
-			repo:       "gentle-ai",
+			repo:       "ciberbal-ai",
 			version:    "1.5.0",
 			goos:       "darwin",
 			goarch:     "amd64",
@@ -84,7 +84,7 @@ func TestAssetURLResolution(t *testing.T) {
 		{
 			name:       "darwin arm64",
 			owner:      "Gentleman-Programming",
-			repo:       "gentle-ai",
+			repo:       "ciberbal-ai",
 			version:    "1.5.0",
 			goos:       "darwin",
 			goarch:     "arm64",
@@ -102,7 +102,7 @@ func TestAssetURLResolution(t *testing.T) {
 		{
 			name:       "contains version",
 			owner:      "Gentleman-Programming",
-			repo:       "gentle-ai",
+			repo:       "ciberbal-ai",
 			version:    "1.5.0",
 			goos:       "darwin",
 			goarch:     "amd64",
@@ -243,9 +243,9 @@ func TestDownload_WindowsAlwaysManualFallback(t *testing.T) {
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "gentle-ai",
+			Name:          "ciberbal-ai",
 			Owner:         "Gentleman-Programming",
-			Repo:          "gentle-ai",
+			Repo:          "ciberbal-ai",
 			InstallMethod: update.InstallBinary,
 		},
 		LatestVersion: "1.5.0",
@@ -276,7 +276,7 @@ func TestFindBinaryInTar(t *testing.T) {
 		content []byte
 	}{
 		{"README.md", []byte("readme content")},
-		{"gentle-ai_1.5.0_darwin_arm64/gentle-ai", content}, // binary in subdir
+		{"ciberbal-ai_1.5.0_darwin_arm64/ciberbal-ai", content}, // binary in subdir
 	}
 
 	for _, e := range entries {
@@ -288,7 +288,7 @@ func TestFindBinaryInTar(t *testing.T) {
 	f.Close()
 
 	tarContent, _ := os.ReadFile(tarPath)
-	outPath := filepath.Join(t.TempDir(), "gentle-ai")
+	outPath := filepath.Join(t.TempDir(), "ciberbal-ai")
 
 	// Use an httptest server to serve the tar.
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -301,7 +301,7 @@ func TestFindBinaryInTar(t *testing.T) {
 	t.Cleanup(func() { httpClient = origHTTPClient })
 	httpClient = server.Client()
 
-	err := downloadBinary(context.Background(), server.URL+"/release.tar.gz", "gentle-ai", outPath)
+	err := downloadBinary(context.Background(), server.URL+"/release.tar.gz", "ciberbal-ai", outPath)
 	if err != nil {
 		t.Fatalf("downloadBinary: %v", err)
 	}

@@ -2,12 +2,12 @@
 
 ## Intent
 
-Adapt the existing gentle-ai CLI tool into a cybersecurity/pentesting specialized tool called `ciberbal-ai`. The core objective is to streamline the installation and configuration flow for pentesters by introducing a Quick/Advanced installation mode, while preserving the foundational architecture, memory, agent creation, and capabilities of gentle-ai.
+Adapt the existing ciberbal-ai CLI tool into a cybersecurity/pentesting specialized tool called `ciberbal-ai`. The core objective is to streamline the installation and configuration flow for pentesters by introducing a Quick/Advanced installation mode, while preserving the foundational architecture, memory, agent creation, and capabilities of ciberbal-ai.
 
 ## Scope
 
 ### In Scope
-- Rename branding from `gentle-ai` to `ciberbal-ai`.
+- Rename branding from `ciberbal-ai` to `ciberbal-ai`.
 - Preserve the main welcome menu structure and its core capabilities (memory, SDD, model config, backups, profiles, sync/upgrade, agent creation).
 - Add an "Install Mode" selection screen (Quick vs. Advanced) inside the "Start installation" flow.
 - Implement "Quick install" to automatically install all essential cybersecurity/pentesting dependencies without asking for a specialty.
@@ -23,7 +23,7 @@ Adapt the existing gentle-ai CLI tool into a cybersecurity/pentesting specialize
 
 ### New Capabilities
 - `installer-flow`: Defines the new dual-mode (Quick/Advanced) installation flow and default cybersecurity dependencies for the Quick mode.
-- `ciberbal-branding`: Defines the rebranding from gentle-ai to ciberbal-ai across the welcome menu and CLI outputs.
+- `ciberbal-branding`: Defines the rebranding from ciberbal-ai to ciberbal-ai across the welcome menu and CLI outputs.
 
 ### Modified Capabilities
 - None

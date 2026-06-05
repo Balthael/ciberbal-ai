@@ -8,7 +8,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/gentleman-programming/gentle-ai/internal/system"
+	"github.com/gentleman-programming/ciberbal-ai/internal/system"
 )
 
 func TestAdapter_SubAgentCapability(t *testing.T) {

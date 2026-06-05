@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/gentleman-programming/gentle-ai/internal/tui/screens"
+	"github.com/gentleman-programming/ciberbal-ai/internal/tui/screens"
 )
 
 func TestWelcomeOptionsMatchExpectedMainMenuWithoutProfiles(t *testing.T) {

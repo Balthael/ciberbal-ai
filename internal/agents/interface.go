@@ -3,8 +3,8 @@ package agents
 import (
 	"context"
 
-	"github.com/gentleman-programming/gentle-ai/internal/model"
-	"github.com/gentleman-programming/gentle-ai/internal/system"
+	"github.com/gentleman-programming/ciberbal-ai/internal/model"
+	"github.com/gentleman-programming/ciberbal-ai/internal/system"
 )
 
 // Capability tags for adapter feature checks.

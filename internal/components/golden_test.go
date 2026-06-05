@@ -8,22 +8,22 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gentleman-programming/gentle-ai/internal/agents"
-	"github.com/gentleman-programming/gentle-ai/internal/agents/antigravity"
-	"github.com/gentleman-programming/gentle-ai/internal/agents/claude"
-	codexagent "github.com/gentleman-programming/gentle-ai/internal/agents/codex"
-	"github.com/gentleman-programming/gentle-ai/internal/agents/cursor"
-	"github.com/gentleman-programming/gentle-ai/internal/agents/gemini"
-	"github.com/gentleman-programming/gentle-ai/internal/agents/opencode"
-	"github.com/gentleman-programming/gentle-ai/internal/agents/vscode"
-	"github.com/gentleman-programming/gentle-ai/internal/agents/windsurf"
-	"github.com/gentleman-programming/gentle-ai/internal/assets"
-	"github.com/gentleman-programming/gentle-ai/internal/components/engram"
-	"github.com/gentleman-programming/gentle-ai/internal/components/mcp"
-	"github.com/gentleman-programming/gentle-ai/internal/components/persona"
-	"github.com/gentleman-programming/gentle-ai/internal/components/sdd"
-	"github.com/gentleman-programming/gentle-ai/internal/components/skills"
-	"github.com/gentleman-programming/gentle-ai/internal/model"
+	"github.com/gentleman-programming/ciberbal-ai/internal/agents"
+	"github.com/gentleman-programming/ciberbal-ai/internal/agents/antigravity"
+	"github.com/gentleman-programming/ciberbal-ai/internal/agents/claude"
+	codexagent "github.com/gentleman-programming/ciberbal-ai/internal/agents/codex"
+	"github.com/gentleman-programming/ciberbal-ai/internal/agents/cursor"
+	"github.com/gentleman-programming/ciberbal-ai/internal/agents/gemini"
+	"github.com/gentleman-programming/ciberbal-ai/internal/agents/opencode"
+	"github.com/gentleman-programming/ciberbal-ai/internal/agents/vscode"
+	"github.com/gentleman-programming/ciberbal-ai/internal/agents/windsurf"
+	"github.com/gentleman-programming/ciberbal-ai/internal/assets"
+	"github.com/gentleman-programming/ciberbal-ai/internal/components/engram"
+	"github.com/gentleman-programming/ciberbal-ai/internal/components/mcp"
+	"github.com/gentleman-programming/ciberbal-ai/internal/components/persona"
+	"github.com/gentleman-programming/ciberbal-ai/internal/components/sdd"
+	"github.com/gentleman-programming/ciberbal-ai/internal/components/skills"
+	"github.com/gentleman-programming/ciberbal-ai/internal/model"
 )
 
 var update = flag.Bool("update", false, "update golden files")
@@ -176,8 +176,8 @@ func TestGoldenSDD_Cursor(t *testing.T) {
 		t.Fatalf("sdd.Inject(cursor) changed = false")
 	}
 
-	// Cursor writes SDD orchestrator to ~/.cursor/rules/gentle-ai.mdc.
-	rulesFile := readTestFile(t, filepath.Join(home, ".cursor", "rules", "gentle-ai.mdc"))
+	// Cursor writes SDD orchestrator to ~/.cursor/rules/ciberbal-ai.mdc.
+	rulesFile := readTestFile(t, filepath.Join(home, ".cursor", "rules", "ciberbal-ai.mdc"))
 	assertGolden(t, "sdd-cursor-rules.golden", rulesFile)
 
 	// Golden-check a representative SDD skill file.
@@ -358,7 +358,7 @@ func TestGoldenPersona_Claude_Gentleman(t *testing.T) {
 	claudeMD := readTestFile(t, filepath.Join(home, ".claude", "CLAUDE.md"))
 	assertGolden(t, "persona-claude-gentleman.golden", claudeMD)
 
-	outputStyle := readTestFile(t, filepath.Join(home, ".claude", "output-styles", "gentleman.md"))
+	outputStyle := readTestFile(t, filepath.Join(home, ".claude", "output-styles", "ciberbal.md"))
 	assertGolden(t, "persona-claude-gentleman-outputstyle.golden", outputStyle)
 
 	settingsJSON := readTestFile(t, filepath.Join(home, ".claude", "settings.json"))

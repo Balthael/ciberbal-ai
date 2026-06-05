@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/gentleman-programming/gentle-ai/internal/model"
-	"github.com/gentleman-programming/gentle-ai/internal/system"
+	"github.com/gentleman-programming/ciberbal-ai/internal/model"
+	"github.com/gentleman-programming/ciberbal-ai/internal/system"
 )
 
 type Adapter struct {
@@ -67,7 +67,7 @@ func (a *Adapter) SystemPromptDir(homeDir string) string {
 }
 
 func (a *Adapter) SystemPromptFile(homeDir string) string {
-	return filepath.Join(a.SystemPromptDir(homeDir), "gentle-ai.instructions.md")
+	return filepath.Join(a.SystemPromptDir(homeDir), "ciberbal-ai.instructions.md")
 }
 
 func (a *Adapter) SkillsDir(homeDir string) string {

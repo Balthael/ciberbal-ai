@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/gentleman-programming/gentle-ai/internal/agents"
-	"github.com/gentleman-programming/gentle-ai/internal/components/filemerge"
+	"github.com/gentleman-programming/ciberbal-ai/internal/agents"
+	"github.com/gentleman-programming/ciberbal-ai/internal/components/filemerge"
 )
 
 type InjectionResult struct {

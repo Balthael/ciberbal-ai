@@ -76,6 +76,8 @@ const (
 type PersonaID string
 
 const (
+	PersonaCiberbal PersonaID = "ciberbal"
+	// Legacy aliases retained for compatibility with older configs and tests.
 	PersonaGentleman PersonaID = "gentleman"
 	PersonaNeutral   PersonaID = "neutral"
 	PersonaCustom    PersonaID = "custom"
@@ -85,7 +87,7 @@ const (
 type SystemPromptStrategy int
 
 const (
-	// StrategyMarkdownSections uses <!-- gentle-ai:ID --> markers to inject sections
+	// StrategyMarkdownSections uses <!-- ciberbal-ai:ID --> markers to inject sections
 	// into an existing file without clobbering user content (Claude Code CLAUDE.md).
 	StrategyMarkdownSections SystemPromptStrategy = iota
 	// StrategyFileReplace replaces the entire system prompt file (OpenCode AGENTS.md).

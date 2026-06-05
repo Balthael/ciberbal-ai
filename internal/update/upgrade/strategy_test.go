@@ -8,8 +8,8 @@ import (
 	"os/exec"
 	"testing"
 
-	"github.com/gentleman-programming/gentle-ai/internal/system"
-	"github.com/gentleman-programming/gentle-ai/internal/update"
+	"github.com/gentleman-programming/ciberbal-ai/internal/system"
+	"github.com/gentleman-programming/ciberbal-ai/internal/update"
 )
 
 // --- TestRunStrategy_BrewUpgrade ---
@@ -179,7 +179,7 @@ func TestRunStrategy_GoInstallFailure(t *testing.T) {
 // --- TestRunStrategy_BinaryWindowsSelfUpdateSkipped ---
 
 // TestRunStrategy_BinaryWindowsSelfUpdateSkipped verifies that the Windows binary
-// self-replace for gentle-ai is NOT attempted in Phase 1 — it must return a
+// self-replace for ciberbal-ai is NOT attempted in Phase 1 — it must return a
 // manual hint error, not execute.
 func TestRunStrategy_BinaryWindowsSelfUpdateSkipped(t *testing.T) {
 	origExecCommand := execCommand
@@ -193,11 +193,11 @@ func TestRunStrategy_BinaryWindowsSelfUpdateSkipped(t *testing.T) {
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "gentle-ai",
+			Name:          "ciberbal-ai",
 			InstallMethod: update.InstallBinary,
 		},
 		LatestVersion: "1.5.0",
-		ReleaseURL:    "https://github.com/Gentleman-Programming/gentle-ai/releases/tag/v1.5.0",
+		ReleaseURL:    "https://github.com/Gentleman-Programming/ciberbal-ai/releases/tag/v1.5.0",
 	}
 	profile := system.PlatformProfile{OS: "windows", PackageManager: "winget"}
 
@@ -276,11 +276,11 @@ func TestEffectiveMethod(t *testing.T) {
 func TestManualFallbackHint(t *testing.T) {
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "gentle-ai",
+			Name:          "ciberbal-ai",
 			InstallMethod: update.InstallBinary,
 		},
 		LatestVersion: "1.5.0",
-		UpdateHint:    "See https://github.com/Gentleman-Programming/gentle-ai/releases",
+		UpdateHint:    "See https://github.com/Gentleman-Programming/ciberbal-ai/releases",
 	}
 	profile := system.PlatformProfile{OS: "windows", PackageManager: "winget"}
 
@@ -329,7 +329,7 @@ func TestBrewUpgrade_RunsUpdateBeforeUpgrade(t *testing.T) {
 		return exec.Command("echo", "ok")
 	}
 
-	err := brewUpgrade(context.Background(), "gentle-ai")
+	err := brewUpgrade(context.Background(), "ciberbal-ai")
 	if err != nil {
 		t.Fatalf("brewUpgrade: unexpected error: %v", err)
 	}
@@ -364,10 +364,10 @@ func TestBrewUpgrade_UpdateFailureIsNonFatal(t *testing.T) {
 			}
 		}
 		// brew upgrade succeeds.
-		return exec.Command("echo", "Upgraded gentle-ai")
+		return exec.Command("echo", "Upgraded ciberbal-ai")
 	}
 
-	err := brewUpgrade(context.Background(), "gentle-ai")
+	err := brewUpgrade(context.Background(), "ciberbal-ai")
 	// brew update failed but brew upgrade succeeded → overall success.
 	if err != nil {
 		t.Errorf("expected success when brew update fails but brew upgrade succeeds, got: %v", err)

@@ -18,7 +18,7 @@ Embed `gga.ps1` as a Go asset under `internal/assets/gga/`, then extend `runtime
 ## Data Flow
 
 ```
-gentle-ai install (Windows)
+ciberbal-ai install (Windows)
   │
   ├─ resolveGGAInstall(winget)  ──→  CommandSequence (powershell cleanup + git clone + bash install.sh)
   │                                   [existing — unchanged]

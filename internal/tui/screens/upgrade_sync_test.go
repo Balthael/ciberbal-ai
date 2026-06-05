@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gentleman-programming/gentle-ai/internal/update"
-	"github.com/gentleman-programming/gentle-ai/internal/update/upgrade"
+	"github.com/gentleman-programming/ciberbal-ai/internal/update"
+	"github.com/gentleman-programming/ciberbal-ai/internal/update/upgrade"
 )
 
 // ─── RenderUpgradeSync states ──────────────────────────────────────────────
@@ -27,7 +27,7 @@ func TestRenderUpgradeSync_ConfirmState(t *testing.T) {
 	if !strings.Contains(out, "ciberbal-ai") {
 		t.Errorf("RenderUpgradeSync(confirm) should mention 'ciberbal-ai'; got:\n%s", out)
 	}
-	if strings.Contains(out, "Updates gentle-ai") {
+	if strings.Contains(out, "gentle-ai") {
 		t.Errorf("RenderUpgradeSync(confirm) should not mention old branding; got:\n%s", out)
 	}
 	// Must show a prompt.
@@ -54,7 +54,7 @@ func TestRenderUpgradeSync_RunningUpgradePhase(t *testing.T) {
 func TestRenderUpgradeSync_RunningSyncPhase(t *testing.T) {
 	report := &upgrade.UpgradeReport{
 		Results: []upgrade.ToolUpgradeResult{
-			{ToolName: "gentle-ai", OldVersion: "v1.0.0", NewVersion: "v2.0.0", Status: upgrade.UpgradeSucceeded},
+			{ToolName: "ciberbal-ai", OldVersion: "v1.0.0", NewVersion: "v2.0.0", Status: upgrade.UpgradeSucceeded},
 		},
 	}
 
@@ -77,7 +77,7 @@ func TestRenderUpgradeSync_RunningSyncPhase(t *testing.T) {
 func TestRenderUpgradeSync_CombinedResult(t *testing.T) {
 	report := &upgrade.UpgradeReport{
 		Results: []upgrade.ToolUpgradeResult{
-			{ToolName: "gentle-ai", OldVersion: "v1.0.0", NewVersion: "v2.0.0", Status: upgrade.UpgradeSucceeded},
+			{ToolName: "ciberbal-ai", OldVersion: "v1.0.0", NewVersion: "v2.0.0", Status: upgrade.UpgradeSucceeded},
 		},
 	}
 	const syncFilesChanged = 3

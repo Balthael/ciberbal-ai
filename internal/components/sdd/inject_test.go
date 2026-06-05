@@ -9,12 +9,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gentleman-programming/gentle-ai/internal/agents"
-	"github.com/gentleman-programming/gentle-ai/internal/agents/claude"
-	"github.com/gentleman-programming/gentle-ai/internal/agents/opencode"
-	windsurfagent "github.com/gentleman-programming/gentle-ai/internal/agents/windsurf"
-	"github.com/gentleman-programming/gentle-ai/internal/assets"
-	"github.com/gentleman-programming/gentle-ai/internal/model"
+	"github.com/gentleman-programming/ciberbal-ai/internal/agents"
+	"github.com/gentleman-programming/ciberbal-ai/internal/agents/claude"
+	"github.com/gentleman-programming/ciberbal-ai/internal/agents/opencode"
+	windsurfagent "github.com/gentleman-programming/ciberbal-ai/internal/agents/windsurf"
+	"github.com/gentleman-programming/ciberbal-ai/internal/assets"
+	"github.com/gentleman-programming/ciberbal-ai/internal/model"
 	// agents/cursor, agents/gemini, agents/vscode used via agents.NewAdapter()
 )
 
@@ -50,10 +50,10 @@ func TestInjectClaudeWritesSectionMarkers(t *testing.T) {
 
 	text := string(content)
 
-	if !strings.Contains(text, "<!-- gentle-ai:sdd-orchestrator -->") {
+	if !strings.Contains(text, "<!-- ciberbal-ai:sdd-orchestrator -->") {
 		t.Fatal("CLAUDE.md missing open marker for sdd-orchestrator")
 	}
-	if !strings.Contains(text, "<!-- /gentle-ai:sdd-orchestrator -->") {
+	if !strings.Contains(text, "<!-- /ciberbal-ai:sdd-orchestrator -->") {
 		t.Fatal("CLAUDE.md missing close marker for sdd-orchestrator")
 	}
 	if !strings.Contains(text, "sub-agent") {
@@ -90,7 +90,7 @@ func TestInjectClaudePreservesExistingSections(t *testing.T) {
 	if !strings.Contains(text, "Some user content.") {
 		t.Fatal("Existing user content was clobbered")
 	}
-	if !strings.Contains(text, "<!-- gentle-ai:sdd-orchestrator -->") {
+	if !strings.Contains(text, "<!-- ciberbal-ai:sdd-orchestrator -->") {
 		t.Fatal("SDD section was not injected")
 	}
 }
@@ -148,10 +148,10 @@ func TestInjectClaudeCustomModelAssignments(t *testing.T) {
 		}
 	}
 
-	if !strings.Contains(text, "<!-- gentle-ai:sdd-model-assignments -->") {
+	if !strings.Contains(text, "<!-- ciberbal-ai:sdd-model-assignments -->") {
 		t.Fatal("CLAUDE.md missing model assignment open marker")
 	}
-	if !strings.Contains(text, "<!-- /gentle-ai:sdd-model-assignments -->") {
+	if !strings.Contains(text, "<!-- /ciberbal-ai:sdd-model-assignments -->") {
 		t.Fatal("CLAUDE.md missing model assignment close marker")
 	}
 }
@@ -335,7 +335,7 @@ func TestInjectCursorWritesSDDOrchestratorAndSkills(t *testing.T) {
 	}
 
 	// Verify SDD orchestrator was injected into the system prompt file.
-	promptPath := filepath.Join(home, ".cursor", "rules", "gentle-ai.mdc")
+	promptPath := filepath.Join(home, ".cursor", "rules", "ciberbal-ai.mdc")
 	content, readErr := os.ReadFile(promptPath)
 	if readErr != nil {
 		t.Fatalf("ReadFile(%q) error = %v", promptPath, readErr)
@@ -490,10 +490,10 @@ func TestInjectFileAppendMigratesLegacyHeading(t *testing.T) {
 	if strings.Contains(text, "Already present.") {
 		t.Fatal("legacy SDD orchestrator content survived after migration")
 	}
-	if !strings.Contains(text, "<!-- gentle-ai:sdd-orchestrator -->") {
+	if !strings.Contains(text, "<!-- ciberbal-ai:sdd-orchestrator -->") {
 		t.Fatal("missing open marker after migration")
 	}
-	if !strings.Contains(text, "<!-- /gentle-ai:sdd-orchestrator -->") {
+	if !strings.Contains(text, "<!-- /ciberbal-ai:sdd-orchestrator -->") {
 		t.Fatal("missing close marker after migration")
 	}
 	if strings.Count(text, "## Agent Teams Orchestrator") != 1 {
@@ -523,9 +523,9 @@ func TestInjectFileAppendMigratesFullLegacyOrchestratorBlock(t *testing.T) {
 		"Each phase returns: `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`.\n\n" +
 		"### Sub-Agent Launch Pattern\n\n" +
 		"SKILL: Load `{skill-path}` before starting.\n\n" +
-		"<!-- gentle-ai:engram-protocol -->\n" +
+		"<!-- ciberbal-ai:engram-protocol -->\n" +
 		"## Engram Persistent Memory - Protocol\n" +
-		"<!-- /gentle-ai:engram-protocol -->\n"
+		"<!-- /ciberbal-ai:engram-protocol -->\n"
 
 	if err := os.WriteFile(promptPath, []byte(existing), 0o644); err != nil {
 		t.Fatalf("WriteFile() error = %v", err)
@@ -557,7 +557,7 @@ func TestInjectFileAppendMigratesFullLegacyOrchestratorBlock(t *testing.T) {
 	if !strings.Contains(text, "## Project Standards (auto-resolved)") {
 		t.Fatal("current compact-rules launch pattern missing after migration")
 	}
-	if strings.Count(text, "<!-- gentle-ai:engram-protocol -->") != 1 {
+	if strings.Count(text, "<!-- ciberbal-ai:engram-protocol -->") != 1 {
 		t.Fatal("engram protocol marker should be preserved exactly once")
 	}
 }
@@ -577,7 +577,7 @@ func TestInjectFileAppendRemovesLegacyBlockWhenMarkedSectionAlreadyExists(t *tes
 
 	canonical := assets.MustRead("generic/sdd-orchestrator.md")
 	existing := "## Agent Teams Orchestrator\n\nLegacy duplicate block.\n\n" +
-		"<!-- gentle-ai:sdd-orchestrator -->\n" + canonical + "\n<!-- /gentle-ai:sdd-orchestrator -->\n"
+		"<!-- ciberbal-ai:sdd-orchestrator -->\n" + canonical + "\n<!-- /ciberbal-ai:sdd-orchestrator -->\n"
 
 	if err := os.WriteFile(promptPath, []byte(existing), 0o644); err != nil {
 		t.Fatalf("WriteFile() error = %v", err)
@@ -623,7 +623,7 @@ You are a COORDINATOR, not an executor.
 | No inline work | Reading/writing code → delegate to sub-agent |
 <!-- END:agent-teams-lite -->`
 
-	sddSection := "<!-- gentle-ai:sdd-orchestrator -->\nYou are a COORDINATOR.\n<!-- /gentle-ai:sdd-orchestrator -->\n"
+	sddSection := "<!-- ciberbal-ai:sdd-orchestrator -->\nYou are a COORDINATOR.\n<!-- /ciberbal-ai:sdd-orchestrator -->\n"
 	existing := legacyATLBlock + "\n\n" + sddSection
 
 	if err := os.WriteFile(promptPath, []byte(existing), 0o644); err != nil {
@@ -648,10 +648,10 @@ You are a COORDINATOR, not an executor.
 	if strings.Contains(text, "<!-- END:agent-teams-lite -->") {
 		t.Fatal("ATL close marker should have been stripped during inject")
 	}
-	if !strings.Contains(text, "<!-- gentle-ai:sdd-orchestrator -->") {
+	if !strings.Contains(text, "<!-- ciberbal-ai:sdd-orchestrator -->") {
 		t.Fatal("sdd-orchestrator section must be present after ATL strip")
 	}
-	if !strings.Contains(text, "<!-- /gentle-ai:sdd-orchestrator -->") {
+	if !strings.Contains(text, "<!-- /ciberbal-ai:sdd-orchestrator -->") {
 		t.Fatal("sdd-orchestrator close marker must be present after ATL strip")
 	}
 }
@@ -1065,10 +1065,10 @@ func TestInjectClaudeDeduplicatesBareOrchestratorSection(t *testing.T) {
 	}
 
 	// The injected marked version must be present.
-	if !strings.Contains(text, "<!-- gentle-ai:sdd-orchestrator -->") {
+	if !strings.Contains(text, "<!-- ciberbal-ai:sdd-orchestrator -->") {
 		t.Fatal("missing open marker after injection")
 	}
-	if !strings.Contains(text, "<!-- /gentle-ai:sdd-orchestrator -->") {
+	if !strings.Contains(text, "<!-- /ciberbal-ai:sdd-orchestrator -->") {
 		t.Fatal("missing close marker after injection")
 	}
 
@@ -1117,7 +1117,7 @@ func TestInjectClaudeDeduplicatesBareOrchestratorAtEndOfFile(t *testing.T) {
 	if count := strings.Count(text, "## Agent Teams Orchestrator"); count != 1 {
 		t.Fatalf("expected 1 Agent Teams Orchestrator heading, got %d\n\ncontent:\n%s", count, text)
 	}
-	if !strings.Contains(text, "<!-- gentle-ai:sdd-orchestrator -->") {
+	if !strings.Contains(text, "<!-- ciberbal-ai:sdd-orchestrator -->") {
 		t.Fatal("missing open marker after injection")
 	}
 	if !strings.Contains(text, "Be excellent.") {
@@ -1697,7 +1697,7 @@ func TestStripBareOrchestratorSection_NoOpWhenNoSection(t *testing.T) {
 // stripBareOrchestratorSection (the markers are handled by InjectMarkdownSection).
 // This ensures the migration guard in injectMarkdownSections() is correct.
 func TestStripBareOrchestratorSection_DoesNotStripIfMarkersPresent(t *testing.T) {
-	input := "# My Rules\n\n<!-- gentle-ai:sdd-orchestrator -->\n## Agent Teams Orchestrator\n\nYou are a COORDINATOR.\n<!-- /gentle-ai:sdd-orchestrator -->\n"
+	input := "# My Rules\n\n<!-- ciberbal-ai:sdd-orchestrator -->\n## Agent Teams Orchestrator\n\nYou are a COORDINATOR.\n<!-- /ciberbal-ai:sdd-orchestrator -->\n"
 
 	// The function sees "## Agent Teams Orchestrator" and would normally strip it.
 	// But the caller (injectMarkdownSections) is supposed to check for markers
@@ -1708,7 +1708,7 @@ func TestStripBareOrchestratorSection_DoesNotStripIfMarkersPresent(t *testing.T)
 
 	// Because stripBareOrchestratorSection does not check for markers itself,
 	// calling it on marked content would damage the file. The real protection is
-	// the `!strings.Contains(existing, "<!-- gentle-ai:sdd-orchestrator -->")` guard
+	// the `!strings.Contains(existing, "<!-- ciberbal-ai:sdd-orchestrator -->")` guard
 	// in injectMarkdownSections(). This test confirms that guard works end-to-end.
 	_ = result
 }
@@ -1719,7 +1719,7 @@ func TestStripBareOrchestratorSection_DoesNotStripIfMarkersPresent(t *testing.T)
 
 // TestInjectStrictTDDEnabledInjectsMarkerIntoClaude verifies that when
 // InjectOptions.StrictTDD = true, the injected content in CLAUDE.md contains
-// the <!-- gentle-ai:strict-tdd-mode --> marker with its content.
+// the <!-- ciberbal-ai:strict-tdd-mode --> marker with its content.
 func TestInjectStrictTDDEnabledInjectsMarkerIntoClaude(t *testing.T) {
 	home := t.TempDir()
 
@@ -1738,11 +1738,11 @@ func TestInjectStrictTDDEnabledInjectsMarkerIntoClaude(t *testing.T) {
 	}
 
 	text := string(content)
-	if !strings.Contains(text, "<!-- gentle-ai:strict-tdd-mode -->") {
-		t.Fatal("CLAUDE.md missing <!-- gentle-ai:strict-tdd-mode --> open marker")
+	if !strings.Contains(text, "<!-- ciberbal-ai:strict-tdd-mode -->") {
+		t.Fatal("CLAUDE.md missing <!-- ciberbal-ai:strict-tdd-mode --> open marker")
 	}
-	if !strings.Contains(text, "<!-- /gentle-ai:strict-tdd-mode -->") {
-		t.Fatal("CLAUDE.md missing <!-- /gentle-ai:strict-tdd-mode --> close marker")
+	if !strings.Contains(text, "<!-- /ciberbal-ai:strict-tdd-mode -->") {
+		t.Fatal("CLAUDE.md missing <!-- /ciberbal-ai:strict-tdd-mode --> close marker")
 	}
 	if !strings.Contains(text, "Strict TDD Mode: enabled") {
 		t.Fatal("CLAUDE.md missing 'Strict TDD Mode: enabled' content")
@@ -1766,7 +1766,7 @@ func TestInjectStrictTDDDisabledDoesNotInjectMarker(t *testing.T) {
 	}
 
 	text := string(content)
-	if strings.Contains(text, "<!-- gentle-ai:strict-tdd-mode -->") {
+	if strings.Contains(text, "<!-- ciberbal-ai:strict-tdd-mode -->") {
 		t.Fatal("CLAUDE.md should NOT contain strict-tdd-mode marker when StrictTDD=false")
 	}
 }
@@ -1896,7 +1896,7 @@ func TestInjectClaudeDeduplicatesBareOrchestratorAtBeginning(t *testing.T) {
 	if count := strings.Count(text, "## Agent Teams Orchestrator"); count != 1 {
 		t.Fatalf("expected 1 Agent Teams Orchestrator heading, got %d\n\ncontent:\n%s", count, text)
 	}
-	if !strings.Contains(text, "<!-- gentle-ai:sdd-orchestrator -->") {
+	if !strings.Contains(text, "<!-- ciberbal-ai:sdd-orchestrator -->") {
 		t.Fatal("missing open marker after injection")
 	}
 	if !strings.Contains(text, "## Other Rules") {
@@ -1940,10 +1940,10 @@ func TestInjectClaudeDeduplicatesFileWithOnlyBareOrchestrator(t *testing.T) {
 		t.Fatalf("expected 1 Agent Teams Orchestrator heading, got %d\n\ncontent:\n%s", count, text)
 	}
 	// Must have markers.
-	if !strings.Contains(text, "<!-- gentle-ai:sdd-orchestrator -->") {
+	if !strings.Contains(text, "<!-- ciberbal-ai:sdd-orchestrator -->") {
 		t.Fatal("missing open marker")
 	}
-	if !strings.Contains(text, "<!-- /gentle-ai:sdd-orchestrator -->") {
+	if !strings.Contains(text, "<!-- /ciberbal-ai:sdd-orchestrator -->") {
 		t.Fatal("missing close marker")
 	}
 	// The unique legacy phrase must be gone — the bare section was stripped.
@@ -2014,7 +2014,7 @@ func TestInjectClaudeDoesNotStripMarkedSection(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ReadFile() error = %v", err)
 	}
-	if !strings.Contains(string(after1), "<!-- gentle-ai:sdd-orchestrator -->") {
+	if !strings.Contains(string(after1), "<!-- ciberbal-ai:sdd-orchestrator -->") {
 		t.Fatal("markers not present after first inject — test precondition failed")
 	}
 
@@ -2377,7 +2377,7 @@ func TestInjectWindsurf_WorkflowsFoundFromSubdirectory(t *testing.T) {
 		t.Fatalf("write go.mod: %v", err)
 	}
 
-	// Simulate running gentle-ai from a subdirectory inside that project.
+	// Simulate running ciberbal-ai from a subdirectory inside that project.
 	subDir := filepath.Join(projectRoot, "internal", "foo")
 	if err := os.MkdirAll(subDir, 0o755); err != nil {
 		t.Fatalf("mkdir subDir: %v", err)

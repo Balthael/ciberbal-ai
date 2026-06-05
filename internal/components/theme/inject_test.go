@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/gentleman-programming/gentle-ai/internal/agents"
-	"github.com/gentleman-programming/gentle-ai/internal/agents/claude"
+	"github.com/gentleman-programming/ciberbal-ai/internal/agents"
+	"github.com/gentleman-programming/ciberbal-ai/internal/agents/claude"
 )
 
 func claudeAdapter() agents.Adapter { return claude.NewAdapter() }

@@ -61,7 +61,7 @@ Load this skill whenever you need to:
 | Steps to Reproduce | Numbered steps to reproduce the behavior |
 | Expected Behavior | What should happen |
 | Actual Behavior | What actually happens |
-| Gentle AI Version | Output of `gga version` |
+| Ciberbal AI Version | Output of `gga version` |
 | Operating System | macOS / Linux distro / Windows / WSL |
 | AI Agent / Client | Claude Code / OpenCode / Gemini CLI / Cursor / Windsurf / Other |
 | Affected Area | See area list below |

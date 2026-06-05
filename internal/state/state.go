@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 )
 
-const stateDir = ".gentle-ai"
+const stateDir = ".ciberbal-ai"
 const stateFile = "state.json"
 
 // InstallState holds the persisted user selections from the last install run.
@@ -34,7 +34,7 @@ func Read(homeDir string) (InstallState, error) {
 }
 
 // Write persists the given agent IDs to the state file under the given home directory.
-// It creates the .gentle-ai directory if it does not already exist.
+// It creates the .ciberbal-ai directory if it does not already exist.
 func Write(homeDir string, agents []string) error {
 	dir := filepath.Join(homeDir, stateDir)
 	if err := os.MkdirAll(dir, 0o755); err != nil {

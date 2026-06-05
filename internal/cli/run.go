@@ -12,22 +12,22 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gentleman-programming/gentle-ai/internal/agents"
-	"github.com/gentleman-programming/gentle-ai/internal/backup"
-	"github.com/gentleman-programming/gentle-ai/internal/components/engram"
-	"github.com/gentleman-programming/gentle-ai/internal/components/gga"
-	"github.com/gentleman-programming/gentle-ai/internal/components/mcp"
-	"github.com/gentleman-programming/gentle-ai/internal/components/permissions"
-	"github.com/gentleman-programming/gentle-ai/internal/components/persona"
-	"github.com/gentleman-programming/gentle-ai/internal/components/sdd"
-	"github.com/gentleman-programming/gentle-ai/internal/components/skills"
-	"github.com/gentleman-programming/gentle-ai/internal/components/theme"
-	"github.com/gentleman-programming/gentle-ai/internal/model"
-	"github.com/gentleman-programming/gentle-ai/internal/pipeline"
-	"github.com/gentleman-programming/gentle-ai/internal/planner"
-	"github.com/gentleman-programming/gentle-ai/internal/state"
-	"github.com/gentleman-programming/gentle-ai/internal/system"
-	"github.com/gentleman-programming/gentle-ai/internal/verify"
+	"github.com/gentleman-programming/ciberbal-ai/internal/agents"
+	"github.com/gentleman-programming/ciberbal-ai/internal/backup"
+	"github.com/gentleman-programming/ciberbal-ai/internal/components/engram"
+	"github.com/gentleman-programming/ciberbal-ai/internal/components/gga"
+	"github.com/gentleman-programming/ciberbal-ai/internal/components/mcp"
+	"github.com/gentleman-programming/ciberbal-ai/internal/components/permissions"
+	"github.com/gentleman-programming/ciberbal-ai/internal/components/persona"
+	"github.com/gentleman-programming/ciberbal-ai/internal/components/sdd"
+	"github.com/gentleman-programming/ciberbal-ai/internal/components/skills"
+	"github.com/gentleman-programming/ciberbal-ai/internal/components/theme"
+	"github.com/gentleman-programming/ciberbal-ai/internal/model"
+	"github.com/gentleman-programming/ciberbal-ai/internal/pipeline"
+	"github.com/gentleman-programming/ciberbal-ai/internal/planner"
+	"github.com/gentleman-programming/ciberbal-ai/internal/state"
+	"github.com/gentleman-programming/ciberbal-ai/internal/system"
+	"github.com/gentleman-programming/ciberbal-ai/internal/verify"
 )
 
 type InstallResult struct {
@@ -63,9 +63,9 @@ var (
 	// detectDependenciesFn is package-level for testability.
 	detectDependenciesFn = system.DetectDependencies
 
-	// AppVersion is the gentle-ai version that will be written into backup manifests.
+	// AppVersion is the ciberbal-ai version that will be written into backup manifests.
 	// It is set by app.go before any CLI operation so that every backup created during
-	// an install or sync records which version of gentle-ai made it.
+	// an install or sync records which version of ciberbal-ai made it.
 	// Default "dev" matches the ldflags default in app.Version.
 	AppVersion = "dev"
 )
@@ -278,7 +278,7 @@ type runtimeState struct {
 }
 
 func newInstallRuntime(homeDir string, selection model.Selection, resolved planner.ResolvedPlan, profile system.PlatformProfile) (*installRuntime, error) {
-	backupRoot := filepath.Join(homeDir, ".gentle-ai", "backups")
+	backupRoot := filepath.Join(homeDir, ".ciberbal-ai", "backups")
 	if err := os.MkdirAll(backupRoot, 0o755); err != nil {
 		return nil, fmt.Errorf("create backup root directory %q: %w", backupRoot, err)
 	}
@@ -352,7 +352,7 @@ type prepareBackupStep struct {
 	source      backup.BackupSource
 	description string
 
-	// appVersion is the gentle-ai version that created this backup.
+	// appVersion is the ciberbal-ai version that created this backup.
 	// When set, it is written into the manifest as CreatedByVersion.
 	appVersion string
 }
@@ -682,7 +682,7 @@ func windowsGoCandidates() []string {
 // BuildRealStagePlan creates a StagePlan with real backup, agent install, and component apply steps.
 // It is used by both the CLI and TUI paths.
 func BuildRealStagePlan(homeDir string, selection model.Selection, resolved planner.ResolvedPlan, profile system.PlatformProfile) (pipeline.StagePlan, error) {
-	backupRoot := filepath.Join(homeDir, ".gentle-ai", "backups")
+	backupRoot := filepath.Join(homeDir, ".ciberbal-ai", "backups")
 	if err := os.MkdirAll(backupRoot, 0o755); err != nil {
 		return pipeline.StagePlan{}, fmt.Errorf("create backup root directory %q: %w", backupRoot, err)
 	}
@@ -996,9 +996,9 @@ func componentPaths(homeDir string, selection model.Selection, adapters []agents
 			if adapter.SupportsSystemPrompt() {
 				paths = append(paths, adapter.SystemPromptFile(homeDir))
 			}
-			if selection.Persona == model.PersonaGentleman {
+			if selection.Persona == model.PersonaCiberbal || selection.Persona == model.PersonaGentleman {
 				if adapter.SupportsOutputStyles() {
-					paths = append(paths, adapter.OutputStyleDir(homeDir)+"/gentleman.md")
+					paths = append(paths, adapter.OutputStyleDir(homeDir)+"/ciberbal.md")
 					if p := adapter.SettingsPath(homeDir); p != "" {
 						paths = append(paths, p)
 					}

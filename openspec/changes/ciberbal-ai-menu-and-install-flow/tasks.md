@@ -22,5 +22,5 @@
 ## Phase 4: Batch 4 — Verification and optional binary entrypoint
 
 - [x] 4.1 Run targeted verification for the touched area with `go test ./internal/tui/... ./internal/app/...`; fix regressions in welcome/install navigation before widening scope.
-- [ ] 4.2 If Phases 1-4.1 stay MVP-safe, add `cmd/ciberbal-ai/main.go` delegating to `app.Run()` and keep `cmd/gentle-ai/main.go` intact; defer goreleaser/go.mod/deep rename work.
+- [ ] 4.2 If Phases 1-4.1 stay MVP-safe, add `cmd/ciberbal-ai/main.go` delegating to `app.Run()` and keep `cmd/ciberbal-ai/main.go` intact; defer goreleaser/go.mod/deep rename work.
 - [x] 4.3 Re-run `go test ./...` and `go vet ./...`, then update this checklist to mark completed items for the first `sdd-apply` batch.

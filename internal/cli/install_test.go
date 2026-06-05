@@ -4,8 +4,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/gentleman-programming/gentle-ai/internal/model"
-	"github.com/gentleman-programming/gentle-ai/internal/system"
+	"github.com/gentleman-programming/ciberbal-ai/internal/model"
+	"github.com/gentleman-programming/ciberbal-ai/internal/system"
 )
 
 func TestParseInstallFlagsSupportsCSVAndRepeated(t *testing.T) {
@@ -44,7 +44,7 @@ func TestNormalizeInstallFlagsDefaults(t *testing.T) {
 
 	want := model.Selection{
 		Agents:  []model.AgentID{model.AgentClaudeCode, model.AgentOpenCode, model.AgentGeminiCLI, model.AgentCodex, model.AgentCursor, model.AgentVSCodeCopilot, model.AgentAntigravity, model.AgentWindsurf},
-		Persona: model.PersonaGentleman,
+		Persona: model.PersonaCiberbal,
 		Preset:  model.PresetFullPentest,
 		Components: []model.ComponentID{
 			model.ComponentEngram,
@@ -59,6 +59,17 @@ func TestNormalizeInstallFlagsDefaults(t *testing.T) {
 
 	if !reflect.DeepEqual(input.Selection, want) {
 		t.Fatalf("selection = %#v, want %#v", input.Selection, want)
+	}
+}
+
+func TestNormalizeInstallFlagsAcceptsCiberbalPersona(t *testing.T) {
+	input, err := NormalizeInstallFlags(InstallFlags{Persona: string(model.PersonaCiberbal)}, system.DetectionResult{})
+	if err != nil {
+		t.Fatalf("NormalizeInstallFlags() error = %v", err)
+	}
+
+	if input.Selection.Persona != model.PersonaCiberbal {
+		t.Fatalf("persona = %q, want %q", input.Selection.Persona, model.PersonaCiberbal)
 	}
 }
 

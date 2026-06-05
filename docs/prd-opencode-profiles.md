@@ -225,7 +225,7 @@ Hoy eso es un dolor de cabeza manual. Esta feature lo resuelve.
 
 **R-PROF-22**: El contenido de estos archivos de prompt DEBE ser EXACTAMENTE el mismo que hoy se inline en el overlay JSON. El refactor es extracto sin cambio de comportamiento.
 
-**R-PROF-23**: El prompt del orchestrator (`orchestrator.md`) DEBE incluir un bloque `<!-- gentle-ai:sdd-model-assignments -->` que se inyecta dinámicamente con la tabla de modelos de ESE perfil específico.
+**R-PROF-23**: El prompt del orchestrator (`orchestrator.md`) DEBE incluir un bloque `<!-- ciberbal-ai:sdd-model-assignments -->` que se inyecta dinámicamente con la tabla de modelos de ESE perfil específico.
 
 **R-PROF-24**: Para el orchestrator de un perfil, el prompt DEBE referenciar los sub-agentes CON SUFIJO. Esto significa que el `orchestrator.md` compartido necesita un placeholder o que cada orchestrator de perfil tenga su propia copia con los nombres correctos. 
 

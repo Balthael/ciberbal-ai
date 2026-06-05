@@ -7,8 +7,8 @@ import (
 )
 
 // markerFormat is the HTML comment marker used to identify a custom-agent block.
-// Example: <!-- gentle-ai:custom-agent:my-skill -->
-const markerFormat = "<!-- gentle-ai:custom-agent:%s -->"
+// Example: <!-- ciberbal-ai:custom-agent:my-skill -->
+const markerFormat = "<!-- ciberbal-ai:custom-agent:%s -->"
 
 // InjectSDDReference appends (or replaces) a custom-agent reference block in the
 // system prompt file at systemPromptPath.
@@ -87,14 +87,14 @@ func buildSDDBlock(agent *GeneratedAgent, marker string) string {
 		body = fmt.Sprintf("## Custom Agent: %s\n\nTrigger: %s\n", agent.Title, agent.Trigger)
 	}
 
-	endMarker := fmt.Sprintf("<!-- /gentle-ai:custom-agent:%s -->", agent.Name)
+	endMarker := fmt.Sprintf("<!-- /ciberbal-ai:custom-agent:%s -->", agent.Name)
 	return marker + "\n" + body + endMarker
 }
 
 // replaceBlock replaces the content between the opening marker and its matching
 // closing marker with the new block string.
 func replaceBlock(content, marker, newBlock string) string {
-	endMarker := fmt.Sprintf("<!-- /gentle-ai:custom-agent:%s -->", extractName(marker))
+	endMarker := fmt.Sprintf("<!-- /ciberbal-ai:custom-agent:%s -->", extractName(marker))
 
 	start := strings.Index(content, marker)
 	if start == -1 {
@@ -116,9 +116,9 @@ func replaceBlock(content, marker, newBlock string) string {
 }
 
 // extractName parses the agent name from a marker string.
-// Example: "<!-- gentle-ai:custom-agent:my-skill -->" → "my-skill"
+// Example: "<!-- ciberbal-ai:custom-agent:my-skill -->" → "my-skill"
 func extractName(marker string) string {
-	prefix := "<!-- gentle-ai:custom-agent:"
+	prefix := "<!-- ciberbal-ai:custom-agent:"
 	suffix := " -->"
 	if strings.HasPrefix(marker, prefix) && strings.HasSuffix(marker, suffix) {
 		return marker[len(prefix) : len(marker)-len(suffix)]

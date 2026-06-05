@@ -2,7 +2,7 @@
 
 ## Current State
 
-gentle-ai is a Go/Bubbletea CLI/TUI that configures AI agent ecosystems.
+ciberbal-ai is a Go/Bubbletea CLI/TUI that configures AI agent ecosystems.
 Its welcome menu and install wizard are spread across these key files:
 
 | File | Role |
@@ -23,9 +23,9 @@ Its welcome menu and install wizard are spread across these key files:
 | `internal/catalog/skills.go` | MVPSkills() list |
 | `internal/model/types.go` | Preset, Persona, Component, Skill, Agent ID constants |
 | `internal/app/app.go` | app name strings (version printout, error msg, backup path) |
-| `cmd/gentle-ai/main.go` | Binary entrypoint (no product name hardcoded except import path) |
+| `cmd/ciberbal-ai/main.go` | Binary entrypoint (no product name hardcoded except import path) |
 
-### Full Menu Tree (gentle-ai today)
+### Full Menu Tree (ciberbal-ai today)
 
 **Welcome screen options:**
 ```
@@ -76,10 +76,10 @@ Welcome → Detection → Agents (checkboxes) → Persona (radio) → Preset (ra
 ### Branding / Identity (MUST change)
 - `internal/tui/styles/logo.go` — replace braille ASCII art with ciberbal-ai logo
 - `internal/tui/styles/styles.go` — update `Tagline()` string; optionally change color palette to cybersecurity-themed
-- `internal/app/app.go` — product name in version print, error messages, backup path (`~/.gentle-ai/backups` → `~/.ciberbal-ai/backups`)
-- `cmd/gentle-ai/main.go` → rename to `cmd/ciberbal-ai/main.go`
-- `go.mod` — module path: `github.com/gentleman-programming/gentle-ai` → `github.com/gentleman-programming/ciberbal-ai` (or keep as-is for MVP)
-- `complete.go` — post-install next steps copy text references "gentle-ai" in the retry instruction
+- `internal/app/app.go` — product name in version print, error messages, backup path (`~/.ciberbal-ai/backups` → `~/.ciberbal-ai/backups`)
+- `cmd/ciberbal-ai/main.go` → rename to `cmd/ciberbal-ai/main.go`
+- `go.mod` — module path: `github.com/gentleman-programming/ciberbal-ai` → `github.com/gentleman-programming/ciberbal-ai` (or keep as-is for MVP)
+- `complete.go` — post-install next steps copy text references "ciberbal-ai" in the retry instruction
 
 ### Install Wizard Screens (MUST change for ciberbal-ai semantics)
 - `internal/tui/screens/preset.go` — rename presets + descriptions for cybersecurity context
@@ -123,7 +123,7 @@ Welcome → Detection → Agents (checkboxes) → Persona (radio) → Preset (ra
 
 This maps cleanly to the existing preset architecture:
 
-| Intent | gentle-ai today | ciberbal-ai mapping |
+| Intent | ciberbal-ai today | ciberbal-ai mapping |
 |--------|----------------|---------------------|
 | Quick install | `full-gentleman` preset auto-selected | `full-cyber` preset auto-selected, skip Preset screen |
 | Advanced install | Full wizard (agents → persona → preset → SDD → review) | Full wizard preserved 1:1 |
@@ -146,7 +146,7 @@ This requires a new screen entry point or a **mode flag on Detection/Welcome** t
 **Implementation approach (lowest risk):** Add a `QuickInstall bool` field to `tui.Model`. When `QuickInstall = true`, after Detection the model sets all defaults and jumps directly to `ScreenDependencyTree` (auto-built plan) → `ScreenReview`.
 
 ### Advanced Install Flow (preserved)
-Identical to current gentle-ai wizard — no changes to any screen. The welcome menu just routes to `ScreenDetection` with `QuickInstall = false`.
+Identical to current ciberbal-ai wizard — no changes to any screen. The welcome menu just routes to `ScreenDetection` with `QuickInstall = false`.
 
 ### Welcome Screen Redesign for ciberbal-ai
 
@@ -173,7 +173,7 @@ This shifts indices for existing menu routing by +1 after option 0. The simplest
 
 ## Preset Renaming for ciberbal-ai
 
-| gentle-ai PresetID | ciberbal-ai PresetID | Description |
+| ciberbal-ai PresetID | ciberbal-ai PresetID | Description |
 |-------------------|---------------------|-------------|
 | `full-gentleman` | `full-cyber` | Everything: memory, SDD, skills, docs, persona & security |
 | `ecosystem-only` | `ecosystem-only` (unchanged) | Core tools only: no persona/security |
@@ -186,7 +186,7 @@ This shifts indices for existing menu routing by +1 after option 0. The simplest
 
 ## Persona Renaming for ciberbal-ai
 
-| gentle-ai PersonaID | ciberbal-ai PersonaID | Meaning |
+| ciberbal-ai PersonaID | ciberbal-ai PersonaID | Meaning |
 |--------------------|----------------------|---------|
 | `gentleman` | `hacker` (or keep `gentleman`) | Default cybersecurity persona |
 | `neutral` | `neutral` (unchanged) | No persona injection |
@@ -202,7 +202,7 @@ This shifts indices for existing menu routing by +1 after option 0. The simplest
 1. Replace logo braille art in `styles/logo.go`
 2. Update `Tagline()` in `styles/styles.go` to: `"ciberbal-ai Stack {version} — One command. Any agent. Pentest-ready."`
 3. Update product name strings in `app/app.go` (version print, backup path prefix)
-4. Rename binary entrypoint: `cmd/gentle-ai/` → `cmd/ciberbal-ai/`
+4. Rename binary entrypoint: `cmd/ciberbal-ai/` → `cmd/ciberbal-ai/`
 5. Update preset descriptions in `screens/preset.go` for cybersecurity framing
 6. Update post-install next steps copy in `screens/complete.go`
 7. Update `go.mod` module path (deferred or MVP — low risk but touches all import paths)
@@ -241,7 +241,7 @@ This shifts indices for existing menu routing by +1 after option 0. The simplest
 | Tests that hardcode "full-gentleman" preset ID string | Medium | grep test files; update any literal string comparisons |
 | Quick install auto-selecting all agents on a machine with many agents | Low | Use detected agents (preselectedAgents logic) same as today — already handles this |
 | TUI tests for welcome screen that count menu options | Low | Update `optionCount()` and welcome screen tests if adding ScreenInstallMode |
-| Backup directory path migration (~/.gentle-ai → ~/.ciberbal-ai) | Low | For existing users; add migration notice on first run if old dir exists |
+| Backup directory path migration (~/.ciberbal-ai → ~/.ciberbal-ai) | Low | For existing users; add migration notice on first run if old dir exists |
 
 ---
 

@@ -12,7 +12,7 @@ Users who need specialized AI agents (code reviewer, doc generator, migration va
 - Welcome screen: add "Create your own Agent" menu option (disabled when no agents installed)
 - Model extensions: `AgentBuilderState` embedded in `Model`, new `Screen` constants
 - Router extensions: agent builder sub-flow routes
-- Custom-agent registry at `~/.config/gentle-ai/custom-agents.json`
+- Custom-agent registry at `~/.config/ciberbal-ai/custom-agents.json`
 - SDD integration: standalone, phase-support (marker injection), new-phase (pipeline update)
 - Generation engine implementations: Claude Code (`--print`), OpenCode (`run`), Gemini CLI (`-p`), Codex (`exec`)
 - Multi-line text input using `charmbracelet/textarea`
@@ -71,9 +71,9 @@ Users who need specialized AI agents (code reviewer, doc generator, migration va
 ## Rollback Plan
 
 1. Revert the `feature/agent-builder` branch merge — all changes are additive (new package, new screens, new menu option)
-2. Custom-agent registry (`~/.config/gentle-ai/custom-agents.json`) can be deleted manually
+2. Custom-agent registry (`~/.config/ciberbal-ai/custom-agents.json`) can be deleted manually
 3. Installed custom skills are standalone SKILL.md files — deleting the directory removes the agent
-4. SDD marker injections use unique `<!-- gentle-ai:custom-agent:{name} -->` markers — can be grep'd and removed
+4. SDD marker injections use unique `<!-- ciberbal-ai:custom-agent:{name} -->` markers — can be grep'd and removed
 
 ## Dependencies
 

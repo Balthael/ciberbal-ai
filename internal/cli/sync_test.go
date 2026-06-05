@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gentleman-programming/gentle-ai/internal/model"
-	"github.com/gentleman-programming/gentle-ai/internal/state"
+	"github.com/gentleman-programming/ciberbal-ai/internal/model"
+	"github.com/gentleman-programming/ciberbal-ai/internal/state"
 )
 
 // ─── Phase 1: ParseSyncFlags ───────────────────────────────────────────────
@@ -840,7 +840,7 @@ func TestRunSyncExcludesUnmanagedLookalikeFile(t *testing.T) {
 		t.Fatalf("MkdirAll() error = %v", err)
 	}
 	lookalikePath := filepath.Join(lookalikeDir, "AGENTS.md")
-	const lookalikeContent = "# My project AGENTS.md — NOT managed by gentle-ai"
+	const lookalikeContent = "# My project AGENTS.md — NOT managed by ciberbal-ai"
 	if err := os.WriteFile(lookalikePath, []byte(lookalikeContent), 0o644); err != nil {
 		t.Fatalf("WriteFile() lookalike error = %v", err)
 	}

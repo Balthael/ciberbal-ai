@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gentleman-programming/gentle-ai/internal/system"
-	"github.com/gentleman-programming/gentle-ai/internal/update"
-	"github.com/gentleman-programming/gentle-ai/internal/update/upgrade"
+	"github.com/gentleman-programming/ciberbal-ai/internal/system"
+	"github.com/gentleman-programming/ciberbal-ai/internal/update"
+	"github.com/gentleman-programming/ciberbal-ai/internal/update/upgrade"
 )
 
 func TestRunUpdate_ReturnsErrorWhenChecksFail(t *testing.T) {

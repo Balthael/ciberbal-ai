@@ -5,8 +5,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/gentleman-programming/gentle-ai/internal/model"
-	"github.com/gentleman-programming/gentle-ai/internal/system"
+	"github.com/gentleman-programming/ciberbal-ai/internal/model"
+	"github.com/gentleman-programming/ciberbal-ai/internal/system"
 )
 
 type statResult struct {
@@ -73,7 +73,7 @@ func (a *Adapter) SystemPromptDir(homeDir string) string {
 }
 
 func (a *Adapter) SystemPromptFile(homeDir string) string {
-	return filepath.Join(homeDir, ".cursor", "rules", "gentle-ai.mdc")
+	return filepath.Join(homeDir, ".cursor", "rules", "ciberbal-ai.mdc")
 }
 
 func (a *Adapter) SkillsDir(homeDir string) string {

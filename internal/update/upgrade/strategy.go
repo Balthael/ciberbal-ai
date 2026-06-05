@@ -11,9 +11,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gentleman-programming/gentle-ai/internal/components/engram"
-	"github.com/gentleman-programming/gentle-ai/internal/system"
-	"github.com/gentleman-programming/gentle-ai/internal/update"
+	"github.com/gentleman-programming/ciberbal-ai/internal/components/engram"
+	"github.com/gentleman-programming/ciberbal-ai/internal/system"
+	"github.com/gentleman-programming/ciberbal-ai/internal/update"
 )
 
 // engramDownloadFn is the function used to download the engram binary.
@@ -233,7 +233,7 @@ func scriptUpgrade(ctx context.Context, r update.UpdateResult, profile system.Pl
 // ggaMkdirTemp is the function used to create a temporary directory for GGA git clone.
 // Package-level var for testability — swapped in tests to control the temp dir path.
 var ggaMkdirTemp = func() (string, error) {
-	return os.MkdirTemp("", "gentle-ai-gga-*")
+	return os.MkdirTemp("", "ciberbal-ai-gga-*")
 }
 
 // ggaScriptUpgrade upgrades GGA by cloning its repository and running install.sh

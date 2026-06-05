@@ -33,11 +33,11 @@ go build ./...
 
 **Tests**: ✅ 37 packages pass / ❌ 0 failed / ⚠️ 0 skipped
 ```
-ok  github.com/gentleman-programming/gentle-ai/internal/components/sdd   13.718s
-ok  github.com/gentleman-programming/gentle-ai/internal/tui/screens      0.077s
-ok  github.com/gentleman-programming/gentle-ai/internal/tui              2.244s
-ok  github.com/gentleman-programming/gentle-ai/internal/cli              28.899s
-ok  github.com/gentleman-programming/gentle-ai/internal/model            0.147s
+ok  github.com/gentleman-programming/ciberbal-ai/internal/components/sdd   13.718s
+ok  github.com/gentleman-programming/ciberbal-ai/internal/tui/screens      0.077s
+ok  github.com/gentleman-programming/ciberbal-ai/internal/tui              2.244s
+ok  github.com/gentleman-programming/ciberbal-ai/internal/cli              28.899s
+ok  github.com/gentleman-programming/ciberbal-ai/internal/model            0.147s
 # All 37 packages pass; 0 failures
 ```
 

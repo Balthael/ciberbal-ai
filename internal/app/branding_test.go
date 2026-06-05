@@ -7,7 +7,7 @@ import (
 )
 
 // TestVersionOutputUsesCiberbalBranding verifies that the `version` command
-// prints "ciberbal-ai" as the binary name, not "gentle-ai".
+// prints "ciberbal-ai" as the binary name, not "ciberbal-ai".
 func TestVersionOutputUsesCiberbalBranding(t *testing.T) {
 	var buf bytes.Buffer
 	err := RunArgs([]string{"version"}, &buf)

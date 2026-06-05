@@ -36,7 +36,7 @@ func TestSpinner_FinishFailure(t *testing.T) {
 // RED: This test must fail before the fix because FinishSkipped does not exist yet.
 func TestSpinner_FinishSkipped(t *testing.T) {
 	var buf bytes.Buffer
-	s := NewSpinner(&buf, "Upgrading gentle-ai")
+	s := NewSpinner(&buf, "Upgrading ciberbal-ai")
 	s.FinishSkipped()
 
 	got := buf.String()
@@ -56,7 +56,7 @@ func TestSpinner_FinishSkipped(t *testing.T) {
 // write the success icon (✓) either.
 func TestSpinner_FinishSkipped_NotSuccess(t *testing.T) {
 	var buf bytes.Buffer
-	s := NewSpinner(&buf, "Upgrading gentle-ai")
+	s := NewSpinner(&buf, "Upgrading ciberbal-ai")
 	s.FinishSkipped()
 
 	got := buf.String()

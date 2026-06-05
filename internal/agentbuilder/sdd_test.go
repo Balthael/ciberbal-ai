@@ -42,7 +42,7 @@ func TestInjectSDDReference_InjectIntoEmptyFile(t *testing.T) {
 	}
 
 	content := string(data)
-	marker := "<!-- gentle-ai:custom-agent:my-skill -->"
+	marker := "<!-- ciberbal-ai:custom-agent:my-skill -->"
 	if !strings.Contains(content, marker) {
 		t.Errorf("marker not found in file;\ngot:\n%s", content)
 	}
@@ -72,7 +72,7 @@ func TestInjectSDDReference_ExistingContentPreserved(t *testing.T) {
 	if !strings.Contains(content, "My System Prompt") {
 		t.Errorf("existing content was not preserved;\ngot:\n%s", content)
 	}
-	if !strings.Contains(content, "<!-- gentle-ai:custom-agent:my-skill -->") {
+	if !strings.Contains(content, "<!-- ciberbal-ai:custom-agent:my-skill -->") {
 		t.Errorf("marker not found in file;\ngot:\n%s", content)
 	}
 }
@@ -102,7 +102,7 @@ func TestInjectSDDReference_DuplicateInjection_MarkerReplacedNotDuplicated(t *te
 	content := string(data)
 
 	// Count marker occurrences — should appear exactly once.
-	marker := "<!-- gentle-ai:custom-agent:dedup-skill -->"
+	marker := "<!-- ciberbal-ai:custom-agent:dedup-skill -->"
 	count := strings.Count(content, marker)
 	if count != 1 {
 		t.Errorf("marker appears %d times, want exactly 1;\ngot:\n%s", count, content)

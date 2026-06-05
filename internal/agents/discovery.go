@@ -3,7 +3,7 @@ package agents
 import (
 	"os"
 
-	"github.com/gentleman-programming/gentle-ai/internal/model"
+	"github.com/gentleman-programming/ciberbal-ai/internal/model"
 )
 
 // InstalledAgent pairs an agent ID with its resolved config root directory.

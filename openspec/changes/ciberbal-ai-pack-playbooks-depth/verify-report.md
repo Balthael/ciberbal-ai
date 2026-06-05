@@ -28,16 +28,16 @@ $ go vet ./...
 **Tests**: ✅ 1745 passed / ❌ 0 failed / ⚠️ 4 skipped
 ```text
 $ go test ./...
-ok   github.com/gentleman-programming/gentle-ai/internal/assets  (cached)
-ok   github.com/gentleman-programming/gentle-ai/internal/catalog  (cached)
-ok   github.com/gentleman-programming/gentle-ai/internal/components/skills  (cached)
+ok   github.com/gentleman-programming/ciberbal-ai/internal/assets  (cached)
+ok   github.com/gentleman-programming/ciberbal-ai/internal/catalog  (cached)
+ok   github.com/gentleman-programming/ciberbal-ai/internal/components/skills  (cached)
 ...
 
 Skipped tests:
-- github.com/gentleman-programming/gentle-ai/internal/agents/windsurf::TestSettingsPathMultiplatform/Windows_with_custom_APPDATA
-- github.com/gentleman-programming/gentle-ai/internal/agents/windsurf::TestSettingsPathMultiplatform/Windows_with_default_APPDATA
-- github.com/gentleman-programming/gentle-ai/internal/agents/windsurf::TestSettingsPathMultiplatform/macOS_ignores_environment_variables
-- github.com/gentleman-programming/gentle-ai/internal/update/upgrade::TestDownload_WindowsAlwaysManualFallback
+- github.com/gentleman-programming/ciberbal-ai/internal/agents/windsurf::TestSettingsPathMultiplatform/Windows_with_custom_APPDATA
+- github.com/gentleman-programming/ciberbal-ai/internal/agents/windsurf::TestSettingsPathMultiplatform/Windows_with_default_APPDATA
+- github.com/gentleman-programming/ciberbal-ai/internal/agents/windsurf::TestSettingsPathMultiplatform/macOS_ignores_environment_variables
+- github.com/gentleman-programming/ciberbal-ai/internal/update/upgrade::TestDownload_WindowsAlwaysManualFallback
 ```
 
 **Coverage**: 68.5% / threshold: 0% → ✅ No threshold configured

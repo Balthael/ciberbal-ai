@@ -79,7 +79,7 @@ Key architecture decisions:
 
 1. **Phase 1 (prompt extraction)**: Revert to inline prompts by restoring `sdd-overlay-multi.json` from backup. Prompt files in `~/.config/opencode/prompts/sdd/` are harmless orphans.
 2. **Phase 2-6 (profiles)**: Remove profile agents from `opencode.json` by running sync without profile support (overlay merge only writes default agents). Delete prompt files manually or via next sync.
-3. **Full revert**: `git revert` the feature branch. User runs `gentle-ai sync` to restore clean state.
+3. **Full revert**: `git revert` the feature branch. User runs `ciberbal-ai sync` to restore clean state.
 
 ## Dependencies
 

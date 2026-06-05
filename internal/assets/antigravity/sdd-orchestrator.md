@@ -125,7 +125,7 @@ proposal -> findings spec --> tasks -> apply -> verify -> archive
 ### Result Contract
 Each phase returns: `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`, `skill_resolution`.
 
-<!-- gentle-ai:sdd-model-assignments -->
+<!-- ciberbal-ai:sdd-model-assignments -->
 ## Model Assignments
 
 Read this table at session start. Antigravity supports multiple models via Mission Control — if your current model matches a phase's recommended alias, proceed normally. If model switching is not available mid-session, use this table as a reasoning-depth guide: phases assigned to `opus` require deeper architectural thinking, while `haiku` phases are mechanical.
@@ -143,7 +143,7 @@ Read this table at session start. Antigravity supports multiple models via Missi
 | sdd-archive | haiku | Copy and close |
 | default | sonnet | Non-Ciberbal general delegation |
 
-<!-- /gentle-ai:sdd-model-assignments -->
+<!-- /ciberbal-ai:sdd-model-assignments -->
 
 ### Skill Resolver Protocol
 

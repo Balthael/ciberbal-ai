@@ -581,7 +581,7 @@ This section describes how all Gentleman ecosystem components interact with each
 graph TB
     subgraph INSTALLER["🔧 GENTLEMAN AI INSTALLER (one-time setup)"]
         direction TB
-        GAI[gentle-ai binary]
+        GAI[ciberbal-ai binary]
         GAI --> DEP_ENGINE[Dependency Engine]
         GAI --> AGENT_ENGINE[Agent Configurator]
         GAI --> ECO_ENGINE[Ecosystem Injector]
@@ -748,7 +748,7 @@ flowchart TD
     REVIEW --> BACKUP
 
     subgraph PHASE_3["Phase 3: Backup"]
-        BACKUP[Backup existing configs<br/>~/.gentle-ai-backup-TIMESTAMP/]
+        BACKUP[Backup existing configs<br/>~/.ciberbal-ai-backup-TIMESTAMP/]
     end
 
     BACKUP --> DEP_INSTALL
@@ -1056,9 +1056,9 @@ graph TB
 ### 8.2 Package Structure (Proposed)
 
 ```
-gentle-ai/
+ciberbal-ai/
 ├── cmd/
-│   └── gentle-ai/
+│   └── ciberbal-ai/
 │       └── main.go                 # CLI entrypoint
 ├── internal/
 │   ├── system/
@@ -1182,10 +1182,10 @@ type Preset struct {
 | Method | Command | Priority |
 |--------|---------|----------|
 | curl (recommended) | `curl -sL get.gentleman.ai/ai \| sh` | P0 |
-| Homebrew | `brew install Gentleman-Programming/tap/gentle-ai` | P0 |
-| Go install | `go install github.com/Gentleman-Programming/gentle-ai/cmd/gentle-ai@latest` | P1 |
+| Homebrew | `brew install Gentleman-Programming/tap/ciberbal-ai` | P0 |
+| Go install | `go install github.com/Gentleman-Programming/ciberbal-ai/cmd/ciberbal-ai@latest` | P1 |
 | Direct binary | Download from GitHub Releases | P1 |
-| winget (Windows) | `winget install gentle-ai` | P2 |
+| winget (Windows) | `winget install ciberbal-ai` | P2 |
 
 ### 9.2 Cross-Compilation Targets
 
@@ -1356,7 +1356,7 @@ These are NOT requirements for v1 but should inform architectural decisions:
 
 ## 16. Open Questions
 
-1. **Naming**: `gentle-ai`, `gentle-ai`, `gai`, or something else? Should it be part of the `Gentleman-Programming` org or standalone?
+1. **Naming**: `ciberbal-ai`, `ciberbal-ai`, `gai`, or something else? Should it be part of the `Gentleman-Programming` org or standalone?
 2. **Skills registry**: Should skills be embedded in the binary, fetched from GitHub at install time, or pulled from a dedicated registry service?
 3. **Windows native**: How much effort to invest in native Windows (not WSL) support for v1? Most AI coding tools have limited Windows support anyway.
 4. **Config format**: Should the installer's own config (what was installed, preferences) be stored as JSON, YAML, or TOML? Where?

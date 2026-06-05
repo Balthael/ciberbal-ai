@@ -13,7 +13,7 @@ Insert a single new screen (`ScreenInstallMode`) between `ScreenDetection` and `
 | Preset constant for Quick | Reuse `PresetFullGentleman` (display label renamed) | New `PresetFullCyber` constant | Avoids Tier 3 breakage until grep of test hardcodes is done; constant rename is a separate sub-task |
 | goBack() from ScreenInstallMode | Return to `ScreenDetection` | Return to `ScreenWelcome` | Consistent with existing linear back-navigation in `goBack()` / `linearRoutes` |
 | go.mod rename | Deferred (post-MVP) | Rename now | High risk: cascades to all imports, CI, goreleaser, 40+ files |
-| Binary rename | `cmd/ciberbal-ai/` new dir with `main.go` delegating to `app.Run()` | Rename `cmd/gentle-ai/` | Additive; old binary still buildable; goreleaser targets added separately |
+| Binary rename | `cmd/ciberbal-ai/` new dir with `main.go` delegating to `app.Run()` | Rename `cmd/ciberbal-ai/` | Additive; old binary still buildable; goreleaser targets added separately |
 
 ## Screen Graph (install flow only)
 
@@ -75,8 +75,8 @@ No new planner/pipeline logic. The plan is built identically to Advanced; the on
 | `internal/tui/styles/logo.go` | Modify | Replace braille ASCII art with ciberbal-ai logo |
 | `internal/tui/styles/styles.go` | Modify | Update `Tagline()` → `"ciberbal-ai Stack " + version + " — One command. Any agent. Any OS."` |
 | `internal/tui/screens/preset.go` | Modify | Update `presetDescriptions[PresetFullGentleman]` → cybersecurity-framed description |
-| `internal/tui/screens/complete.go` | Modify | Replace `"Run gentle-ai again to retry"` → `"Run ciberbal-ai again to retry"` |
-| `internal/app/app.go` | Modify | Update version print `"gentle-ai %s"` → `"ciberbal-ai %s"`; `backupRoot` path `".gentle-ai"` → `".ciberbal-ai"` |
+| `internal/tui/screens/complete.go` | Modify | Replace `"Run ciberbal-ai again to retry"` → `"Run ciberbal-ai again to retry"` |
+| `internal/app/app.go` | Modify | Update version print `"ciberbal-ai %s"` → `"ciberbal-ai %s"`; `backupRoot` path `".ciberbal-ai"` → `".ciberbal-ai"` |
 | `cmd/ciberbal-ai/main.go` | Create | New entry point delegating to `app.Run()` |
 
 **Unchanged**: all backup/restore/profile/agent-builder/sync/upgrade/model-config screens, packages, and tests.
@@ -126,9 +126,9 @@ Tests follow existing pattern in `model_test.go`: construct `Model`, send `tea.K
 
 ## Migration / Rollout
 
-No data migration required. `QuickInstall` is an in-session boolean, not persisted. The backup path change (`~/.gentle-ai` → `~/.ciberbal-ai`) affects new backups only; existing backups remain readable via their absolute paths in manifests.
+No data migration required. `QuickInstall` is an in-session boolean, not persisted. The backup path change (`~/.ciberbal-ai` → `~/.ciberbal-ai`) affects new backups only; existing backups remain readable via their absolute paths in manifests.
 
 ## Open Questions
 
 - [ ] Should `preselectedAgents(detection)` in Quick mode include ALL detected agents or only a curated cybersec subset? (Current design: all detected — safe default, matches existing `NewModel` behavior)
-- [ ] Is the backup dir rename (`~/.gentle-ai` → `~/.ciberbal-ai`) in scope for MVP or deferred with go.mod rename? (Recommendation: defer both together to avoid partial identity split)
+- [ ] Is the backup dir rename (`~/.ciberbal-ai` → `~/.ciberbal-ai`) in scope for MVP or deferred with go.mod rename? (Recommendation: defer both together to avoid partial identity split)

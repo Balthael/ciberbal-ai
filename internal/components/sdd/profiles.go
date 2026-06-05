@@ -9,9 +9,9 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/gentleman-programming/gentle-ai/internal/assets"
-	"github.com/gentleman-programming/gentle-ai/internal/components/filemerge"
-	"github.com/gentleman-programming/gentle-ai/internal/model"
+	"github.com/gentleman-programming/ciberbal-ai/internal/assets"
+	"github.com/gentleman-programming/ciberbal-ai/internal/components/filemerge"
+	"github.com/gentleman-programming/ciberbal-ai/internal/model"
 )
 
 // profileNameRegex matches valid profile name slugs: lowercase alphanumeric + hyphens,
@@ -302,8 +302,8 @@ func buildProfileOrchestratorPrompt(profile model.Profile) (string, error) {
 	base := assets.MustRead("generic/sdd-orchestrator.md")
 
 	// Inject model assignments table.
-	const openMarker = "<!-- gentle-ai:sdd-model-assignments -->"
-	const closeMarker = "<!-- /gentle-ai:sdd-model-assignments -->"
+	const openMarker = "<!-- ciberbal-ai:sdd-model-assignments -->"
+	const closeMarker = "<!-- /ciberbal-ai:sdd-model-assignments -->"
 
 	start := strings.Index(base, openMarker)
 	end := strings.Index(base, closeMarker)

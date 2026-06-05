@@ -10,9 +10,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/gentleman-programming/gentle-ai/internal/system"
-	"github.com/gentleman-programming/gentle-ai/internal/update"
-	"github.com/gentleman-programming/gentle-ai/internal/update/upgrade"
+	"github.com/gentleman-programming/ciberbal-ai/internal/system"
+	"github.com/gentleman-programming/ciberbal-ai/internal/update"
+	"github.com/gentleman-programming/ciberbal-ai/internal/update/upgrade"
 )
 
 // lookPathFn is a package-level var for testability.

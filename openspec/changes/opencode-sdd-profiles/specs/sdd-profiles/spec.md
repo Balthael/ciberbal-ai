@@ -340,11 +340,11 @@ a model to a specific sub-agent within a named profile.
 #### Scenario: Headless profile creation via CLI
 
 - GIVEN no profile named `cheap` exists
-- WHEN `gentle-ai sync --profile cheap:anthropic/claude-haiku-3.5-20241022` runs
+- WHEN `ciberbal-ai sync --profile cheap:anthropic/claude-haiku-3.5-20241022` runs
 - THEN the `cheap` profile is created in `opencode.json` with Haiku for all sub-agents
 
 #### Scenario: Multiple profiles in one sync
 
-- GIVEN `gentle-ai sync --profile cheap:haiku --profile premium:opus` runs
+- GIVEN `ciberbal-ai sync --profile cheap:haiku --profile premium:opus` runs
 - WHEN sync completes
 - THEN both `cheap` and `premium` profiles are present in `opencode.json`

@@ -248,7 +248,7 @@ The parser MUST validate the output contains required sections: Description, Tri
 
 ### Requirement: Registry Persistence
 
-The system MUST read and write a JSON registry at `~/.config/gentle-ai/custom-agents.json`. The registry MUST include a `version` field (integer). Each entry MUST record: name, title, description, created_at (RFC3339), generation_engine, sdd_integration (nullable), installed_agents.
+The system MUST read and write a JSON registry at `~/.config/ciberbal-ai/custom-agents.json`. The registry MUST include a `version` field (integer). Each entry MUST record: name, title, description, created_at (RFC3339), generation_engine, sdd_integration (nullable), installed_agents.
 
 #### Scenario: Registry created on first install
 
@@ -322,7 +322,7 @@ Installation MUST be atomic. If writing to any agent fails after partial success
 
 ### Requirement: SDD Phase Support Injection
 
-For `phase-support` mode, the installer MUST inject a marker-fenced block into the agent's system prompt file using the `StrategyMarkdownSections` approach. The marker MUST follow the format `<!-- gentle-ai:custom-agent:{name} -->`.
+For `phase-support` mode, the installer MUST inject a marker-fenced block into the agent's system prompt file using the `StrategyMarkdownSections` approach. The marker MUST follow the format `<!-- ciberbal-ai:custom-agent:{name} -->`.
 
 #### Scenario: Phase support marker injected
 
@@ -332,7 +332,7 @@ For `phase-support` mode, the installer MUST inject a marker-fenced block into t
 
 #### Scenario: Existing marker not duplicated
 
-- GIVEN the system prompt already contains `<!-- gentle-ai:custom-agent:a11y-reviewer -->`
+- GIVEN the system prompt already contains `<!-- ciberbal-ai:custom-agent:a11y-reviewer -->`
 - WHEN installation runs again (replace scenario)
 - THEN the existing block is replaced, not duplicated
 

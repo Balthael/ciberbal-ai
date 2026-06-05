@@ -426,7 +426,7 @@ The installer writes the SAME `SKILL.md` to ALL agents that were configured duri
 To track which custom agents the user has created (for future management), a local registry file is maintained:
 
 ```
-~/.config/gentle-ai/custom-agents.json
+~/.config/ciberbal-ai/custom-agents.json
 ```
 
 ```json
@@ -458,11 +458,11 @@ When the custom agent has SDD integration, additional configuration is needed:
 The generated skill includes SDD-aware instructions. The orchestrator's system prompt is updated to include a reference to the custom skill:
 
 ```markdown
-<!-- gentle-ai:custom-agent:{name} -->
+<!-- ciberbal-ai:custom-agent:{name} -->
 ## Custom Agent: {Title}
 When executing the "{target_phase}" phase, also load and apply the "{name}" skill
 for additional validation/support.
-<!-- /gentle-ai:custom-agent:{name} -->
+<!-- /ciberbal-ai:custom-agent:{name} -->
 ```
 
 This is injected into the agent's system prompt using the existing `StrategyMarkdownSections` approach (marker-based injection that doesn't clobber user content).
@@ -610,7 +610,7 @@ func (e *OpenCodeEngine) Generate(ctx context.Context, prompt string) (string, e
 ```mermaid
 sequenceDiagram
     participant User
-    participant TUI as Gentle AI TUI
+    participant TUI as Ciberbal AI TUI
     participant Builder as Agent Builder
     participant Engine as Generation Engine<br/>(Claude/OpenCode/etc.)
     participant Parser as Output Parser
@@ -708,7 +708,7 @@ graph TB
 
     subgraph STORAGE["Storage"]
         SKILLS_DIR["~/.{agent}/skills/{name}/SKILL.md"]
-        REGISTRY_FILE["~/.config/gentle-ai/custom-agents.json"]
+        REGISTRY_FILE["~/.config/ciberbal-ai/custom-agents.json"]
         SYS_PROMPT["Agent system prompts<br/>(CLAUDE.md / AGENTS.md / etc.)"]
     end
 
@@ -807,7 +807,7 @@ The user selects where in the pipeline to insert the new phase:
 | R-AB-05 | The Agent Builder MUST show a preview of the generated skill before installation | P0 |
 | R-AB-06 | The Agent Builder MUST install the generated skill to ALL configured AI agents | P0 |
 | R-AB-07 | The Agent Builder MUST support SDD integration in three modes: standalone, phase support, new phase | P0 |
-| R-AB-08 | The Agent Builder MUST maintain a local registry of custom agents at `~/.config/gentle-ai/custom-agents.json` | P0 |
+| R-AB-08 | The Agent Builder MUST maintain a local registry of custom agents at `~/.config/ciberbal-ai/custom-agents.json` | P0 |
 | R-AB-09 | The Agent Builder MUST allow the user to edit the generated skill before installation (open in $EDITOR) | P1 |
 | R-AB-10 | The Agent Builder MUST allow the user to regenerate the skill with the same prompt | P0 |
 | R-AB-11 | The Agent Builder MUST include Engram integration instructions in every generated skill | P0 |

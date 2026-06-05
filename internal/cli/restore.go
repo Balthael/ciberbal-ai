@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/gentleman-programming/gentle-ai/internal/backup"
+	"github.com/gentleman-programming/ciberbal-ai/internal/backup"
 )
 
 // RestoreFunc is the function signature for restoring a backup from its manifest.
@@ -126,7 +126,7 @@ func runRestoreWithHomeDir(args []string, restorer RestoreFunc, stdout io.Writer
 // renderRestoreList writes the backup listing to stdout.
 // Backups are already sorted newest-first by listBackupsFromDir.
 // Each entry shows: index, ID, DisplayLabel (source + timestamp + file count),
-// and the gentle-ai version that created the backup when known.
+// and the ciberbal-ai version that created the backup when known.
 func renderRestoreList(backups []backup.Manifest, stdout io.Writer) error {
 	if len(backups) == 0 {
 		fmt.Fprintln(stdout, "no backups found")
@@ -223,7 +223,7 @@ func listBackupsFromDir(homeDir string) []backup.Manifest {
 
 // backupRootDir returns the path to the backup directory under homeDir.
 func backupRootDir(homeDir string) string {
-	return homeDir + "/.gentle-ai/backups"
+	return homeDir + "/.ciberbal-ai/backups"
 }
 
 // defaultRestorer returns the standard backup.RestoreService.Restore function.

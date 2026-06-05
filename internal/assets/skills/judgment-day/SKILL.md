@@ -299,7 +299,7 @@ This is a self-correction mechanism. Do NOT ignore fallback reports.
 
 ## Language
 
-- **Spanish input → Rioplatense**: "Juicio iniciado", "Los jueces están trabajando en paralelo...", "Los jueces coinciden", "Juicio terminado — Aprobado", "Escalado — necesita revisión humana"
+- **Spanish input → neutral/professional Spanish**: "Juicio iniciado", "Los jueces están trabajando en paralelo...", "Los jueces coinciden", "Juicio terminado — aprobado", "Escalado — requiere revisión humana"
 - **English input**: "Judgment initiated", "Both judges are working in parallel...", "Both judges agree", "Judgment complete — Approved", "Escalated — requires human review"
 
 ---

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/gentleman-programming/gentle-ai/internal/components/sdd"
-	"github.com/gentleman-programming/gentle-ai/internal/tui/styles"
+	"github.com/gentleman-programming/ciberbal-ai/internal/components/sdd"
+	"github.com/gentleman-programming/ciberbal-ai/internal/tui/styles"
 )
 
 // RenderProfileDelete renders the profile delete confirmation screen.

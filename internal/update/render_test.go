@@ -53,6 +53,6 @@ func TestUpdateSummaryLineUsesCiberbalName(t *testing.T) {
 		t.Fatalf("UpdateSummaryLine() = %q, want ciberbal-ai update", line)
 	}
 	if strings.Contains(line, "gentle-ai") {
-		t.Fatalf("UpdateSummaryLine() = %q, must not mention gentle-ai", line)
+		t.Fatalf("UpdateSummaryLine() = %q, must not mention old branding gentle-ai", line)
 	}
 }

@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gentleman-programming/gentle-ai/internal/components/filemerge"
+	"github.com/gentleman-programming/ciberbal-ai/internal/components/filemerge"
 )
 
 const (
@@ -51,13 +51,13 @@ type cacheFile struct {
 // Keep these source roots in sync with the gentle-pi skill-registry extension.
 func UserSkillDirs(home string) []string {
 	return []string{
-		// Gentle AI/Pi and generic Agent Skills locations.
+		// Ciberbal AI/Pi and generic Agent Skills locations.
 		filepath.Join(home, ".pi", "agent", "skills"),
 		filepath.Join(home, ".config", "agents", "skills"),
 		filepath.Join(home, ".agents", "skills"),
 		filepath.Join(home, ".kimi", "skills"),
 
-		// Agent-specific global skill locations supported by Gentle AI adapters.
+		// Agent-specific global skill locations supported by Ciberbal AI adapters.
 		filepath.Join(home, ".config", "opencode", "skills"),
 		filepath.Join(home, ".config", "kilo", "skills"),
 		filepath.Join(home, ".claude", "skills"),
@@ -89,7 +89,7 @@ func ProjectSkillDirs(cwd string) []string {
 		filepath.Join(cwd, ".kiro", "skills"),
 		filepath.Join(cwd, ".openclaw", "skills"),
 
-		// Gentle AI/Pi and generic Agent Skills workspace locations.
+		// Ciberbal AI/Pi and generic Agent Skills workspace locations.
 		filepath.Join(cwd, ".pi", "skills"),
 		filepath.Join(cwd, ".agent", "skills"),
 		filepath.Join(cwd, ".agents", "skills"),

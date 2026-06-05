@@ -30,7 +30,7 @@ All agents receive the **full SDD orchestrator** injected into their system prom
 
 ### Cursor Native Subagents
 
-Cursor uses its built-in `.cursor/agents/` system. `gentle-ai` writes 9 agent files to `~/.cursor/agents/sdd-{phase}.md` — one per SDD phase. Cursor's Agent auto-delegates to the correct subagent based on the `description` field in each file's YAML frontmatter.
+Cursor uses its built-in `.cursor/agents/` system. `ciberbal-ai` writes 9 agent files to `~/.cursor/agents/sdd-{phase}.md` — one per SDD phase. Cursor's Agent auto-delegates to the correct subagent based on the `description` field in each file's YAML frontmatter.
 
 - `sdd-explore` and `sdd-verify` run with `readonly: true`
 - Each subagent gets its own context window (fresh context, no pollution)
@@ -84,13 +84,13 @@ Antigravity is an agent-first platform with built-in sub-agents (Browser, Termin
 ### Cursor
 - Native subagents via `~/.cursor/agents/sdd-{phase}.md` (9 files installed by ciberbal-ai)
 - Skills at `~/.cursor/skills/`
-- System prompt in `~/.cursor/rules/gentle-ai.mdc` (legacy filename retained for compatibility)
+- System prompt in `~/.cursor/rules/ciberbal-ai.mdc` (legacy filename retained for compatibility)
 - MCP config in `~/.cursor/mcp.json`
 
 ### VS Code Copilot
 - Uses the `runSubagent` tool with support for parallel execution
 - Skills at `~/.copilot/skills/`
-- System prompt at `Code/User/prompts/gentle-ai.instructions.md` (legacy filename retained for compatibility)
+- System prompt at `Code/User/prompts/ciberbal-ai.instructions.md` (legacy filename retained for compatibility)
 - MCP config at `Code/User/mcp.json`
 
 ### Codex

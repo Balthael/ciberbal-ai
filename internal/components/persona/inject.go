@@ -7,10 +7,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/gentleman-programming/gentle-ai/internal/agents"
-	"github.com/gentleman-programming/gentle-ai/internal/assets"
-	"github.com/gentleman-programming/gentle-ai/internal/components/filemerge"
-	"github.com/gentleman-programming/gentle-ai/internal/model"
+	"github.com/gentleman-programming/ciberbal-ai/internal/agents"
+	"github.com/gentleman-programming/ciberbal-ai/internal/assets"
+	"github.com/gentleman-programming/ciberbal-ai/internal/components/filemerge"
+	"github.com/gentleman-programming/ciberbal-ai/internal/model"
 )
 
 type InjectionResult struct {
@@ -18,12 +18,12 @@ type InjectionResult struct {
 	Files   []string
 }
 
-// outputStyleOverlayJSON is the settings.json overlay to enable the Gentleman output style.
-var outputStyleOverlayJSON = []byte("{\n  \"outputStyle\": \"Gentleman\"\n}\n")
+// outputStyleOverlayJSON is the settings.json overlay to enable the Ciberbal output style.
+var outputStyleOverlayJSON = []byte("{\n  \"outputStyle\": \"Ciberbal\"\n}\n")
 
 // openCodeAgentOverlayJSON defines Tab-switchable agents for OpenCode.
 // "ciberbal" is the primary agent key. Both reference AGENTS.md via {file:./AGENTS.md}.
-var openCodeAgentOverlayJSON = []byte("{\n  \"agent\": {\n    \"ciberbal\": {\n      \"mode\": \"primary\",\n      \"description\": \"Ciberbal — Senior Architect mentor\",\n      \"prompt\": \"{file:./AGENTS.md}\",\n      \"tools\": {\n        \"write\": true,\n        \"edit\": true\n      }\n    }\n  }\n}\n")
+var openCodeAgentOverlayJSON = []byte("{\n  \"agent\": {\n    \"ciberbal\": {\n      \"mode\": \"primary\",\n      \"description\": \"Ciberbal — professional offensive security mentor\",\n      \"prompt\": \"{file:./AGENTS.md}\",\n      \"tools\": {\n        \"write\": true,\n        \"edit\": true\n      }\n    }\n  }\n}\n")
 
 func Inject(homeDir string, adapter agents.Adapter, persona model.PersonaID) (InjectionResult, error) {
 	if !adapter.SupportsSystemPrompt() {
@@ -55,7 +55,7 @@ func Inject(homeDir string, adapter agents.Adapter, persona model.PersonaID) (In
 		// Auto-heal: strip any legacy free-text Gentleman persona block that was
 		// written before the marker-based injection system existed. This prevents
 		// duplicate persona content when users re-run the installer after an old
-		// install placed the persona as raw text above the <!-- gentle-ai: --> markers.
+		// install placed the persona as raw text above the <!-- ciberbal-ai: --> markers.
 		healed := filemerge.StripLegacyPersonaBlock(existing)
 
 		// Also strip legacy Agent Teams Lite block (standalone ATL installer leftover).
@@ -189,11 +189,11 @@ func Inject(homeDir string, adapter agents.Adapter, persona model.PersonaID) (In
 		}
 	}
 
-	// 3. Gentleman-only: write output style + merge into settings (if agent supports it).
-	if persona == model.PersonaGentleman && adapter.SupportsOutputStyles() {
+	// 3. Ciberbal persona: write output style + merge into settings (if agent supports it).
+	if (persona == model.PersonaCiberbal || persona == model.PersonaGentleman) && adapter.SupportsOutputStyles() {
 		outputStyleDir := adapter.OutputStyleDir(homeDir)
 		if outputStyleDir != "" {
-			outputStylePath := outputStyleDir + "/gentleman.md"
+			outputStylePath := outputStyleDir + "/ciberbal.md"
 			outputStyleContent := assets.MustRead("claude/output-style-gentleman.md")
 
 			styleResult, err := filemerge.WriteFileAtomic(outputStylePath, []byte(outputStyleContent), 0o644)
@@ -204,7 +204,7 @@ func Inject(homeDir string, adapter agents.Adapter, persona model.PersonaID) (In
 			files = append(files, outputStylePath)
 		}
 
-		// Merge "outputStyle": "Gentleman" into settings.
+		// Merge "outputStyle": "Ciberbal" into settings.
 		settingsPath := adapter.SettingsPath(homeDir)
 		if settingsPath != "" {
 			settingsResult, err := mergeJSONFile(settingsPath, outputStyleOverlayJSON)
@@ -222,12 +222,12 @@ func Inject(homeDir string, adapter agents.Adapter, persona model.PersonaID) (In
 func personaContent(agent model.AgentID, persona model.PersonaID) string {
 	switch persona {
 	case model.PersonaNeutral:
-		// Neutral persona: same teacher, same philosophy, no regional language.
+		// Legacy neutral alias: professional, neutral, technical, and teaching-first.
 		return assets.MustRead("generic/persona-neutral.md")
 	case model.PersonaCustom:
 		return ""
 	default:
-		// Gentleman persona — try agent-specific asset, then generic fallback.
+		// Ciberbal persona and legacy gentleman alias — try agent-specific asset, then generic fallback.
 		switch agent {
 		case model.AgentClaudeCode:
 			return assets.MustRead("claude/persona-gentleman.md")
@@ -331,8 +331,8 @@ func isManagedStalePersonaAgent(key string, raw any) bool {
 		return prompt == "{file:./AGENTS.md}" && (description == "Senior Architect mentor - helpful first, challenging when it matters" ||
 			description == "Ciberbal — Senior Architect mentor")
 	case "gentle-orchestrator":
-		return strings.Contains(description, "Gentle AI SDD Orchestrator") ||
-			strings.Contains(prompt, "# Gentle AI — SDD Orchestrator Instructions") ||
+		return strings.Contains(description, "Ciberbal AI SDD Orchestrator") ||
+			strings.Contains(prompt, "# Ciberbal AI — SDD Orchestrator Instructions") ||
 			strings.Contains(prompt, "dedicated `gentle-orchestrator`")
 	default:
 		return false
@@ -352,7 +352,7 @@ var osReadFile = func(path string) ([]byte, error) {
 }
 
 // preserveManagedSections checks whether the existing file content has
-// gentle-ai managed sections (SDD orchestrator, engram protocol, etc.) and
+// ciberbal-ai managed sections (SDD orchestrator, engram protocol, etc.) and
 // returns new content that preserves those sections while replacing only the
 // persona text before them. Returns ("", false) when no preservation is needed
 // (empty file, Gentleman persona, or no managed markers found).
@@ -361,7 +361,7 @@ func preserveManagedSections(existing, newPersona string, persona model.PersonaI
 		return "", false
 	}
 
-	idx := strings.Index(existing, "<!-- gentle-ai:")
+	idx := strings.Index(existing, "<!-- ciberbal-ai:")
 	if idx < 0 {
 		return "", false
 	}
@@ -393,7 +393,7 @@ func readFileOrEmpty(path string) (string, error) {
 
 func wrapInstructionsFile(content string) string {
 	frontmatter := "---\n" +
-		"name: Gentle AI Persona\n" +
+		"name: Ciberbal AI Persona\n" +
 		"description: Teaching-oriented persona with SDD orchestration and Engram protocol\n" +
 		"applyTo: \"**\"\n" +
 		"---\n\n"

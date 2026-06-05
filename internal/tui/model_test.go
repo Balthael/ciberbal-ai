@@ -8,14 +8,14 @@ import (
 	"testing"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/gentleman-programming/gentle-ai/internal/backup"
-	"github.com/gentleman-programming/gentle-ai/internal/model"
-	"github.com/gentleman-programming/gentle-ai/internal/pipeline"
-	"github.com/gentleman-programming/gentle-ai/internal/planner"
-	"github.com/gentleman-programming/gentle-ai/internal/system"
-	"github.com/gentleman-programming/gentle-ai/internal/tui/screens"
-	"github.com/gentleman-programming/gentle-ai/internal/update"
-	"github.com/gentleman-programming/gentle-ai/internal/update/upgrade"
+	"github.com/gentleman-programming/ciberbal-ai/internal/backup"
+	"github.com/gentleman-programming/ciberbal-ai/internal/model"
+	"github.com/gentleman-programming/ciberbal-ai/internal/pipeline"
+	"github.com/gentleman-programming/ciberbal-ai/internal/planner"
+	"github.com/gentleman-programming/ciberbal-ai/internal/system"
+	"github.com/gentleman-programming/ciberbal-ai/internal/tui/screens"
+	"github.com/gentleman-programming/ciberbal-ai/internal/update"
+	"github.com/gentleman-programming/ciberbal-ai/internal/update/upgrade"
 )
 
 func TestNavigationWelcomeToDetection(t *testing.T) {
@@ -2474,6 +2474,14 @@ func TestWrapAroundDownAtLast(t *testing.T) {
 
 	if state.Cursor != 0 {
 		t.Fatalf("Down at last: Cursor = %d, want 0 (wrap-around)", state.Cursor)
+	}
+}
+
+func TestNewModelDefaultsToCiberbalPersona(t *testing.T) {
+	m := NewModel(system.DetectionResult{}, "dev")
+
+	if m.Selection.Persona != model.PersonaCiberbal {
+		t.Fatalf("default persona = %q, want %q", m.Selection.Persona, model.PersonaCiberbal)
 	}
 }
 

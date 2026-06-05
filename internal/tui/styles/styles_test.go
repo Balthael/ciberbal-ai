@@ -6,7 +6,7 @@ import (
 )
 
 // TestTaglineContainsCiberbalBranding verifies that Tagline() returns
-// ciberbal-ai branding, not the old gentle-ai branding.
+// ciberbal-ai branding, not the old ciberbal-ai branding.
 func TestTaglineContainsCiberbalBranding(t *testing.T) {
 	tag := Tagline("1.0.0")
 	if !strings.Contains(tag, "ciberbal-ai") {

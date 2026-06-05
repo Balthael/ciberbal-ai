@@ -5,9 +5,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/gentleman-programming/gentle-ai/internal/assets"
-	"github.com/gentleman-programming/gentle-ai/internal/components/filemerge"
-	"github.com/gentleman-programming/gentle-ai/internal/model"
+	"github.com/gentleman-programming/ciberbal-ai/internal/assets"
+	"github.com/gentleman-programming/ciberbal-ai/internal/components/filemerge"
+	"github.com/gentleman-programming/ciberbal-ai/internal/model"
 )
 
 // InjectionResult describes all files written by the GGA config injection.

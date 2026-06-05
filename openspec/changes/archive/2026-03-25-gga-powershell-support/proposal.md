@@ -19,7 +19,7 @@ GGA's bash script has no file extension, making it unexecutable by PowerShell on
 
 ## Approach
 
-After GGA installs its bash script (via `install.sh`), gentle-ai installs `gga.ps1` in the same directory. The shim calls Git Bash using the path already resolved by `gitBashPath()` in `resolver.go`. The `.ps1` file is baked as a Go embed asset, written with the same atomic no-op pattern used for `pr_mode.sh`.
+After GGA installs its bash script (via `install.sh`), ciberbal-ai installs `gga.ps1` in the same directory. The shim calls Git Bash using the path already resolved by `gitBashPath()` in `resolver.go`. The `.ps1` file is baked as a Go embed asset, written with the same atomic no-op pattern used for `pr_mode.sh`.
 
 ## Affected Areas
 

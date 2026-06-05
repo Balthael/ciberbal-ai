@@ -11,18 +11,18 @@ import (
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/gentleman-programming/gentle-ai/internal/backup"
-	"github.com/gentleman-programming/gentle-ai/internal/cli"
-	"github.com/gentleman-programming/gentle-ai/internal/model"
-	"github.com/gentleman-programming/gentle-ai/internal/pipeline"
-	"github.com/gentleman-programming/gentle-ai/internal/planner"
-	"github.com/gentleman-programming/gentle-ai/internal/skillregistry"
-	"github.com/gentleman-programming/gentle-ai/internal/state"
-	"github.com/gentleman-programming/gentle-ai/internal/system"
-	"github.com/gentleman-programming/gentle-ai/internal/tui"
-	"github.com/gentleman-programming/gentle-ai/internal/update"
-	"github.com/gentleman-programming/gentle-ai/internal/update/upgrade"
-	"github.com/gentleman-programming/gentle-ai/internal/verify"
+	"github.com/gentleman-programming/ciberbal-ai/internal/backup"
+	"github.com/gentleman-programming/ciberbal-ai/internal/cli"
+	"github.com/gentleman-programming/ciberbal-ai/internal/model"
+	"github.com/gentleman-programming/ciberbal-ai/internal/pipeline"
+	"github.com/gentleman-programming/ciberbal-ai/internal/planner"
+	"github.com/gentleman-programming/ciberbal-ai/internal/skillregistry"
+	"github.com/gentleman-programming/ciberbal-ai/internal/state"
+	"github.com/gentleman-programming/ciberbal-ai/internal/system"
+	"github.com/gentleman-programming/ciberbal-ai/internal/tui"
+	"github.com/gentleman-programming/ciberbal-ai/internal/update"
+	"github.com/gentleman-programming/ciberbal-ai/internal/update/upgrade"
+	"github.com/gentleman-programming/ciberbal-ai/internal/verify"
 )
 
 // Version is set from main via ldflags at build time.
@@ -40,7 +40,7 @@ func Run() error {
 
 func RunArgs(args []string, stdout io.Writer) error {
 	// Propagate the build-time version to the CLI and upgrade layers so backup
-	// manifests record which version of gentle-ai created them.
+	// manifests record which version of ciberbal-ai created them.
 	cli.AppVersion = Version
 	upgrade.AppVersion = Version
 
@@ -441,7 +441,7 @@ func ListBackups() []backup.Manifest {
 		return nil
 	}
 
-	backupRoot := filepath.Join(homeDir, ".gentle-ai", "backups")
+	backupRoot := filepath.Join(homeDir, ".ciberbal-ai", "backups")
 	entries, err := os.ReadDir(backupRoot)
 	if err != nil {
 		return nil

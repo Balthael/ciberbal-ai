@@ -11,18 +11,18 @@ import (
 
 	"github.com/charmbracelet/bubbles/textarea"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/gentleman-programming/gentle-ai/internal/agentbuilder"
-	"github.com/gentleman-programming/gentle-ai/internal/backup"
-	"github.com/gentleman-programming/gentle-ai/internal/catalog"
-	"github.com/gentleman-programming/gentle-ai/internal/components/sdd"
-	"github.com/gentleman-programming/gentle-ai/internal/model"
-	"github.com/gentleman-programming/gentle-ai/internal/opencode"
-	"github.com/gentleman-programming/gentle-ai/internal/pipeline"
-	"github.com/gentleman-programming/gentle-ai/internal/planner"
-	"github.com/gentleman-programming/gentle-ai/internal/system"
-	"github.com/gentleman-programming/gentle-ai/internal/tui/screens"
-	"github.com/gentleman-programming/gentle-ai/internal/update"
-	"github.com/gentleman-programming/gentle-ai/internal/update/upgrade"
+	"github.com/gentleman-programming/ciberbal-ai/internal/agentbuilder"
+	"github.com/gentleman-programming/ciberbal-ai/internal/backup"
+	"github.com/gentleman-programming/ciberbal-ai/internal/catalog"
+	"github.com/gentleman-programming/ciberbal-ai/internal/components/sdd"
+	"github.com/gentleman-programming/ciberbal-ai/internal/model"
+	"github.com/gentleman-programming/ciberbal-ai/internal/opencode"
+	"github.com/gentleman-programming/ciberbal-ai/internal/pipeline"
+	"github.com/gentleman-programming/ciberbal-ai/internal/planner"
+	"github.com/gentleman-programming/ciberbal-ai/internal/system"
+	"github.com/gentleman-programming/ciberbal-ai/internal/tui/screens"
+	"github.com/gentleman-programming/ciberbal-ai/internal/update"
+	"github.com/gentleman-programming/ciberbal-ai/internal/update/upgrade"
 )
 
 // osStatModelCache is a package-level variable so tests can override it to
@@ -350,7 +350,7 @@ type Model struct {
 func NewModel(detection system.DetectionResult, version string) Model {
 	selection := model.Selection{
 		Agents:     preselectedAgents(detection),
-		Persona:    model.PersonaGentleman,
+		Persona:    model.PersonaCiberbal,
 		Preset:     model.PresetFullPentest,
 		Components: componentsForPreset(model.PresetFullPentest),
 	}
@@ -1133,7 +1133,7 @@ func (m Model) confirmSelection() (tea.Model, tea.Cmd) {
 		case 0: // Quick install
 			m.QuickInstall = true
 			m.Selection.Agents = preselectedAgents(m.Detection)
-			m.Selection.Persona = model.PersonaGentleman
+			m.Selection.Persona = model.PersonaCiberbal
 			m.Selection.Preset = model.PresetFullPentest
 			m.Selection.Components = componentsForPreset(model.PresetFullPentest)
 			m.buildDependencyPlan()
@@ -2816,7 +2816,7 @@ func (m Model) startInstallation() (tea.Model, tea.Cmd) {
 		}
 
 		// Persist entry to registry.
-		registryPath := filepath.Join(homeDir(), ".config", "gentle-ai", "custom-agents.json")
+		registryPath := filepath.Join(homeDir(), ".config", "ciberbal-ai", "custom-agents.json")
 		_ = os.MkdirAll(filepath.Dir(registryPath), 0755)
 		if reg, loadErr := agentbuilder.LoadRegistry(registryPath); loadErr == nil {
 			// Collect IDs of agents that were successfully installed.

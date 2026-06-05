@@ -28,10 +28,10 @@ All checklist items in `tasks.md` are marked complete.
 ```text
 Command: go test ./...
 Skipped tests:
-- github.com/gentleman-programming/gentle-ai/internal/agents/windsurf::TestSettingsPathMultiplatform/Windows_with_custom_APPDATA
-- github.com/gentleman-programming/gentle-ai/internal/agents/windsurf::TestSettingsPathMultiplatform/Windows_with_default_APPDATA
-- github.com/gentleman-programming/gentle-ai/internal/agents/windsurf::TestSettingsPathMultiplatform/macOS_ignores_environment_variables
-- github.com/gentleman-programming/gentle-ai/internal/update/upgrade::TestDownload_WindowsAlwaysManualFallback
+- github.com/gentleman-programming/ciberbal-ai/internal/agents/windsurf::TestSettingsPathMultiplatform/Windows_with_custom_APPDATA
+- github.com/gentleman-programming/ciberbal-ai/internal/agents/windsurf::TestSettingsPathMultiplatform/Windows_with_default_APPDATA
+- github.com/gentleman-programming/ciberbal-ai/internal/agents/windsurf::TestSettingsPathMultiplatform/macOS_ignores_environment_variables
+- github.com/gentleman-programming/ciberbal-ai/internal/update/upgrade::TestDownload_WindowsAlwaysManualFallback
 ```
 
 **Coverage**: 68.5% / threshold: N/A → ✅ Reported

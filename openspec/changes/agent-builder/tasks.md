@@ -11,9 +11,9 @@
 
 - [ ] T-05 Create `internal/agentbuilder/prompt.go` — implement `ComposePrompt(userInput string, sddConfig *SDDIntegration, installedAgents []model.AgentID) string`; include system prompt template, user description, conditional SDD context block, installed agents list
 - [ ] T-06 Create `internal/agentbuilder/parser.go` — implement `Parse(raw string) (*GeneratedAgent, error)`; strip code fences, validate required sections (Description, Trigger, Instructions), extract Name (title→kebab-case), Title, Description, Trigger into `GeneratedAgent`
-- [ ] T-07 Create `internal/agentbuilder/registry.go` — implement `Registry` struct with `Load(path)`, `Save(path)`, `Add(entry)`, `List()` methods; JSON at `~/.config/gentle-ai/custom-agents.json`; `version: 1` field; conflict detection for built-in and custom name collisions
+- [ ] T-07 Create `internal/agentbuilder/registry.go` — implement `Registry` struct with `Load(path)`, `Save(path)`, `Add(entry)`, `List()` methods; JSON at `~/.config/ciberbal-ai/custom-agents.json`; `version: 1` field; conflict detection for built-in and custom name collisions
 - [ ] T-08 Create `internal/agentbuilder/installer.go` — implement `Install(agent, targets, homeDir)` writing `SKILL.md` to each agent's `SkillsDir()`; atomic rollback on partial failure (clean up already-written files on any error)
-- [ ] T-09 Create `internal/agentbuilder/sdd.go` — implement `InjectSDDReference(agent, adapter, homeDir)` injecting `<!-- gentle-ai:custom-agent:{name} -->` marker blocks into agent system prompts; handle phase-support (augment existing) and new-phase (insert into pipeline graph); no duplication on re-run
+- [ ] T-09 Create `internal/agentbuilder/sdd.go` — implement `InjectSDDReference(agent, adapter, homeDir)` injecting `<!-- ciberbal-ai:custom-agent:{name} -->` marker blocks into agent system prompts; handle phase-support (augment existing) and new-phase (insert into pipeline graph); no duplication on re-run
 
 ## Phase 3: TUI Screens
 
