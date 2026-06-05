@@ -1,10 +1,8 @@
 <div align="center">
 
-<img width="3276" height="1280" alt="image" src="https://github.com/user-attachments/assets/3a3e4ae1-b9f4-4ce9-8fd0-3833812beb99" />
-
 <h1>ciberbal-ai</h1>
 
-<p><strong>One command. Any agent. Any OS. A cybersecurity and pentesting AI ecosystem -- configured and ready.</strong></p>
+<p><strong>Configure your AI coding agents for authorized cybersecurity work: pentesting methodology, persistent memory, curated skills, MCP tools, and reproducible workflows.</strong></p>
 
 <p>
 <a href="https://github.com/Balthael/ciberbal-ai/releases"><img src="https://img.shields.io/github/v/release/Balthael/ciberbal-ai" alt="Release"></a>
@@ -19,11 +17,13 @@
 
 ## What It Does
 
-This is NOT just an AI agent installer. Most agents are easy to install already. `ciberbal-ai` is an **ecosystem configurator** for cybersecurity and pentesting workflows -- it takes the AI agent(s) you already use and upgrades them with persistent memory, Spec-Driven Development workflow, curated skills, MCP servers, model routing, and a security-first operating style.
+`ciberbal-ai` is a **configuration platform for AI-assisted cybersecurity work**. It takes the AI agents you already use and installs a consistent operating environment for authorized pentesting, lab work, security research, evidence handling, and technical reporting.
+
+It configures agent prompts, skills, MCP servers, persistent memory, model routing, backups, and reproducible workflows so the agent behaves less like a generic chatbot and more like a disciplined security assistant.
 
 **Before**: "I installed Claude Code / OpenCode / Cursor, but it's just a chatbot."
 
-**After**: Your agent now has memory, methodology, skills, workflow, MCP tools, and a cybersecurity-oriented setup that is ready for real pentesting work.
+**After**: Your agent has scope-aware guardrails, repeatable methodology, persistent context, security skills, MCP tools, and reporting-oriented workflows for authorized engagements.
 
 ### 8 Supported Agents
 
@@ -38,7 +38,7 @@ This is NOT just an AI agent installer. Most agents are easy to install already.
 | **Windsurf** | Solo-agent | Plan Mode, Code Mode, native workflows |
 | **Antigravity** | Solo-agent + Mission Control | Built-in Browser/Terminal sub-agents |
 
-> **Note**: This project is a derivative adaptation of `ciberbal-ai` focused on cybersecurity and pentesting, but its public install flow now targets `ciberbal-ai` directly.
+> **Scope**: `ciberbal-ai` is intended for authorized security work only: owned environments, labs, CTFs, training platforms, and engagements with written permission or a defined rules of engagement.
 
 ---
 
@@ -78,7 +78,7 @@ These are **not required** for basic usage. The SDD orchestrator runs `/sdd-init
 
 ### Default operating model
 
-`ciberbal-ai` is designed to support a **fast full-stack install** for cybersecurity and pentesting:
+`ciberbal-ai` is designed to support a **fast full-stack install** for authorized cybersecurity and pentesting workflows:
 
 - Quick install configures the full ecosystem by default
 - no specialty prompt is required during the quick path
@@ -159,8 +159,6 @@ Download the binary for your platform from [GitHub Releases](https://github.com/
 
 Every install, sync, and upgrade automatically snapshots your config files. Backups are **compressed** (tar.gz), **deduplicated** (identical configs are not re-backed up), and **auto-pruned** (keeps the 5 most recent). Pin important backups via the TUI (`p` key) to protect them from pruning.
 
-> **Current note**: backup storage paths are still inherited from the original project in some internal code paths and will be renamed in a later cleanup pass.
-
 See [Backup & Rollback Guide](docs/rollback.md) for details.
 
 ---
@@ -184,21 +182,17 @@ See [Backup & Rollback Guide](docs/rollback.md) for details.
 
 This project exists because of the community. See [CONTRIBUTORS.md](CONTRIBUTORS.md) for the full list.
 
-<a href="https://github.com/Gentleman-Programming/ciberbal-ai/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=Gentleman-Programming/ciberbal-ai" />
-</a>
-
 ---
 
 ## Credits
 
-`ciberbal-ai` is based on [`ciberbal-ai`](https://github.com/Gentleman-Programming/ciberbal-ai), originally created by **Gentleman Programming**.
+`ciberbal-ai` is derived from an MIT-licensed AI agent configuration framework originally created by **Gentleman Programming**.
 
-This project adapts that foundation for cybersecurity and pentesting workflows, preserving the original MIT license while extending the platform with a security-focused install flow, branding, and future domain-specific skills.
+This project adapts that foundation for cybersecurity and pentesting workflows, preserving the original MIT license while extending the platform with a security-focused install flow, Ciberbal branding, domain-specific skills, and engagement workflow support.
 
 ## License and Attribution
 
-This repository includes work derived from `ciberbal-ai`, Copyright (c) 2025 Gentleman Programming, used under the MIT License.
+This repository includes work derived from the original Gentleman Programming framework, Copyright (c) 2025 Gentleman Programming, used under the MIT License.
 
 The original copyright notice and permission notice are preserved in [`LICENSE`](LICENSE), as required by the license terms.
 
