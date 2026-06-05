@@ -748,6 +748,43 @@ func TestDownloadLatestBinaryRedirectFallbackTokenAndRetryBothForbidden(t *testi
 	}
 }
 
+func TestFetchLatestEngramVersionReportsRedirectFallbackFailure(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.Contains(r.URL.Path, "repos/") && strings.Contains(r.URL.Path, "releases"):
+			w.WriteHeader(http.StatusForbidden)
+		case r.URL.Path == "/"+engramOwner+"/"+engramRepo+"/releases/latest":
+			w.WriteHeader(http.StatusNotFound)
+		default:
+			t.Fatalf("unexpected request: %s?%s", r.URL.Path, r.URL.RawQuery)
+		}
+	}))
+	defer server.Close()
+
+	origClient := engramHTTPClient
+	origBaseURL := engramGitHubBaseURL
+	engramHTTPClient = server.Client()
+	engramGitHubBaseURL = server.URL
+	t.Cleanup(func() {
+		engramHTTPClient = origClient
+		engramGitHubBaseURL = origBaseURL
+	})
+
+	t.Setenv("GITHUB_TOKEN", "")
+	t.Setenv("GH_TOKEN", "")
+
+	_, err := fetchLatestEngramVersion()
+	if err == nil {
+		t.Fatal("fetchLatestEngramVersion() expected error when API and redirect fallback fail")
+	}
+	if !strings.Contains(err.Error(), "latest-release redirect fallback failed") {
+		t.Fatalf("error = %v, want redirect fallback failure context", err)
+	}
+	if !strings.Contains(err.Error(), "could not resolve version from redirect path") {
+		t.Fatalf("error = %v, want wrapped redirect resolution error", err)
+	}
+}
+
 // --- TestEngramChecksumVerification ---
 //
 // Table-driven tests covering all checksum verification paths:

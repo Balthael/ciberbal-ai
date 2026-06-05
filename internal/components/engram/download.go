@@ -157,6 +157,8 @@ func fetchLatestEngramVersion() (string, error) {
 	if status == http.StatusUnauthorized || status == http.StatusForbidden {
 		if redirectVersion, redirectErr := fetchLatestEngramVersionFromRedirect(); redirectErr == nil {
 			return redirectVersion, nil
+		} else {
+			return "", fmt.Errorf("GitHub API returned HTTP %d and latest-release redirect fallback failed: %w", status, redirectErr)
 		}
 	}
 
